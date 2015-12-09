@@ -1,2 +1,10 @@
+# MyReaperPlugin
 binary/Debug
 binary/Release
+
+# Visual Studio
+.vs*
+*.sdf
+
+# XCode
+xcuserdata/
