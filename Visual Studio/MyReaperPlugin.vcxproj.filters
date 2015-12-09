@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\source\MyFirstClass.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\main.hpp" />
+    <ClInclude Include="..\header\MyFirstClass.hpp">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\library\reaper plugin\reaper_plugin.h">
+      <Filter>library\reaper_plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h">
+      <Filter>library\reaper_plugin</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="library">
+      <UniqueIdentifier>{f65e63be-8272-45ea-bb7b-7a15a4bc5266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{ddd71e4a-517e-44c8-b65a-4082ab25643b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\reaper_plugin">
+      <UniqueIdentifier>{ca810e52-9137-4367-9dfd-11015c3d9b28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{414ea627-63c3-494e-bd23-0bafa4cd2b5e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
