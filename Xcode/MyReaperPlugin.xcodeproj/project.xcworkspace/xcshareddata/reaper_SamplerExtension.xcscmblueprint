@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "D91FE3518C164A207F632F37C5F53D73DAD9CBB8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "EA3C9C8AD7707E808C13C99C1075BB94FE8822A3" : 0,
+    "11B94510860470908E89574702597330C32284A3" : 0,
+    "D91FE3518C164A207F632F37C5F53D73DAD9CBB8" : 0,
+    "4D1AC43D5267535BB1BA83172247D547673723BB" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F1AF3B32-50D3-4476-AE42-69D01D7074B9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "EA3C9C8AD7707E808C13C99C1075BB94FE8822A3" : "boost\/",
+    "11B94510860470908E89574702597330C32284A3" : "Soundemote%20SLDT\/ReaSampleLib\/library\/WDL\/",
+    "D91FE3518C164A207F632F37C5F53D73DAD9CBB8" : "Soundemote%20SLDT\/",
+    "4D1AC43D5267535BB1BA83172247D547673723BB" : "boost\/libs\/regex\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "reaper_SamplerExtension",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "reaper_SamplerExtension.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/www-dev.cockos.com\/wdl\/WDL.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "11B94510860470908E89574702597330C32284A3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/boostorg\/regex.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4D1AC43D5267535BB1BA83172247D547673723BB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/elanhickler\/soundemote-sldt.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D91FE3518C164A207F632F37C5F53D73DAD9CBB8"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/boostorg\/boost.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "EA3C9C8AD7707E808C13C99C1075BB94FE8822A3"
+    }
+  ]
+}
