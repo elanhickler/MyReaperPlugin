@@ -14,23 +14,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C47931631BE9799D00C024D1"
-               BuildableName = "reaper_MyReaperPlugin_x64.dylib"
-               BlueprintName = "reaper_MyReaperPlugin_x64"
-               ReferencedContainer = "container:MyReaperPlugin.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E31CCEA61BEEE38200F0E566"
-               BuildableName = "reaper_MyReaperPlugin_x32.dylib"
-               BlueprintName = "reaper_MyReaperPlugin_x32"
+               BlueprintIdentifier = "E3E1DB0B1C18C67100D648F5"
+               BuildableName = "reaper_MyReaperPlugin.dylib"
+               BlueprintName = "reaper_MyReaperPlugin"
                ReferencedContainer = "container:MyReaperPlugin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E31CCEA61BEEE38200F0E566"
-            BuildableName = "reaper_MyReaperPlugin_x32.dylib"
-            BlueprintName = "reaper_MyReaperPlugin_x32"
+            BlueprintIdentifier = "E3E1DB0B1C18C67100D648F5"
+            BuildableName = "reaper_MyReaperPlugin.dylib"
+            BlueprintName = "reaper_MyReaperPlugin"
             ReferencedContainer = "container:MyReaperPlugin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -72,9 +58,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E31CCEA61BEEE38200F0E566"
-            BuildableName = "reaper_MyReaperPlugin_x32.dylib"
-            BlueprintName = "reaper_MyReaperPlugin_x32"
+            BlueprintIdentifier = "E3E1DB0B1C18C67100D648F5"
+            BuildableName = "reaper_MyReaperPlugin.dylib"
+            BlueprintName = "reaper_MyReaperPlugin"
             ReferencedContainer = "container:MyReaperPlugin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -87,6 +73,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E3E1DB0B1C18C67100D648F5"
+            BuildableName = "reaper_MyReaperPlugin.dylib"
+            BlueprintName = "reaper_MyReaperPlugin"
+            ReferencedContainer = "container:MyReaperPlugin.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
