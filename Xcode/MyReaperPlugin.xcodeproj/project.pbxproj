@@ -192,7 +192,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/../binary/${CONFIGURATION}/${TARGET_NAME}.dylib\" \"/Applications/REAPER32.app/Contents/Plugins\"";
+			shellScript = "cp \"${SRCROOT}/../binary/${CONFIGURATION}/${TARGET_NAME}.dylib\" \"/Library/Application Support/REAPER/UserPlugins\"";
 		};
 		E3D3FC231BED749A00F15144 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -205,7 +205,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/../binary/${CONFIGURATION}/${TARGET_NAME}.dylib\" \"/Applications/REAPER64.app/Contents/Plugins\"";
+			shellScript = "cp \"${SRCROOT}/../binary/${CONFIGURATION}/${TARGET_NAME}.dylib\" \"/Library/Application Support/REAPER/UserPlugins\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
