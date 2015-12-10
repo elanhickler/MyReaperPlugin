@@ -5,6 +5,7 @@ binary/Release
 # Visual Studio
 .vs*
 *.sdf
+*.opensdf
 
 # XCode
 xcuserdata/
