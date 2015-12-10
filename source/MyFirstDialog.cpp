@@ -15,6 +15,8 @@ INT_PTR CALLBACK myfirstdialogproc(
 	if (uMsg == WM_INITDIALOG) // The very first message sent for the window
 	{
 		ShowWindow(hwndDlg, SW_SHOW);
+		// SetWindowText is a "polymorphic" API that can change the visible text of various things,
+		// including window titles or text edit box texts
 		SetWindowText(hwndDlg, "My First Dialog");
 		return TRUE; 
 	}
