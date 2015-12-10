@@ -15,7 +15,7 @@ INT_PTR CALLBACK myfirstdialogproc(
 	if (uMsg == WM_INITDIALOG) // The very first message sent for the window
 	{
 		ShowWindow(hwndDlg, SW_SHOW);
-		SetWindowText(hwndDlg, L"My First Dialog");
+		SetWindowText(hwndDlg, "My First Dialog");
 		return TRUE; 
 	}
 	// WM_CLOSE sent at least when the window close button is pressed
@@ -38,12 +38,12 @@ INT_PTR CALLBACK myfirstdialogproc(
 				{
 					char buf[1024];
 					if (GetSetMediaItemTakeInfo_String(take, "P_NAME", buf, false)==true)
-						SetWindowTextA(GetDlgItem(hwndDlg, IDC_EDIT1), buf);
+						SetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), buf);
 				}
 				
 			}
 			else 
-				SetWindowTextA(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
+				SetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
 			
 		}
 		return TRUE; // return true when we did handle the message
