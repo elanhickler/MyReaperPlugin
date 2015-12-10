@@ -10,6 +10,8 @@ INT_PTR CALLBACK myfirstdialogproc(
 	_In_ LPARAM lParam
 	)
 {
+	// The "canonical" way is to use a switch case for the messages, but ifs will work fine too
+	// and it's less likely to do some stupid mistakes this way
 	if (uMsg == WM_INITDIALOG)
 	{
 		ShowWindow(hwndDlg, SW_SHOW);
@@ -37,6 +39,8 @@ INT_PTR CALLBACK myfirstdialogproc(
 				}
 				
 			}
+			else 
+				SetWindowTextA(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
 			
 		}
 		return TRUE;
