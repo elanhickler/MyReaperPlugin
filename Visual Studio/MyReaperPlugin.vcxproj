@@ -21,12 +21,18 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
+    <ClCompile Include="..\source\MyFirstDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\MyFirstClass.hpp" />
+    <ClInclude Include="..\header\MyFirstDialog.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MyReaperPlugin.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FA4191B4-03BF-4BC9-BF85-87777089B66D}</ProjectGuid>

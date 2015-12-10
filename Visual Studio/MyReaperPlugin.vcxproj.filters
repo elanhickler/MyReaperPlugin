@@ -5,6 +5,9 @@
     <ClCompile Include="..\source\MyFirstClass.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\MyFirstDialog.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -17,6 +20,10 @@
     <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h">
       <Filter>library\reaper_plugin</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\MyFirstDialog.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">
@@ -31,5 +38,8 @@
     <Filter Include="header">
       <UniqueIdentifier>{414ea627-63c3-494e-bd23-0bafa4cd2b5e}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MyReaperPlugin.rc" />
   </ItemGroup>
 </Project>

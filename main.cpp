@@ -136,7 +136,10 @@ extern "C"
 				std::string id = "EXAMPLE_ACTION_FROM_LOOP" + std::to_string(i);
 				add_action(desc, id, CannotToggle, actionfunction);
 			}
-
+			add_action("Show my first dialog", "EXAMPLE_ACTION_SHOW_DIALOG1", ToggleOff, [](action_entry&) 
+			{
+				open_my_first_modeless_dialog(g_parent);
+			});
 			rec->Register("hookcommand", (void*)hookCommandProc);
 			rec->Register("toggleaction", (void*)toggleActionCallback);
 

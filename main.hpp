@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MyFirstClass.hpp"
+#include "MyFirstDialog.h"
 
 void doAction1() {
 	ShowMessageBox("Hello World!", "Reaper extension", 0);
