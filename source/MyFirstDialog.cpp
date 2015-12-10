@@ -12,19 +12,22 @@ INT_PTR CALLBACK myfirstdialogproc(
 {
 	// The "canonical" way is to use a switch case for the messages, but ifs will work fine too
 	// and it's less likely to do some stupid mistakes this way
-	if (uMsg == WM_INITDIALOG)
+	if (uMsg == WM_INITDIALOG) // The very first message sent for the window
 	{
 		ShowWindow(hwndDlg, SW_SHOW);
 		SetWindowText(hwndDlg, L"My First Dialog");
-		return TRUE;
+		return TRUE; 
 	}
+	// WM_CLOSE sent at least when the window close button is pressed
 	if (uMsg == WM_CLOSE)
 	{
 		DestroyWindow(hwndDlg);
 		return TRUE;
 	}
+	// Button clicks and various other things will cause a WM_COMMAND message to be sent
 	if (uMsg == WM_COMMAND)
 	{
+		// Check the source of the message is our button and that the message is the button click
 		if (LOWORD(wParam) == IDC_DO1 && HIWORD(wParam) == BN_CLICKED)
 		{
 			if (CountSelectedMediaItems(nullptr) > 0)
@@ -43,9 +46,9 @@ INT_PTR CALLBACK myfirstdialogproc(
 				SetWindowTextA(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
 			
 		}
-		return TRUE;
+		return TRUE; // return true when we did handle the message
 	}
-	return FALSE;
+	return FALSE; // return false when we didn't handle the message
 }
 
 HWND open_my_first_modeless_dialog(HWND parent)
