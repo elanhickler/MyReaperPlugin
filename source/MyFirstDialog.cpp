@@ -48,6 +48,21 @@ INT_PTR CALLBACK myfirstdialogproc(
 				SetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
 			
 		}
+		if (LOWORD(wParam) == IDC_DO2 && HIWORD(wParam) == BN_CLICKED)
+		{
+			if (CountSelectedMediaItems(nullptr) > 0)
+			{
+				MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+				MediaItem_Take* take = GetActiveTake(item);
+				if (take != nullptr)
+				{
+					char buf[1024];
+					GetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), buf, 1024);
+					GetSetMediaItemTakeInfo_String(take, "P_NAME", buf, true);
+					UpdateArrange();
+				}
+			}
+		}
 		return TRUE; // return true when we did handle the message
 	}
 	return FALSE; // return false when we didn't handle the message
