@@ -8,6 +8,15 @@
     <ClCompile Include="..\source\MyFirstDialog.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\MyLiceWindow.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp">
+      <Filter>library\WDL\Lice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp">
+      <Filter>library\WDL\Lice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -24,6 +33,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\header\MyLiceWindow.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">
@@ -37,6 +49,12 @@
     </Filter>
     <Filter Include="header">
       <UniqueIdentifier>{414ea627-63c3-494e-bd23-0bafa4cd2b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\WDL">
+      <UniqueIdentifier>{1859dacd-5147-4310-af71-cb12105f4aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\WDL\Lice">
+      <UniqueIdentifier>{da8ecdf5-15b1-42e5-a37f-e1e9631b023a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

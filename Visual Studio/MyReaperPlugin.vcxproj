@@ -19,13 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
     <ClCompile Include="..\source\MyFirstDialog.cpp" />
+    <ClCompile Include="..\source\MyLiceWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\MyFirstDialog.h" />
+    <ClInclude Include="..\header\MyLiceWindow.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
