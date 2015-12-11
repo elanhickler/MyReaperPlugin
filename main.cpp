@@ -144,6 +144,10 @@ extern "C"
 					ShowConsoleMsg("Failed to create dialog window\n");
 				}
 			});
+			add_action("Show my Lice dialog", "EXAMPLE_ACTION_SHOW_DIALOG2", ToggleOff, [](action_entry&)
+			{
+				open_lice_dialog(g_parent);
+			});
 			rec->Register("hookcommand", (void*)hookCommandProc);
 			rec->Register("toggleaction", (void*)toggleActionCallback);
 

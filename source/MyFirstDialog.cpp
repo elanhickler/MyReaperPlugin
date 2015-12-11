@@ -14,6 +14,8 @@
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
 #include "MyLiceWindow.h"
 
+#include <memory>
+
 extern HINSTANCE g_hInst;
 
 INT_PTR CALLBACK myfirstdialogproc(
@@ -87,7 +89,25 @@ HWND open_my_first_modeless_dialog(HWND parent)
 	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
 }
 
+INT_PTR CALLBACK mylicedialogproc(
+	HWND   hwndDlg,
+	UINT   uMsg,
+	WPARAM wParam,
+	LPARAM lParam
+	)
+{
+	return FALSE;
+}
+
+
+std::unique_ptr<TestControl> g_testcontrol;
+
 HWND open_lice_dialog(HWND parent)
 {
-	return NULL;
+	HWND dh = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
+	SetWindowText(dh, "Lice Test");
+	SetWindowPos(dh, NULL, 20, 60, 110, 130, SWP_NOACTIVATE | SWP_NOZORDER);
+	ShowWindow(dh, SW_SHOW);
+	g_testcontrol = std::make_unique<TestControl>(dh); 
+	return dh;
 }

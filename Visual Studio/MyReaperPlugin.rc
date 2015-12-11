@@ -17,6 +17,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
 LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,14 @@ BEGIN
     PUSHBUTTON      "Set item name",IDC_DO2,73,29,55,14
 END
 
+IDD_EMPTYDIALOG DIALOGEX 0, 0, 309, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,6 +85,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 43
     END
+
+    IDD_EMPTYDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -86,6 +103,11 @@ END
 //
 
 IDD_DIALOG1 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_EMPTYDIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

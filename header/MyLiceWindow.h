@@ -7,21 +7,29 @@
 #endif
 
 #include "WDL/WDL/lice/lice.h"
+#include <memory>
 
 class LiceControl
 {
 public:
 	LiceControl(HWND parent);
-	virtual ~LiceControl() {}
+	virtual ~LiceControl() 
+	{
+		DestroyWindow(m_hwnd);
+	}
 	HWND getWindowHandle() const { return m_hwnd; }
 	virtual void paint(LICE_IBitmap*) = 0;
 private:
 	HWND m_hwnd = NULL;
+	static BOOL WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+	WNDPROC m_origwndproc = nullptr;
+	std::unique_ptr<LICE_SysBitmap> m_bitmap;
 };
 
 // Development test control
 class TestControl : public LiceControl
 {
 public:
+	TestControl(HWND parent) : LiceControl(parent) {}
 	void paint(LICE_IBitmap* bm) override;
 };
