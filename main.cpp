@@ -138,7 +138,11 @@ extern "C"
 			}
 			add_action("Show my first dialog", "EXAMPLE_ACTION_SHOW_DIALOG1", ToggleOff, [](action_entry&) 
 			{
-				open_my_first_modeless_dialog(g_parent);
+				HWND hw = open_my_first_modeless_dialog(g_parent);
+				if (hw==NULL)
+				{
+					ShowConsoleMsg("Failed to create dialog window\n");
+				}
 			});
 			rec->Register("hookcommand", (void*)hookCommandProc);
 			rec->Register("toggleaction", (void*)toggleActionCallback);
@@ -161,7 +165,7 @@ extern "C"
 		}
 	}
 };
-
+#ifdef FOOFOOFOO
 #ifndef _WIN32 // MAC resources
 #include "WDL/WDL/swell/swell-dlggen.h"
 #include "res.rc_mac_dlg"
@@ -169,4 +173,5 @@ extern "C"
 #undef END
 #include "WDL/WDL/swell/swell-menugen.h"
 #include "res.rc_mac_menu"
+#endif
 #endif

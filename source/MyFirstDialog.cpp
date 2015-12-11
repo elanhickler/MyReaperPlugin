@@ -1,13 +1,16 @@
 #include "MyFirstDialog.h"
+
 #include "../Visual Studio/resource.h"
+#include "../Visual Studio/MyReaperPlugin.rc_mac_dlg"
+#include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
 extern HINSTANCE g_hInst;
 
 INT_PTR CALLBACK myfirstdialogproc(
-	_In_ HWND   hwndDlg,
-	_In_ UINT   uMsg,
-	_In_ WPARAM wParam,
-	_In_ LPARAM lParam
+	HWND   hwndDlg,
+	UINT   uMsg,
+	WPARAM wParam,
+	LPARAM lParam
 	)
 {
 	// The "canonical" way is to use a switch case for the messages, but ifs will work fine too
@@ -18,7 +21,8 @@ INT_PTR CALLBACK myfirstdialogproc(
 		// SetWindowText is a "polymorphic" API that can change the visible text of various things,
 		// including window titles or text edit box texts
 		SetWindowText(hwndDlg, "My First Dialog");
-		return TRUE; 
+		SetWindowPos(hwndDlg,0,20,80,200,100,SWP_NOZORDER|SWP_NOACTIVATE);
+		return TRUE;
 	}
 	// WM_CLOSE sent at least when the window close button is pressed
 	if (uMsg == WM_CLOSE)
@@ -68,7 +72,9 @@ INT_PTR CALLBACK myfirstdialogproc(
 	return FALSE; // return false when we didn't handle the message
 }
 
+int g_dummy = 666;
+
 HWND open_my_first_modeless_dialog(HWND parent)
 {
-	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
+	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, (LPARAM)&g_dummy);
 }
