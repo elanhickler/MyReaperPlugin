@@ -10,7 +10,17 @@ extern HINSTANCE g_hInst;
 void TestControl::paint(LICE_IBitmap * bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-	LICE_Line(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(255, 255, 255, 255));
+	//LICE_Line(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(255, 255, 255, 255));
+	for (auto& e : m_points)
+	{
+		LICE_FillCircle(bm, e.m_x, e.m_y, 10.0f, LICE_RGBA(255, 255, 255, 255));
+	}
+}
+
+void TestControl::mousePressed(int x, int y)
+{
+	m_points.push_back({ x,y });
+	repaint();
 }
 
 LiceControl::LiceControl(HWND parent)
@@ -41,11 +51,17 @@ void LiceControl::setSize(int w, int h)
 	SetWindowPos(m_hwnd, 0, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
+void LiceControl::repaint()
+{
+	InvalidateRect(m_hwnd, NULL, TRUE);
+}
+
 BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
 	LiceControl* c = nullptr;
 	if (g_controlsmap.count(hwnd)>0)
 		c=g_controlsmap[hwnd];
+	else return 0;
 	if (Message == WM_PAINT)
 	{
 		RECT r;
@@ -62,9 +78,10 @@ BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hwnd, &ps);
 		return TRUE;
 	}
-	if (Message == WM_SIZE)
+	if (Message == WM_LBUTTONDOWN)
 	{
-		//ShowConsoleMsg("Resize ");
+		c->mousePressed(LOWORD(lParam), HIWORD(lParam));
+		return TRUE;
 	}
 	if (Message == WM_DESTROY)
 	{
@@ -72,7 +89,5 @@ BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 		g_controlsmap.erase(hwnd);
 		return TRUE;
 	}
-	if (c!=nullptr)
-		return CallWindowProc(c->m_origwndproc, hwnd, Message, wParam, lParam);
-	return 0;
+	return CallWindowProc(c->m_origwndproc, hwnd, Message, wParam, lParam);
 }

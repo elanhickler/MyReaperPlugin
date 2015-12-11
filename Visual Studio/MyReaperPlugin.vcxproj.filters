@@ -17,6 +17,9 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp">
       <Filter>library\WDL\Lice</Filter>
     </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_arc.cpp">
+      <Filter>library\WDL\Lice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_arc.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
