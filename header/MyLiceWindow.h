@@ -11,18 +11,17 @@
 class LiceControl
 {
 public:
+	LiceControl(HWND parent);
 	virtual ~LiceControl() {}
-	virtual void paint(LICE_IBitmap* bitmap) = 0;
+	HWND getWindowHandle() const { return m_hwnd; }
+	virtual void paint(LICE_IBitmap*) = 0;
+private:
+	HWND m_hwnd = NULL;
 };
 
+// Development test control
 class TestControl : public LiceControl
 {
 public:
-	void paint(LICE_IBitmap* bm);
-};
-
-class LiceWindow
-{
-public:
-
+	void paint(LICE_IBitmap* bm) override;
 };

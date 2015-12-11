@@ -7,3 +7,4 @@
 #endif
 
 HWND open_my_first_modeless_dialog(HWND parent);
+HWND open_lice_dialog(HWND parent);

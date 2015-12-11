@@ -175,7 +175,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;REAPERSAMPLEREXTENSION_EXPORTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;REAPERSAMPLEREXTENSION_EXPORTS;_CRT_SECURE_NO_WARNINGS;REAPERAPI_NO_LICE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\source;..\header;..\library;$(BOOST_ROOT)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>

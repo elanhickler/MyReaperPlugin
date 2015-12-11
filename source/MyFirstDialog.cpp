@@ -10,9 +10,9 @@
 #include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
 #endif
 
-
-//#include "../library/reaper_plugin/reaper_plugin.h"
+#include "WDL/WDL/lice/lice.h"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
+#include "MyLiceWindow.h"
 
 extern HINSTANCE g_hInst;
 
@@ -85,4 +85,9 @@ INT_PTR CALLBACK myfirstdialogproc(
 HWND open_my_first_modeless_dialog(HWND parent)
 {
 	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
+}
+
+HWND open_lice_dialog(HWND parent)
+{
+	return NULL;
 }
