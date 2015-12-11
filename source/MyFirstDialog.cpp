@@ -82,9 +82,7 @@ INT_PTR CALLBACK myfirstdialogproc(
 	return FALSE; // return false when we didn't handle the message
 }
 
-int g_dummy = 666;
-
 HWND open_my_first_modeless_dialog(HWND parent)
 {
-	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, (LPARAM)&g_dummy);
+	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
 }
