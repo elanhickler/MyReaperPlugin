@@ -89,6 +89,8 @@ HWND open_my_first_modeless_dialog(HWND parent)
 	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
 }
 
+std::unique_ptr<TestControl> g_testcontrol;
+
 INT_PTR CALLBACK mylicedialogproc(
 	HWND   hwndDlg,
 	UINT   uMsg,
@@ -96,18 +98,38 @@ INT_PTR CALLBACK mylicedialogproc(
 	LPARAM lParam
 	)
 {
+	if (uMsg == WM_INITDIALOG)
+	{
+		SetWindowText(hwndDlg, "Lice Test");
+		SetWindowPos(hwndDlg, NULL, 20, 60, 110, 130, SWP_NOACTIVATE | SWP_NOZORDER);
+		ShowWindow(hwndDlg, SW_SHOW);
+		g_testcontrol = std::make_unique<TestControl>(hwndDlg);
+		return TRUE;
+	}
+	if (uMsg == WM_CLOSE)
+	{
+		DestroyWindow(hwndDlg);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		if (g_testcontrol != nullptr)
+		{
+			RECT r;
+			GetClientRect(hwndDlg, &r);
+			g_testcontrol->setSize(r.right - r.left, r.bottom - r.top);
+			InvalidateRect(hwndDlg, NULL, TRUE);
+		}
+		return TRUE;
+	}
 	return FALSE;
 }
 
 
-std::unique_ptr<TestControl> g_testcontrol;
+
 
 HWND open_lice_dialog(HWND parent)
 {
 	HWND dh = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
-	SetWindowText(dh, "Lice Test");
-	SetWindowPos(dh, NULL, 20, 60, 110, 130, SWP_NOACTIVATE | SWP_NOZORDER);
-	ShowWindow(dh, SW_SHOW);
-	g_testcontrol = std::make_unique<TestControl>(dh); 
 	return dh;
 }

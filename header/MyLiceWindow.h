@@ -13,12 +13,10 @@ class LiceControl
 {
 public:
 	LiceControl(HWND parent);
-	virtual ~LiceControl() 
-	{
-		DestroyWindow(m_hwnd);
-	}
+	virtual ~LiceControl();
 	HWND getWindowHandle() const { return m_hwnd; }
 	virtual void paint(LICE_IBitmap*) = 0;
+	void setSize(int w, int h);
 private:
 	HWND m_hwnd = NULL;
 	static BOOL WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);

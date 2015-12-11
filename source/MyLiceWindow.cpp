@@ -30,9 +30,22 @@ LiceControl::LiceControl(HWND parent)
 	}
 }
 
+LiceControl::~LiceControl()
+{
+	ShowConsoleMsg("Lice Control dtor\n");
+}
+
+void LiceControl::setSize(int w, int h)
+{
+	m_bitmap->resize(w, h);
+	SetWindowPos(m_hwnd, 0, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
 BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
-	LiceControl* c = g_controlsmap[hwnd];
+	LiceControl* c = nullptr;
+	if (g_controlsmap.count(hwnd)>0)
+		c=g_controlsmap[hwnd];
 	if (Message == WM_PAINT)
 	{
 		RECT r;
@@ -49,5 +62,17 @@ BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hwnd, &ps);
 		return TRUE;
 	}
-	return CallWindowProc(c->m_origwndproc, hwnd, Message, wParam, lParam);
+	if (Message == WM_SIZE)
+	{
+		//ShowConsoleMsg("Resize ");
+	}
+	if (Message == WM_DESTROY)
+	{
+		ShowConsoleMsg("lice control window destroy\n");
+		g_controlsmap.erase(hwnd);
+		return TRUE;
+	}
+	if (c!=nullptr)
+		return CallWindowProc(c->m_origwndproc, hwnd, Message, wParam, lParam);
+	return 0;
 }
