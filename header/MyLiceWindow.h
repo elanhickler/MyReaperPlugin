@@ -18,6 +18,7 @@ public:
 	HWND getWindowHandle() const { return m_hwnd; }
 	virtual void paint(LICE_IBitmap*) = 0;
 	virtual void mousePressed(int x, int y) {}
+	virtual void mouseMoved(int x, int y) {}
 	void setSize(int w, int h);
 	void repaint();
 private:
@@ -34,6 +35,7 @@ public:
 	TestControl(HWND parent) : LiceControl(parent) {}
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(int x, int y) override;
+	void mouseMoved(int x, int y) override;
 private:
 	struct point
 	{

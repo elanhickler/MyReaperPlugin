@@ -10,7 +10,6 @@ extern HINSTANCE g_hInst;
 void TestControl::paint(LICE_IBitmap * bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-	//LICE_Line(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(255, 255, 255, 255));
 	for (auto& e : m_points)
 	{
 		LICE_FillCircle(bm, e.m_x, e.m_y, 10.0f, LICE_RGBA(255, 255, 255, 255));
@@ -21,6 +20,13 @@ void TestControl::mousePressed(int x, int y)
 {
 	m_points.push_back({ x,y });
 	repaint();
+}
+
+void TestControl::mouseMoved(int x, int y)
+{
+	//char buf[100];
+	//sprintf(buf, "(%d %d)", x, y);
+	//ShowConsoleMsg(buf);
 }
 
 LiceControl::LiceControl(HWND parent)
@@ -80,7 +86,13 @@ BOOL LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	}
 	if (Message == WM_LBUTTONDOWN)
 	{
+		// LOWORD/HIWORD not really technically correct for this...but good enough for now
 		c->mousePressed(LOWORD(lParam), HIWORD(lParam));
+		return TRUE;
+	}
+	if (Message == WM_MOUSEMOVE)
+	{
+		c->mouseMoved(LOWORD(lParam), HIWORD(lParam));
 		return TRUE;
 	}
 	if (Message == WM_DESTROY)
