@@ -1,9 +1,19 @@
 #include "MyFirstDialog.h"
 
 #include "../Visual Studio/resource.h"
+#ifndef _WIN32 // MAC resources
+#include "WDL/WDL/swell/swell-dlggen.h"
 #include "../Visual Studio/MyReaperPlugin.rc_mac_dlg"
+#undef BEGIN
+#undef END
+#include "WDL/WDL/swell/swell-menugen.h"
 #include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
+#endif
+
+
+//#include "../library/reaper_plugin/reaper_plugin.h"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
+
 extern HINSTANCE g_hInst;
 
 INT_PTR CALLBACK myfirstdialogproc(
@@ -21,7 +31,7 @@ INT_PTR CALLBACK myfirstdialogproc(
 		// SetWindowText is a "polymorphic" API that can change the visible text of various things,
 		// including window titles or text edit box texts
 		SetWindowText(hwndDlg, "My First Dialog");
-		SetWindowPos(hwndDlg,0,20,80,200,100,SWP_NOZORDER|SWP_NOACTIVATE);
+		//SetWindowPos(hwndDlg,0,20,80,200,100,SWP_NOZORDER|SWP_NOACTIVATE);
 		return TRUE;
 	}
 	// WM_CLOSE sent at least when the window close button is pressed
