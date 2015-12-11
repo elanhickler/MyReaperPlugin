@@ -7,12 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */; };
+		C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064A1C1A3AE000186D68 /* MyFirstDialog.h */; };
+		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
+		C4D434B51C1A3FEB005DFFD3 /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434B21C1A3FEB005DFFD3 /* swell-dlg.mm */; };
+		C4D434B61C1A3FEB005DFFD3 /* swell-misc.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434B31C1A3FEB005DFFD3 /* swell-misc.mm */; };
+		C4D434B71C1A3FEB005DFFD3 /* swell-wnd.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434B41C1A3FEB005DFFD3 /* swell-wnd.mm */; };
+		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
+		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
+		C4D434BE1C1A4201005DFFD3 /* swell-gdi.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434BC1C1A4201005DFFD3 /* swell-gdi.mm */; };
+		C4D434BF1C1A4201005DFFD3 /* swell-kb.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434BD1C1A4201005DFFD3 /* swell-kb.mm */; };
+		C4D434C11C1A4228005DFFD3 /* swell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4D434C01C1A4228005DFFD3 /* swell.cpp */; };
+		C4D434C31C1A4239005DFFD3 /* swell-menu.mm in Sources */ = {isa = PBXBuildFile; fileRef = C4D434C21C1A4239005DFFD3 /* swell-menu.mm */; };
 		E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3248BDE1C17C8BA00308A5F /* main.cpp */; };
 		E3E1DB101C18C67100D648F5 /* MyFirstClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BE21C17C8E500308A5F /* MyFirstClass.hpp */; };
 		E3E1DB111C18C67100D648F5 /* main.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BDB1C17C8AF00308A5F /* main.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstDialog.cpp; path = ../source/MyFirstDialog.cpp; sourceTree = "<group>"; };
+		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
+		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
+		C4D434B21C1A3FEB005DFFD3 /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../../WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
+		C4D434B31C1A3FEB005DFFD3 /* swell-misc.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-misc.mm"; path = "../../WDL/WDL/swell/swell-misc.mm"; sourceTree = "<group>"; };
+		C4D434B41C1A3FEB005DFFD3 /* swell-wnd.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-wnd.mm"; path = "../../WDL/WDL/swell/swell-wnd.mm"; sourceTree = "<group>"; };
+		C4D434B81C1A41E3005DFFD3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		C4D434BC1C1A4201005DFFD3 /* swell-gdi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-gdi.mm"; path = "../../WDL/WDL/swell/swell-gdi.mm"; sourceTree = "<group>"; };
+		C4D434BD1C1A4201005DFFD3 /* swell-kb.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-kb.mm"; path = "../../WDL/WDL/swell/swell-kb.mm"; sourceTree = "<group>"; };
+		C4D434C01C1A4228005DFFD3 /* swell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = swell.cpp; path = ../../WDL/WDL/swell/swell.cpp; sourceTree = "<group>"; };
+		C4D434C21C1A4239005DFFD3 /* swell-menu.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-menu.mm"; path = "../../WDL/WDL/swell/swell-menu.mm"; sourceTree = "<group>"; };
 		E3248BDB1C17C8AF00308A5F /* main.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = main.hpp; path = ../main.hpp; sourceTree = "<group>"; };
 		E3248BDE1C17C8BA00308A5F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
 		E3248BE21C17C8E500308A5F /* MyFirstClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MyFirstClass.hpp; path = ../../../header/MyFirstClass.hpp; sourceTree = "<group>"; };
@@ -25,6 +49,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */,
+				C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,8 +60,20 @@
 		C479315B1BE9799D00C024D1 = {
 			isa = PBXGroup;
 			children = (
+				C4D434B81C1A41E3005DFFD3 /* Carbon.framework */,
+				C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */,
+				C4D434B21C1A3FEB005DFFD3 /* swell-dlg.mm */,
+				C4D434BC1C1A4201005DFFD3 /* swell-gdi.mm */,
+				C4D434BD1C1A4201005DFFD3 /* swell-kb.mm */,
+				C4D434B31C1A3FEB005DFFD3 /* swell-misc.mm */,
+				C4D434C21C1A4239005DFFD3 /* swell-menu.mm */,
+				C4D434C01C1A4228005DFFD3 /* swell.cpp */,
+				C4D434B41C1A3FEB005DFFD3 /* swell-wnd.mm */,
+				C486064C1C1A3C4000186D68 /* resource.h */,
 				E3248BDB1C17C8AF00308A5F /* main.hpp */,
 				E3248BDE1C17C8BA00308A5F /* main.cpp */,
+				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
+				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
 				E3D3FBBF1BED4B8A00F15144 /* header */,
 				E3D3FBD41BED4BA500F15144 /* source */,
 				E3D3FBE31BED4BC500F15144 /* library */,
@@ -84,6 +122,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
+				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
 				E3E1DB101C18C67100D648F5 /* MyFirstClass.hpp in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
 			);
@@ -99,7 +139,6 @@
 				E3E1DB0C1C18C67100D648F5 /* Sources */,
 				E3E1DB0E1C18C67100D648F5 /* Frameworks */,
 				E3E1DB0F1C18C67100D648F5 /* Headers */,
-				E3E1DB121C18C67100D648F5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -136,28 +175,20 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		E3E1DB121C18C67100D648F5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/../binary/${CONFIGURATION}/${TARGET_NAME}.dylib\" \"/Library/Application Support/REAPER/UserPlugins\"";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		E3E1DB0C1C18C67100D648F5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4D434B51C1A3FEB005DFFD3 /* swell-dlg.mm in Sources */,
+				C4D434C11C1A4228005DFFD3 /* swell.cpp in Sources */,
+				C4D434C31C1A4239005DFFD3 /* swell-menu.mm in Sources */,
+				C4D434B61C1A3FEB005DFFD3 /* swell-misc.mm in Sources */,
+				C4D434BE1C1A4201005DFFD3 /* swell-gdi.mm in Sources */,
+				C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */,
 				E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */,
+				C4D434BF1C1A4201005DFFD3 /* swell-kb.mm in Sources */,
+				C4D434B71C1A3FEB005DFFD3 /* swell-wnd.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,12 +199,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				BOOST_ROOT = /Users/elan/Desktop/boost;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -186,7 +217,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_LOCATION = YES;
-				DSTROOT = "$(SRCROOT)/../binary/$(CONFIGURATION)";
+				DSTROOT = "~/Library/Application Support/REAPER/UserPlugins";
 				DYLIB_INSTALL_NAME_BASE = /;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -223,6 +254,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -230,12 +262,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				BOOST_ROOT = /Users/elan/Desktop/boost;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -248,7 +280,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_LOCATION = YES;
-				DSTROOT = "$(SRCROOT)/../binary/$(CONFIGURATION)";
+				DSTROOT = "~/Library/Application Support/REAPER/UserPlugins";
 				DYLIB_INSTALL_NAME_BASE = /;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -278,6 +310,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
