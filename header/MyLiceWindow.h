@@ -26,6 +26,8 @@ public:
 	
 	void setSize(int w, int h);
 	void setBounds(int x, int y, int w, int h);
+	int getWidth() const;
+	int getHeight() const;
 	void repaint();
 	
 	// for nefarious purposes. use responsibly.

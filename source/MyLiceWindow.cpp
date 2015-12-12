@@ -76,9 +76,21 @@ void LiceControl::repaint()
 	InvalidateRect(m_hwnd, NULL, TRUE);
 }
 
+int LiceControl::getWidth() const
+{
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return r.right - r.left;
+}
 
+int LiceControl::getHeight() const
+{
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return r.bottom-r.top;
+}
 
-bool map_mouse_message(LiceControl* c, UINT msg, WPARAM wParam, LPARAM lParam)
+bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//auto foo=std::mem_fn(&LiceControl::mousePressed);
 	
@@ -87,12 +99,18 @@ bool map_mouse_message(LiceControl* c, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		int x = LOWORD(lParam);
 		int y = HIWORD(lParam);
-		if (msg==WM_LBUTTONDOWN || msg==WM_RBUTTONDOWN || msg==WM_MBUTTONDOWN)
+		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
+		{
+			SetCapture(hwnd);
 			c->mousePressed(x, y);
+		}
 		if (msg==WM_MOUSEMOVE)
 			c->mouseMoved(x, y);
-		if (msg==WM_LBUTTONUP || msg==WM_RBUTTONUP || msg==WM_MBUTTONUP)
+		if (msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP)
+		{
+			ReleaseCapture();
 			c->mouseReleased(x, y);
+		}
 		return true;
 	}
 	return false;
@@ -120,7 +138,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		EndPaint(hwnd, &ps);
 		return 0;
 	}
-	if (map_mouse_message(c, Message, wParam, lParam)==true)
+	if (map_mouse_message(c, hwnd, Message, wParam, lParam)==true)
 	{
 		return 0;
 	}
@@ -190,8 +208,8 @@ void TestControl::mouseMoved(int x, int y)
 	{
 		if (m_hot_point>=0)
 		{
-			m_points[m_hot_point].m_x=x;
-			m_points[m_hot_point].m_y=y;
+			m_points[m_hot_point].m_x = x; // bound_value(0, x, getWidth());
+			m_points[m_hot_point].m_y = y; // bound_value(0, y, getHeight());
 			repaint();
 		}
 	}
