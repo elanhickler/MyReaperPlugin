@@ -1,9 +1,9 @@
 #include "MyLiceWindow.h"
-#include <map>
+#include <unordered_map>
 #include "WDL/WDL/lice/lice.h"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
 
-std::map<HWND, LiceControl*> g_controlsmap;
+std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
 extern HINSTANCE g_hInst;
 
