@@ -97,6 +97,9 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 	if (msg==WM_LBUTTONDOWN || msg==WM_RBUTTONDOWN || msg==WM_MBUTTONDOWN
 		|| msg==WM_MOUSEMOVE || msg==WM_LBUTTONUP || msg==WM_RBUTTONUP || msg==WM_MBUTTONUP)
 	{
+		// LOWORD/HIWORD are not technically correct according to MSDN
+		// However, SWELL does not seem to provide the alternative macros
+		// to get the support for multiple monitors. Will need to investigate...
 		int x = (short)LOWORD(lParam);
 		int y = (short)HIWORD(lParam);
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
