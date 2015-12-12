@@ -109,6 +109,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (msg == WM_RBUTTONDOWN)
 				but = MouseEvent::MBRight;
+			else if (msg == WM_MBUTTONDOWN)
+				but = MouseEvent::MBMiddle;
 			c->mousePressed(MouseEvent(x,y,but));
 		}
 		if (msg==WM_MOUSEMOVE)
@@ -192,6 +194,11 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
+	if (ev.m_mb == MouseEvent::MBMiddle)
+	{
+		readbg() << "you pressed the middle button!\n";
+		return;
+	}
 	if (ev.m_mb == MouseEvent::MBRight)
 	{
 		PopupMenu menu(getWindowHandle());
