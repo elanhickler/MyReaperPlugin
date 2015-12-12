@@ -1,6 +1,8 @@
 #ifndef utilfuncs_h
 #define utilfuncs_h
 
+#include <algorithm>
+
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
 {

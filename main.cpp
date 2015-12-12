@@ -7,8 +7,6 @@
 #include "WDL/WDL/swell/swell.h"
 #endif
 
-#undef min
-#undef max // remove min/max macros which are not cross-platform, use min/max functions instead.
 #include "WDL/WDL/lice/lice.h"
 #define REAPERAPI_IMPLEMENT
 #include "reaper_plugin/reaper_plugin_functions.h"
