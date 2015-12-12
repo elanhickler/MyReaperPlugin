@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "WDL/WDL/lice/lice.h"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
+#include "utilfuncs.h"
 
 std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
@@ -77,11 +78,7 @@ void TestControl::mouseWheel(int x, int y, int delta)
 	float temp = 1.0f;
 	if (delta>32768)
 		temp=-1.0f;
-	m_circlesize += temp;
-	if (m_circlesize<1.0f)
-		m_circlesize = 1.0f;
-	if (m_circlesize>100.0f)
-		m_circlesize=100.0f;
+	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
 	repaint();
 }
 

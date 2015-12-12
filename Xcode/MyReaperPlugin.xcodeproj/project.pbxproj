@@ -44,6 +44,7 @@
 		C484E6981C1BAE94005C6CCC /* lice_line.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_line.cpp; path = ../library/WDL/WDL/lice/lice_line.cpp; sourceTree = "<group>"; };
 		C484E6991C1BAE94005C6CCC /* lice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice.cpp; path = ../library/WDL/WDL/lice/lice.cpp; sourceTree = "<group>"; };
 		C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyLiceWindow.h; path = ../header/MyLiceWindow.h; sourceTree = "<group>"; };
+		C484E69F1C1BB435005C6CCC /* utilfuncs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utilfuncs.h; path = ../header/utilfuncs.h; sourceTree = "<group>"; };
 		C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstDialog.cpp; path = ../source/MyFirstDialog.cpp; sourceTree = "<group>"; };
 		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
@@ -78,6 +79,7 @@
 				C484E6851C1BAD49005C6CCC /* swell-dlg.mm */,
 				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
 				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
+				C484E69F1C1BB435005C6CCC /* utilfuncs.h */,
 				C484E6861C1BAD49005C6CCC /* swell-gdi.mm */,
 				C484E6871C1BAD49005C6CCC /* swell-kb.mm */,
 				C484E6881C1BAD49005C6CCC /* swell-menu.mm */,
