@@ -48,8 +48,8 @@ LiceControl::LiceControl(HWND parent)
 {
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
 	g_controlsmap[m_hwnd] = this;
-	m_bitmap = std::make_unique<LICE_SysBitmap>(100, 100);
-	setSize(100, 100);
+	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
+	setBounds(20,60,200, 200);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 

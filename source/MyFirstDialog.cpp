@@ -102,8 +102,8 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		SetWindowPos(hwndDlg, NULL, 20, 60, 110, 130, SWP_NOACTIVATE | SWP_NOZORDER);
 		ShowWindow(hwndDlg, SW_SHOW);
+		
 		int num_controls = 4;
 		for (int i=0;i<num_controls;++i)
 		{
@@ -144,5 +144,6 @@ INT_PTR CALLBACK mylicedialogproc(
 HWND open_lice_dialog(HWND parent)
 {
 	HWND dh = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
+	SetWindowPos(dh, NULL, 20, 60, 300, 300, SWP_NOACTIVATE | SWP_NOZORDER);
 	return dh;
 }
