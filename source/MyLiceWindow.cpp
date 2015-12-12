@@ -32,6 +32,7 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 	if (!reg)
 	{
 		WNDCLASS wc = { CS_DBLCLKS | CS_VREDRAW | CS_HREDRAW,parms::tmpProc, 0, 0, hInstance, NULL, NULL, (HBRUSH)0, NULL, SWELL_GENERIC_CONTROL_CLASS_NAME };
+		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		RegisterClass(&wc);
 		reg = true;
 	}
@@ -89,7 +90,9 @@ LiceControl::LiceControl(HWND parent)
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(100, 100);
 	//m_origwndproc = (WNDPROC)SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, (LONG_PTR)wndproc);
+	setSize(100, 100);
 	ShowWindow(m_hwnd, SW_SHOW);
+	
 #endif
 }
 
@@ -114,7 +117,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	LiceControl* c = nullptr;
 	if (g_controlsmap.count(hwnd)>0)
 		c=g_controlsmap[hwnd];
-	else return 0;
+	else return DefWindowProc(hwnd, Message, wParam, lParam);;
 	if (Message == WM_PAINT)
 	{
 		RECT r;
