@@ -17,9 +17,11 @@ public:
 	virtual ~LiceControl();
 	HWND getWindowHandle() const { return m_hwnd; }
 	virtual void paint(LICE_IBitmap*) = 0;
+	// TODO: pass mouse button and key modifiers states...
 	virtual void mousePressed(int x, int y) {}
 	virtual void mouseMoved(int x, int y) {}
 	virtual void mouseReleased(int x, int y) {}
+	virtual void mouseWheel(int x, int y, int delta) {}
 	void setSize(int w, int h);
 	void repaint();
 private:
@@ -37,6 +39,7 @@ public:
 	void mousePressed(int x, int y) override;
 	void mouseMoved(int x, int y) override;
 	void mouseReleased(int x, int y) override;
+	void mouseWheel(int x, int y, int delta) override;
 private:
 	struct point
 	{
@@ -46,4 +49,5 @@ private:
 		int m_y = 0;
 	};
 	std::vector<point> m_points;
+	float m_circlesize = 10.0f;
 };

@@ -48,7 +48,7 @@ void TestControl::paint(LICE_IBitmap * bm)
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
 	for (auto& e : m_points)
 	{
-		LICE_FillCircle(bm, e.m_x, e.m_y, 10.0f, LICE_RGBA(255, 255, 255, 255));
+		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, LICE_RGBA(255, 255, 255, 255));
 	}
 }
 
@@ -67,6 +67,22 @@ void TestControl::mouseMoved(int x, int y)
 
 void TestControl::mouseReleased(int x, int y)
 {
+}
+
+void TestControl::mouseWheel(int x, int y, int delta)
+{
+	char buf[100];
+	sprintf(buf,"mousewheel %d\n",delta);
+	//ShowConsoleMsg(buf);
+	float temp = 1.0f;
+	if (delta>32768)
+		temp=-1.0f;
+	m_circlesize += temp;
+	if (m_circlesize<1.0f)
+		m_circlesize = 1.0f;
+	if (m_circlesize>100.0f)
+		m_circlesize=100.0f;
+	repaint();
 }
 
 LiceControl::LiceControl(HWND parent)
@@ -130,6 +146,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	if (Message == WM_MOUSEMOVE)
 	{
 		c->mouseMoved(LOWORD(lParam), HIWORD(lParam));
+		return 0;
+	}
+	if (Message == WM_MOUSEWHEEL)
+	{
+		c->mouseWheel(0,0, HIWORD(wParam));
 		return 0;
 	}
 	if (Message == WM_DESTROY)

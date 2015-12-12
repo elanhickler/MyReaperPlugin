@@ -19,6 +19,7 @@
 		C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6971C1BAE94005C6CCC /* lice_arc.cpp */; };
 		C484E69B1C1BAE94005C6CCC /* lice_line.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6981C1BAE94005C6CCC /* lice_line.cpp */; };
 		C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6991C1BAE94005C6CCC /* lice.cpp */; };
+		C484E69E1C1BAFCC005C6CCC /* MyLiceWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */; };
 		C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */; };
 		C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064A1C1A3AE000186D68 /* MyFirstDialog.h */; };
 		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
@@ -42,6 +43,7 @@
 		C484E6971C1BAE94005C6CCC /* lice_arc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_arc.cpp; path = ../library/WDL/WDL/lice/lice_arc.cpp; sourceTree = "<group>"; };
 		C484E6981C1BAE94005C6CCC /* lice_line.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_line.cpp; path = ../library/WDL/WDL/lice/lice_line.cpp; sourceTree = "<group>"; };
 		C484E6991C1BAE94005C6CCC /* lice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice.cpp; path = ../library/WDL/WDL/lice/lice.cpp; sourceTree = "<group>"; };
+		C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyLiceWindow.h; path = ../header/MyLiceWindow.h; sourceTree = "<group>"; };
 		C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstDialog.cpp; path = ../source/MyFirstDialog.cpp; sourceTree = "<group>"; };
 		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */,
 				C486064C1C1A3C4000186D68 /* resource.h */,
 				C484E6851C1BAD49005C6CCC /* swell-dlg.mm */,
+				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
 				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
 				C484E6861C1BAD49005C6CCC /* swell-gdi.mm */,
 				C484E6871C1BAD49005C6CCC /* swell-kb.mm */,
@@ -140,6 +143,7 @@
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
 				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
 				E3E1DB101C18C67100D648F5 /* MyFirstClass.hpp in Headers */,
+				C484E69E1C1BAFCC005C6CCC /* MyLiceWindow.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
