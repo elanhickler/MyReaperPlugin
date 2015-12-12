@@ -11,15 +11,19 @@
 #include <vector>
 #include <functional>
 
+
+
 class MouseEvent
 {
 public:
+	enum MouseButton { MBLeft, MBRight };
 	MouseEvent() {}
-	MouseEvent(int x, int y, int wheel = 0) :
-		m_x(x), m_y(y), m_wheel(wheel) {}
+	MouseEvent(int x, int y, MouseButton mb, int wheel = 0) :
+		m_x(x), m_y(y), m_mb(mb), m_wheel(wheel) {}
 	int m_x = 0;
 	int m_y = 0;
 	int m_wheel = 0;
+	MouseButton m_mb = MBLeft;
 };
 
 class LiceControl

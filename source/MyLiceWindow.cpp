@@ -106,7 +106,10 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
 		{
 			SetCapture(hwnd);
-			c->mousePressed(MouseEvent(x,y));
+			MouseEvent::MouseButton but(MouseEvent::MBLeft);
+			if (msg == WM_RBUTTONDOWN)
+				but = MouseEvent::MBRight;
+			c->mousePressed(MouseEvent(x,y,but));
 		}
 		if (msg==WM_MOUSEMOVE)
 			c->mouseMoved(x, y);
@@ -189,20 +192,23 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
-	PopupMenu menu(getWindowHandle());
-	menu.add_menu_item("First action", []() { ShowConsoleMsg("joo-op\n"); });
-	menu.add_menu_item("Second action", []() { Main_OnCommand(40044, 0); });
-	for (int i = 0; i < 10; ++i)
+	if (ev.m_mb == MouseEvent::MBRight)
 	{
-		menu.add_menu_item(std::to_string(i + 1), [i]() 
+		PopupMenu menu(getWindowHandle());
+		menu.add_menu_item("First action", []() { ShowConsoleMsg("joo-op\n"); });
+		menu.add_menu_item("Second action", []() { Main_OnCommand(40044, 0); });
+		for (int i = 0; i < 10; ++i)
 		{
-			char buf[100];
-			sprintf(buf,"You chose number %d\n", i+1);
-			ShowConsoleMsg(buf);
-		});
+			menu.add_menu_item(std::to_string(i + 1), [i]()
+			{
+				char buf[100];
+				sprintf(buf, "You chose number %d\n", i + 1);
+				ShowConsoleMsg(buf);
+			});
+		}
+		menu.execute(ev.m_x, ev.m_y);
+		return;
 	}
-	menu.execute(ev.m_x, ev.m_y);
-	return;
 	m_mousedown=true;
 	if (m_hot_point==-1)
 	{
