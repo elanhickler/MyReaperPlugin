@@ -1,7 +1,7 @@
 #include "MyLiceWindow.h"
 #include <unordered_map>
 #include "WDL/WDL/lice/lice.h"
-#include "../library/reaper_plugin/reaper_plugin_functions.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
 #include "utilfuncs.h"
 #include <string>
 
