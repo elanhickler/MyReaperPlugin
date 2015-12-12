@@ -109,6 +109,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (msg == WM_RBUTTONDOWN)
 				but = MouseEvent::MBRight;
+			else if (msg == WM_MBUTTONDOWN)
+				but = MouseEvent::MBMiddle;
 			c->mousePressed(MouseEvent(x,y,but));
 		}
 		if (msg==WM_MOUSEMOVE)
@@ -192,6 +194,11 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
+	if (ev.m_mb == MouseEvent::MBMiddle)
+	{
+		readbg() << "you pressed the middle button!\n";
+		return;
+	}
 	if (ev.m_mb == MouseEvent::MBRight)
 	{
 		PopupMenu menu(getWindowHandle());
@@ -241,9 +248,6 @@ void TestControl::mouseMoved(int x, int y)
 				if (is_point_in_rect(m_points[m_hot_point].m_x, m_points[m_hot_point].m_y, 
 					-30, -30, getWidth()+60, getHeight()+60) == false)
 				{
-					char buf[100];
-					sprintf(buf, "%d %d\n", x, y);
-					//ShowConsoleMsg(buf);
 					m_points.erase(m_points.begin() + m_hot_point);
 					m_hot_point = -1;
 					repaint();
@@ -270,9 +274,6 @@ void TestControl::mouseReleased(int x, int y)
 
 void TestControl::mouseWheel(int x, int y, int delta)
 {
-	char buf[100];
-	sprintf(buf,"mousewheel %d\n",delta);
-	//ShowConsoleMsg(buf);
 	float temp = 1.0f;
 	if (delta<0)
 		temp=-1.0f;
