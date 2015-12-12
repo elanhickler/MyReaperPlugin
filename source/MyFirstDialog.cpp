@@ -102,21 +102,21 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		ShowWindow(hwndDlg, SW_SHOW);
 		
+		g_testcontrols.clear();
 		int num_controls = 4;
 		for (int i=0;i<num_controls;++i)
 		{
 			auto temp = std::make_unique<TestControl>(hwndDlg);
 			g_testcontrols.push_back(std::move(temp));
 		}
-		
+		ShowWindow(hwndDlg, SW_SHOW);
 
 		return TRUE;
 	}
 	if (uMsg == WM_CLOSE)
 	{
-		DestroyWindow(hwndDlg);
+		ShowWindow(hwndDlg, SW_HIDE);
 		return TRUE;
 	}
 	if (uMsg == WM_SIZE)
@@ -138,12 +138,16 @@ INT_PTR CALLBACK mylicedialogproc(
 	return FALSE;
 }
 
-
+HWND g_licetestwindow = NULL;
 
 
 HWND open_lice_dialog(HWND parent)
 {
-	HWND dh = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
-	SetWindowPos(dh, NULL, 20, 60, 300, 300, SWP_NOACTIVATE | SWP_NOZORDER);
-	return dh;
+	if (g_licetestwindow==NULL)
+	{
+		g_licetestwindow = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
+		SetWindowPos(g_licetestwindow, NULL, 20, 60, 300, 300, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_licetestwindow, SW_SHOW);
+	return g_licetestwindow;
 }
