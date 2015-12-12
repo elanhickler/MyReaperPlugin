@@ -285,7 +285,11 @@ void add_menu_item_(HMENU menu, std::string text, int id)
 {
 	MENUITEMINFO info = { 0 };
 	info.cbSize = sizeof(MENUITEMINFO);
+#ifdef WIN32
+	info.fMask = MIIM_STRING | MIIM_ID;
+#else
 	info.fMask = MIIM_DATA | MIIM_ID;
+#endif
 	info.wID = id;
 	info.dwTypeData = (LPSTR)text.c_str();
 	InsertMenuItem(menu, id-1, TRUE, &info);
