@@ -58,4 +58,5 @@ private:
 	int find_hot_point(int x, int y);
 	int m_hot_point = -1;
 	float m_circlesize = 10.0f;
+	bool m_mousedown = false;
 };

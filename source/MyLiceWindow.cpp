@@ -167,30 +167,39 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(int x, int y)
 {
-	m_points.push_back({ x,y });
-	m_hot_point=(int)m_points.size()-1;
-	repaint();
+	m_mousedown=true;
+	if (m_hot_point==-1)
+	{
+		m_points.push_back({ x,y });
+		m_hot_point=(int)m_points.size()-1;
+		repaint();
+	}
 }
 
 void TestControl::mouseMoved(int x, int y)
 {
-	int found=find_hot_point(x, y);
-	if (found!=m_hot_point)
+	if (m_mousedown==false)
 	{
-		m_hot_point=found;
-		repaint();
-	}
-	
-	if (found>=0)
+		int found=find_hot_point(x, y);
+		if (found!=m_hot_point)
+		{
+			m_hot_point=found;
+			repaint();
+		}
+	} else
 	{
-		char buf[100];
-		sprintf(buf, "mouse at point %d\n", found);
-		//ShowConsoleMsg(buf);
+		if (m_hot_point>=0)
+		{
+			m_points[m_hot_point].m_x=x;
+			m_points[m_hot_point].m_y=y;
+			repaint();
+		}
 	}
 }
 
 void TestControl::mouseReleased(int x, int y)
 {
+	m_mousedown=false;
 }
 
 void TestControl::mouseWheel(int x, int y, int delta)
