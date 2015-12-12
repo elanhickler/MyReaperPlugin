@@ -10,6 +10,17 @@
 #include <memory>
 #include <vector>
 
+class MouseEvent
+{
+public:
+	MouseEvent() {}
+	MouseEvent(int x, int y, int wheel = 0) :
+		m_x(x), m_y(y), m_wheel(wheel) {}
+	int m_x = 0;
+	int m_y = 0;
+	int m_wheel = 0;
+};
+
 class LiceControl
 {
 public:
@@ -19,7 +30,7 @@ public:
 	virtual void paint(LICE_IBitmap*) = 0;
 	
 	// TODO: pass mouse button and key modifiers states...
-	virtual void mousePressed(int x, int y) {}
+	virtual void mousePressed(const MouseEvent& ev) {}
 	virtual void mouseMoved(int x, int y) {}
 	virtual void mouseReleased(int x, int y) {}
 	virtual void mouseWheel(int x, int y, int delta) {}
@@ -45,7 +56,7 @@ public:
 	TestControl(HWND parent, bool delwhendraggedoutside=false) : 
 		LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) {}
 	void paint(LICE_IBitmap* bm) override;
-	void mousePressed(int x, int y) override;
+	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved(int x, int y) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;

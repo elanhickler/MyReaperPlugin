@@ -105,7 +105,7 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
 		{
 			SetCapture(hwnd);
-			c->mousePressed(x, y);
+			c->mousePressed(MouseEvent(x,y));
 		}
 		if (msg==WM_MOUSEMOVE)
 			c->mouseMoved(x, y);
@@ -153,7 +153,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	}
 	if (Message == WM_DESTROY)
 	{
-		ShowConsoleMsg("lice control window destroy\n");
+		//ShowConsoleMsg("lice control window destroy\n");
 		g_controlsmap.erase(hwnd);
 		return 0;
 	}
@@ -186,12 +186,12 @@ int TestControl::find_hot_point(int x, int y)
 	return -1;
 }
 
-void TestControl::mousePressed(int x, int y)
+void TestControl::mousePressed(const MouseEvent& ev)
 {
 	m_mousedown=true;
 	if (m_hot_point==-1)
 	{
-		m_points.push_back({ x,y });
+		m_points.push_back({ ev.m_x,ev.m_y });
 		m_hot_point=(int)m_points.size()-1;
 		repaint();
 	}
@@ -218,7 +218,7 @@ void TestControl::mouseMoved(int x, int y)
 				{
 					char buf[100];
 					sprintf(buf, "%d %d\n", x, y);
-					ShowConsoleMsg(buf);
+					//ShowConsoleMsg(buf);
 					m_points.erase(m_points.begin() + m_hot_point);
 					m_hot_point = -1;
 					repaint();
