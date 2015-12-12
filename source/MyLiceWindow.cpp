@@ -145,7 +145,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 
 	if (Message == WM_MOUSEWHEEL)
 	{
-		c->mouseWheel(0,0, HIWORD(wParam));
+		c->mouseWheel(0,0, (short)HIWORD(wParam));
 		return 0;
 	}
 	if (Message == WM_DESTROY)
@@ -240,7 +240,7 @@ void TestControl::mouseWheel(int x, int y, int delta)
 	sprintf(buf,"mousewheel %d\n",delta);
 	//ShowConsoleMsg(buf);
 	float temp = 1.0f;
-	if (delta>32768)
+	if (delta<0)
 		temp=-1.0f;
 	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
 	repaint();
