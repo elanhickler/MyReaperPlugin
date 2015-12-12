@@ -76,6 +76,28 @@ void LiceControl::repaint()
 	InvalidateRect(m_hwnd, NULL, TRUE);
 }
 
+
+
+bool map_mouse_message(LiceControl* c, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	//auto foo=std::mem_fn(&LiceControl::mousePressed);
+	
+	if (msg==WM_LBUTTONDOWN || msg==WM_RBUTTONDOWN || msg==WM_MBUTTONDOWN
+		|| msg==WM_MOUSEMOVE || msg==WM_LBUTTONUP || msg==WM_RBUTTONUP || msg==WM_MBUTTONUP)
+	{
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+		if (msg==WM_LBUTTONDOWN || msg==WM_RBUTTONDOWN || msg==WM_MBUTTONDOWN)
+			c->mousePressed(x, y);
+		if (msg==WM_MOUSEMOVE)
+			c->mouseMoved(x, y);
+		if (msg==WM_LBUTTONUP || msg==WM_RBUTTONUP || msg==WM_MBUTTONUP)
+			c->mouseReleased(x, y);
+		return true;
+	}
+	return false;
+}
+
 LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
 	LiceControl* c = nullptr;
@@ -98,22 +120,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		EndPaint(hwnd, &ps);
 		return 0;
 	}
-	if (Message == WM_LBUTTONDOWN)
+	if (map_mouse_message(c, Message, wParam, lParam)==true)
 	{
-		// LOWORD/HIWORD not really technically correct for this...but good enough for now
-		c->mousePressed(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
-	if (Message == WM_LBUTTONUP)
-	{
-		c->mouseReleased(LOWORD(lParam), HIWORD(lParam));
-		return 0;
-	}
-	if (Message == WM_MOUSEMOVE)
-	{
-		c->mouseMoved(LOWORD(lParam), HIWORD(lParam));
-		return 0;
-	}
+
 	if (Message == WM_MOUSEWHEEL)
 	{
 		c->mouseWheel(0,0, HIWORD(wParam));
