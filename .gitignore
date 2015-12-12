@@ -1,9 +1,8 @@
 # MyReaperPlugin
-binary/Debug
-binary/Release
+binary/**
 
 # Visual Studio
-.vs*
+.vs/
 *.sdf
 *.opensdf
 
