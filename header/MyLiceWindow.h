@@ -25,7 +25,6 @@ public:
 private:
 	HWND m_hwnd = NULL;
 	static LRESULT WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
-	WNDPROC m_origwndproc = nullptr;
 	std::unique_ptr<LICE_SysBitmap> m_bitmap;
 };
 

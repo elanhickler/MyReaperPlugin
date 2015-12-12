@@ -71,29 +71,11 @@ void TestControl::mouseReleased(int x, int y)
 
 LiceControl::LiceControl(HWND parent)
 {
-#ifdef FOOFOOBAR
-	HWND w = CreateWindow("STATIC", "", WS_CHILD|SS_NOTIFY|SS_BLACKFRAME, 0, 0, 100, 100, parent, NULL, g_hInst, NULL);
-	if (w == NULL)
-	{
-		ShowConsoleMsg("Could not create window for Lice control\n");
-	}
-	else
-	{
-		m_hwnd = w;
-		g_controlsmap[m_hwnd] = this;
-		m_bitmap = std::make_unique<LICE_SysBitmap>(100, 100);
-		m_origwndproc = (WNDPROC)SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, (LONG_PTR)wndproc);
-		ShowWindow(m_hwnd, SW_SHOW);
-	}
-#else
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(100, 100);
-	//m_origwndproc = (WNDPROC)SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, (LONG_PTR)wndproc);
 	setSize(100, 100);
 	ShowWindow(m_hwnd, SW_SHOW);
-	
-#endif
 }
 
 LiceControl::~LiceControl()
