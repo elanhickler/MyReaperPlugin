@@ -26,8 +26,9 @@
 		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
 		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
 		E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3248BDE1C17C8BA00308A5F /* main.cpp */; };
-		E3E1DB101C18C67100D648F5 /* MyFirstClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BE21C17C8E500308A5F /* MyFirstClass.hpp */; };
 		E3E1DB111C18C67100D648F5 /* main.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BDB1C17C8AF00308A5F /* main.hpp */; };
+		E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */; };
+		E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,9 +53,9 @@
 		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E3248BDB1C17C8AF00308A5F /* main.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = main.hpp; path = ../main.hpp; sourceTree = "<group>"; };
 		E3248BDE1C17C8BA00308A5F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
-		E3248BE21C17C8E500308A5F /* MyFirstClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MyFirstClass.hpp; path = ../../../header/MyFirstClass.hpp; sourceTree = "<group>"; };
-		E3248BE81C17CD4E00308A5F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../main.cpp; sourceTree = "<group>"; };
 		E3E1DB161C18C67100D648F5 /* reaper_MyReaperPlugin.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_MyReaperPlugin.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstClass.cpp; path = ../source/MyFirstClass.cpp; sourceTree = "<group>"; };
+		E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MyFirstClass.hpp; path = ../header/MyFirstClass.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,28 +76,13 @@
 			children = (
 				C4D434B81C1A41E3005DFFD3 /* Carbon.framework */,
 				C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */,
-				C486064C1C1A3C4000186D68 /* resource.h */,
-				C484E6851C1BAD49005C6CCC /* swell-dlg.mm */,
-				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
-				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
-				C484E69F1C1BB435005C6CCC /* utilfuncs.h */,
-				C484E6861C1BAD49005C6CCC /* swell-gdi.mm */,
-				C484E6871C1BAD49005C6CCC /* swell-kb.mm */,
-				C484E6881C1BAD49005C6CCC /* swell-menu.mm */,
-				C484E6891C1BAD49005C6CCC /* swell-misc.mm */,
-				C484E6971C1BAE94005C6CCC /* lice_arc.cpp */,
-				C484E6981C1BAE94005C6CCC /* lice_line.cpp */,
-				C484E6991C1BAE94005C6CCC /* lice.cpp */,
-				C484E68A1C1BAD49005C6CCC /* swell-miscdlg.mm */,
-				C484E68B1C1BAD49005C6CCC /* swell-wnd.mm */,
-				C484E68C1C1BAD49005C6CCC /* swell.cpp */,
-				E3248BDB1C17C8AF00308A5F /* main.hpp */,
 				E3248BDE1C17C8BA00308A5F /* main.cpp */,
-				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
-				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
-				E3D3FBBF1BED4B8A00F15144 /* header */,
-				E3D3FBD41BED4BA500F15144 /* source */,
-				E3D3FBE31BED4BC500F15144 /* library */,
+				E3248BDB1C17C8AF00308A5F /* main.hpp */,
+				C486064C1C1A3C4000186D68 /* resource.h */,
+				C484E69F1C1BB435005C6CCC /* utilfuncs.h */,
+				E3EAC6781C1C989900F619AA /* library */,
+				E3EAC6761C1C989600F619AA /* header */,
+				E3EAC6771C1C989700F619AA /* source */,
 				C47931651BE9799D00C024D1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,29 +96,74 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E3D3FBBF1BED4B8A00F15144 /* header */ = {
+		E3EAC6761C1C989600F619AA /* header */ = {
 			isa = PBXGroup;
 			children = (
-				E3248BE21C17C8E500308A5F /* MyFirstClass.hpp */,
+				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
+				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
+				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
 			);
 			name = header;
-			path = ReaSampleLib/header;
 			sourceTree = "<group>";
 		};
-		E3D3FBD41BED4BA500F15144 /* source */ = {
+		E3EAC6771C1C989700F619AA /* source */ = {
 			isa = PBXGroup;
 			children = (
-				E3248BE81C17CD4E00308A5F /* main.cpp */,
+				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
+				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
+				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
 			);
 			name = source;
-			path = ReaSampleLib/source;
 			sourceTree = "<group>";
 		};
-		E3D3FBE31BED4BC500F15144 /* library */ = {
+		E3EAC6781C1C989900F619AA /* library */ = {
+			isa = PBXGroup;
+			children = (
+				E3EAC6861C1C9C5A00F619AA /* reaper_plugin */,
+				E3EAC67A1C1C98D200F619AA /* WDL */,
+			);
+			name = library;
+			sourceTree = "<group>";
+		};
+		E3EAC67A1C1C98D200F619AA /* WDL */ = {
+			isa = PBXGroup;
+			children = (
+				E3EAC67C1C1C990100F619AA /* Lice */,
+				E3EAC67B1C1C98D700F619AA /* swell */,
+			);
+			name = WDL;
+			sourceTree = "<group>";
+		};
+		E3EAC67B1C1C98D700F619AA /* swell */ = {
+			isa = PBXGroup;
+			children = (
+				C484E6861C1BAD49005C6CCC /* swell-gdi.mm */,
+				C484E6871C1BAD49005C6CCC /* swell-kb.mm */,
+				C484E6881C1BAD49005C6CCC /* swell-menu.mm */,
+				C484E6891C1BAD49005C6CCC /* swell-misc.mm */,
+				C484E68A1C1BAD49005C6CCC /* swell-miscdlg.mm */,
+				C484E68B1C1BAD49005C6CCC /* swell-wnd.mm */,
+				C484E68C1C1BAD49005C6CCC /* swell.cpp */,
+				C484E6851C1BAD49005C6CCC /* swell-dlg.mm */,
+			);
+			name = swell;
+			sourceTree = "<group>";
+		};
+		E3EAC67C1C1C990100F619AA /* Lice */ = {
+			isa = PBXGroup;
+			children = (
+				C484E6971C1BAE94005C6CCC /* lice_arc.cpp */,
+				C484E6981C1BAE94005C6CCC /* lice_line.cpp */,
+				C484E6991C1BAE94005C6CCC /* lice.cpp */,
+			);
+			name = Lice;
+			sourceTree = "<group>";
+		};
+		E3EAC6861C1C9C5A00F619AA /* reaper_plugin */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = library;
+			name = reaper_plugin;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,8 +175,8 @@
 			files = (
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
 				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
-				E3E1DB101C18C67100D648F5 /* MyFirstClass.hpp in Headers */,
 				C484E69E1C1BAFCC005C6CCC /* MyLiceWindow.h in Headers */,
+				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,6 +235,7 @@
 				C484E6931C1BAD49005C6CCC /* swell-wnd.mm in Sources */,
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
+				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
 				C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */,
 				C484E6901C1BAD49005C6CCC /* swell-menu.mm in Sources */,
@@ -226,7 +258,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
-				BOOST_ROOT = /Users/elan/Desktop/boost;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -267,7 +298,6 @@
 					$SRCROOT/../library/WDL/WDL/swell,
 					$SRCROOT/../,
 					$SRCROOT,
-					$BOOST_ROOT,
 				);
 				INSTALL_PATH = /;
 				LD_DYLIB_INSTALL_NAME = reaper_MyReaperPlugin.dylib;
@@ -286,7 +316,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
-				BOOST_ROOT = /Users/elan/Desktop/boost;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -324,7 +353,6 @@
 					$SRCROOT/../library/WDL/WDL/swell,
 					$SRCROOT/../,
 					$SRCROOT,
-					$BOOST_ROOT,
 				);
 				INSTALL_PATH = /;
 				LD_DYLIB_INSTALL_NAME = reaper_MyReaperPlugin.dylib;

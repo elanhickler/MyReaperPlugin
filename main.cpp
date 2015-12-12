@@ -167,13 +167,3 @@ extern "C"
 		}
 	}
 };
-#ifdef FOOFOOFOO
-#ifndef _WIN32 // MAC resources
-#include "WDL/WDL/swell/swell-dlggen.h"
-#include "res.rc_mac_dlg"
-#undef BEGIN
-#undef END
-#include "WDL/WDL/swell/swell-menugen.h"
-#include "res.rc_mac_menu"
-#endif
-#endif
