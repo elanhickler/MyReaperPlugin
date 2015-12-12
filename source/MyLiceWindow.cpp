@@ -142,23 +142,51 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 void TestControl::paint(LICE_IBitmap * bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-	for (auto& e : m_points)
+	for (int i=0;i<m_points.size();++i)
 	{
-		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, LICE_RGBA(255, 255, 255, 255));
+		LICE_pixel color=LICE_RGBA(255,255,255,255);
+		if (m_hot_point==i)
+			color=LICE_RGBA(255, 0, 0, 255);
+		auto& e = m_points[i];
+		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, color);
 	}
+}
+
+int TestControl::find_hot_point(int x, int y)
+{
+	for (int i=0;i<m_points.size();++i)
+	{
+		const point& pt=m_points[i];
+		if (is_point_in_rect(x,y,pt.m_x-m_circlesize,pt.m_y-m_circlesize,2*m_circlesize,2*m_circlesize)==true)
+		{
+			return i;
+		}
+	}
+	return -1;
 }
 
 void TestControl::mousePressed(int x, int y)
 {
 	m_points.push_back({ x,y });
+	m_hot_point=(int)m_points.size()-1;
 	repaint();
 }
 
 void TestControl::mouseMoved(int x, int y)
 {
-	//char buf[100];
-	//sprintf(buf, "(%d %d)", x, y);
-	//ShowConsoleMsg(buf);
+	int found=find_hot_point(x, y);
+	if (found!=m_hot_point)
+	{
+		m_hot_point=found;
+		repaint();
+	}
+	
+	if (found>=0)
+	{
+		char buf[100];
+		sprintf(buf, "mouse at point %d\n", found);
+		//ShowConsoleMsg(buf);
+	}
 }
 
 void TestControl::mouseReleased(int x, int y)

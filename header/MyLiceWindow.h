@@ -55,5 +55,7 @@ private:
 		int m_y = 0;
 	};
 	std::vector<point> m_points;
+	int find_hot_point(int x, int y);
+	int m_hot_point = -1;
 	float m_circlesize = 10.0f;
 };
