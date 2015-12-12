@@ -2,9 +2,15 @@
 #define utilfuncs_h
 
 template <typename T>
-T bound_value(const T& lower, const T& n, const T& upper)
+inline T bound_value(T lower, T n, T upper)
 {
 	return std::max(lower, std::min(n, upper));
+}
+
+template<typename T>
+inline T map_value(T valin, T inmin, T inmax, T outmin, T outmax)
+{
+	return outmin + ((outmax - outmin) * (valin - inmin)) / (inmax - inmin);
 }
 
 #endif /* utilfuncs_h */
