@@ -181,7 +181,7 @@ void TestControl::paint(LICE_IBitmap * bm)
 
 int TestControl::find_hot_point(int x, int y)
 {
-	for (int i=0;i<m_points.size();++i)
+	for (int i = m_points.size()-1; i > -1; --i)
 	{
 		const point& pt=m_points[i];
 		if (is_point_in_rect(x,y,pt.m_x-m_circlesize,pt.m_y-m_circlesize,2*m_circlesize,2*m_circlesize)==true)
@@ -190,6 +190,8 @@ int TestControl::find_hot_point(int x, int y)
 		}
 	}
 	return -1;
+
+
 }
 
 void TestControl::mousePressed(const MouseEvent& ev)
