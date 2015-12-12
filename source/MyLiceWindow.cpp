@@ -39,7 +39,7 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 	return CreateWindowEx(0, SWELL_GENERIC_CONTROL_CLASS_NAME, "", WS_CHILD, 0, 0, 1, 1, parent, NULL, hInstance, &p);
 
 #else
-	return SWELL_CreateDialog(NULL, NULL, parent, (DLGPROC)wndProc, lParam);
+	return SWELL_CreateDialog(NULL, NULL, parent, (DLGPROC)wndProc, lParamContext);
 #endif
 }
 
