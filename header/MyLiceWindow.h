@@ -77,3 +77,21 @@ private:
 	bool m_mousedown = false;
 	bool m_delete_point_when_dragged_outside = false;
 };
+
+class PopupMenu
+{
+public:
+	PopupMenu(HWND parent);
+	~PopupMenu();
+	void add_menu_item(std::string txt, std::function<void(void)> action);
+	void execute(int x, int y);
+private:
+	struct menu_entry_t
+	{
+		std::string m_text;
+		std::function<void(void)> m_f;
+	};
+	HWND m_hwnd = NULL;
+	HMENU m_menu = NULL;
+	std::vector<menu_entry_t> m_entries;
+};

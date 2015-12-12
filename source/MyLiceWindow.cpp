@@ -3,6 +3,7 @@
 #include "WDL/WDL/lice/lice.h"
 #include "../library/reaper_plugin/reaper_plugin_functions.h"
 #include "utilfuncs.h"
+#include <string>
 
 std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
@@ -188,6 +189,20 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
+	PopupMenu menu(getWindowHandle());
+	menu.add_menu_item("First action", []() { ShowConsoleMsg("joo-op\n"); });
+	menu.add_menu_item("Second action", []() { Main_OnCommand(40044, 0); });
+	for (int i = 0; i < 10; ++i)
+	{
+		menu.add_menu_item(std::to_string(i + 1), [i]() 
+		{
+			char buf[100];
+			sprintf(buf,"You chose number %d\n", i+1);
+			ShowConsoleMsg(buf);
+		});
+	}
+	menu.execute(ev.m_x, ev.m_y);
+	return;
 	m_mousedown=true;
 	if (m_hot_point==-1)
 	{
@@ -253,4 +268,50 @@ void TestControl::mouseWheel(int x, int y, int delta)
 		temp=-1.0f;
 	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
 	repaint();
+}
+
+void add_menu_item_(HMENU menu, std::string text, int id)
+{
+	MENUITEMINFO info = { 0 };
+	info.cbSize = sizeof(MENUITEMINFO);
+	info.fMask = MIIM_STRING | MIIM_ID;
+	info.wID = id;
+	info.dwTypeData = (LPSTR)text.c_str();
+	InsertMenuItem(menu, id-1, TRUE, &info);
+}
+
+PopupMenu::PopupMenu(HWND parent) : m_hwnd(parent)
+{
+	m_menu = CreatePopupMenu();
+}
+
+PopupMenu::~PopupMenu()
+{
+	if (m_menu != NULL)
+		DestroyMenu(m_menu);
+}
+
+void PopupMenu::add_menu_item(std::string txt, std::function<void(void)> action)
+{
+	menu_entry_t entry;
+	entry.m_text = txt;
+	entry.m_f = action;
+	m_entries.push_back(entry);
+}
+
+void PopupMenu::execute(int x, int y)
+{
+	if (m_entries.size() == 0)
+		return;
+	for (int i = 0; i < m_entries.size(); ++i)
+		add_menu_item_(m_menu, m_entries[i].m_text, i + 1);
+	POINT pt;
+	pt.x = x;
+	pt.y = y;
+	ClientToScreen(m_hwnd, &pt);
+	BOOL result = TrackPopupMenu(m_menu, TPM_LEFTALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hwnd, NULL);
+	if (result > 0)
+	{
+		m_entries[result - 1].m_f();
+	}
 }
