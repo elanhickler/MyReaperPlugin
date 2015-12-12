@@ -44,44 +44,6 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 #endif
 }
 
-void TestControl::paint(LICE_IBitmap * bm)
-{
-	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-	for (auto& e : m_points)
-	{
-		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, LICE_RGBA(255, 255, 255, 255));
-	}
-}
-
-void TestControl::mousePressed(int x, int y)
-{
-	m_points.push_back({ x,y });
-	repaint();
-}
-
-void TestControl::mouseMoved(int x, int y)
-{
-	//char buf[100];
-	//sprintf(buf, "(%d %d)", x, y);
-	//ShowConsoleMsg(buf);
-}
-
-void TestControl::mouseReleased(int x, int y)
-{
-}
-
-void TestControl::mouseWheel(int x, int y, int delta)
-{
-	char buf[100];
-	sprintf(buf,"mousewheel %d\n",delta);
-	//ShowConsoleMsg(buf);
-	float temp = 1.0f;
-	if (delta>32768)
-		temp=-1.0f;
-	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
-	repaint();
-}
-
 LiceControl::LiceControl(HWND parent)
 {
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
@@ -164,5 +126,42 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		return 0;
 	}
 	return DefWindowProc(hwnd, Message, wParam, lParam);
-	//return CallWindowProc(c->m_origwndproc, hwnd, Message, wParam, lParam);
+}
+
+void TestControl::paint(LICE_IBitmap * bm)
+{
+	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+	for (auto& e : m_points)
+	{
+		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, LICE_RGBA(255, 255, 255, 255));
+	}
+}
+
+void TestControl::mousePressed(int x, int y)
+{
+	m_points.push_back({ x,y });
+	repaint();
+}
+
+void TestControl::mouseMoved(int x, int y)
+{
+	//char buf[100];
+	//sprintf(buf, "(%d %d)", x, y);
+	//ShowConsoleMsg(buf);
+}
+
+void TestControl::mouseReleased(int x, int y)
+{
+}
+
+void TestControl::mouseWheel(int x, int y, int delta)
+{
+	char buf[100];
+	sprintf(buf,"mousewheel %d\n",delta);
+	//ShowConsoleMsg(buf);
+	float temp = 1.0f;
+	if (delta>32768)
+		temp=-1.0f;
+	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
+	repaint();
 }

@@ -15,16 +15,21 @@ class LiceControl
 public:
 	LiceControl(HWND parent);
 	virtual ~LiceControl();
-	HWND getWindowHandle() const { return m_hwnd; }
+	
 	virtual void paint(LICE_IBitmap*) = 0;
+	
 	// TODO: pass mouse button and key modifiers states...
 	virtual void mousePressed(int x, int y) {}
 	virtual void mouseMoved(int x, int y) {}
 	virtual void mouseReleased(int x, int y) {}
 	virtual void mouseWheel(int x, int y, int delta) {}
+	
 	void setSize(int w, int h);
 	void setBounds(int x, int y, int w, int h);
 	void repaint();
+	
+	// for nefarious purposes. use responsibly.
+	HWND getWindowHandle() const { return m_hwnd; }
 private:
 	HWND m_hwnd = NULL;
 	static LRESULT WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);

@@ -89,8 +89,8 @@ HWND open_my_first_modeless_dialog(HWND parent)
 	return CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1), parent, myfirstdialogproc, NULL);
 }
 
-std::unique_ptr<TestControl> g_testcontrol1;
-std::unique_ptr<TestControl> g_testcontrol2;
+std::vector<std::unique_ptr<TestControl>> g_testcontrols;
+
 
 INT_PTR CALLBACK mylicedialogproc(
 	HWND   hwndDlg,
@@ -104,8 +104,14 @@ INT_PTR CALLBACK mylicedialogproc(
 		SetWindowText(hwndDlg, "Lice Test");
 		SetWindowPos(hwndDlg, NULL, 20, 60, 110, 130, SWP_NOACTIVATE | SWP_NOZORDER);
 		ShowWindow(hwndDlg, SW_SHOW);
-		g_testcontrol1 = std::make_unique<TestControl>(hwndDlg);
-		g_testcontrol2 = std::make_unique<TestControl>(hwndDlg);
+		int num_controls = 4;
+		for (int i=0;i<num_controls;++i)
+		{
+			auto temp = std::make_unique<TestControl>(hwndDlg);
+			g_testcontrols.push_back(std::move(temp));
+		}
+		
+
 		return TRUE;
 	}
 	if (uMsg == WM_CLOSE)
@@ -115,12 +121,16 @@ INT_PTR CALLBACK mylicedialogproc(
 	}
 	if (uMsg == WM_SIZE)
 	{
-		if (g_testcontrol1 != nullptr && g_testcontrol2!=nullptr)
+		if (g_testcontrols.size()>0)
 		{
 			RECT r;
 			GetClientRect(hwndDlg, &r);
-			g_testcontrol1->setBounds(0, 0, (r.right - r.left)/2-5, r.bottom - r.top);
-			g_testcontrol2->setBounds((r.right - r.left)/2+5, 0, (r.right - r.left)/2-5, r.bottom - r.top);
+			int w = r.right-r.left;
+			int h = r.bottom-r.top;
+			g_testcontrols[0]->setBounds(0, 0, w/2-5, h/2-5);
+			g_testcontrols[1]->setBounds(w/2+5, 0, w/2-5, h/2-5);
+			g_testcontrols[2]->setBounds(0, h/2+5, w/2-5, h/2-5);
+			g_testcontrols[3]->setBounds(w/2+5, h/2+5, w/2-5, h/2-5);
 			InvalidateRect(hwndDlg, NULL, TRUE);
 		}
 		return TRUE;
