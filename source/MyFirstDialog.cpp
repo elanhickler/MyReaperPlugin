@@ -107,7 +107,8 @@ INT_PTR CALLBACK mylicedialogproc(
 		int num_controls = 4;
 		for (int i=0;i<num_controls;++i)
 		{
-			auto temp = std::make_unique<TestControl>(hwndDlg);
+			bool foo = i == 0;
+			auto temp = std::make_unique<TestControl>(hwndDlg,foo);
 			g_testcontrols.push_back(std::move(temp));
 		}
 		ShowWindow(hwndDlg, SW_SHOW);

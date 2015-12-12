@@ -97,8 +97,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 	if (msg==WM_LBUTTONDOWN || msg==WM_RBUTTONDOWN || msg==WM_MBUTTONDOWN
 		|| msg==WM_MOUSEMOVE || msg==WM_LBUTTONUP || msg==WM_RBUTTONUP || msg==WM_MBUTTONUP)
 	{
-		int x = LOWORD(lParam);
-		int y = HIWORD(lParam);
+		int x = (short)LOWORD(lParam);
+		int y = (short)HIWORD(lParam);
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
 		{
 			SetCapture(hwnd);
@@ -208,6 +208,20 @@ void TestControl::mouseMoved(int x, int y)
 	{
 		if (m_hot_point>=0)
 		{
+			if (m_delete_point_when_dragged_outside == true)
+			{
+				if (is_point_in_rect(m_points[m_hot_point].m_x, m_points[m_hot_point].m_y, 
+					-30, -30, getWidth()+60, getHeight()+60) == false)
+				{
+					char buf[100];
+					sprintf(buf, "%d %d\n", x, y);
+					ShowConsoleMsg(buf);
+					m_points.erase(m_points.begin() + m_hot_point);
+					m_hot_point = -1;
+					repaint();
+					return;
+				}
+			}
 			m_points[m_hot_point].m_x = x; // bound_value(0, x, getWidth());
 			m_points[m_hot_point].m_y = y; // bound_value(0, y, getHeight());
 			repaint();

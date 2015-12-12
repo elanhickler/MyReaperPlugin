@@ -42,7 +42,8 @@ private:
 class TestControl : public LiceControl
 {
 public:
-	TestControl(HWND parent) : LiceControl(parent) {}
+	TestControl(HWND parent, bool delwhendraggedoutside=false) : 
+		LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) {}
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(int x, int y) override;
 	void mouseMoved(int x, int y) override;
@@ -61,4 +62,5 @@ private:
 	int m_hot_point = -1;
 	float m_circlesize = 10.0f;
 	bool m_mousedown = false;
+	bool m_delete_point_when_dragged_outside = false;
 };
