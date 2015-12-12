@@ -109,6 +109,18 @@ INT_PTR CALLBACK mylicedialogproc(
 		{
 			bool foo = i == 0;
 			auto temp = std::make_unique<TestControl>(hwndDlg,foo);
+			if (i == 1)
+			{
+				temp->PointMovedCallback = [](int ptindex, double x, double y)
+				{
+					MediaTrack* track = GetTrack(nullptr, 0);
+					if (track != nullptr && ptindex==0)
+					{
+						TrackFX_SetParamNormalized(track, 0, 4, x);
+						TrackFX_SetParamNormalized(track, 0, 5, y);
+					}
+				};
+			}
 			g_testcontrols.push_back(std::move(temp));
 		}
 		ShowWindow(hwndDlg, SW_SHOW);

@@ -227,6 +227,12 @@ void TestControl::mouseMoved(int x, int y)
 			}
 			m_points[m_hot_point].m_x = x; // bound_value(0, x, getWidth());
 			m_points[m_hot_point].m_y = y; // bound_value(0, y, getHeight());
+			if (PointMovedCallback)
+			{
+				double normx = bound_value(0.0, 1.0 / getWidth()*x, 1.0);
+				double normy = bound_value(0.0, 1.0 / getHeight()*y, 1.0);
+				PointMovedCallback(m_hot_point, normx, normy);
+			}
 			repaint();
 		}
 	}

@@ -9,6 +9,7 @@
 #include "WDL/WDL/lice/lice.h"
 #include <memory>
 #include <vector>
+#include <functional>
 
 class MouseEvent
 {
@@ -60,6 +61,7 @@ public:
 	void mouseMoved(int x, int y) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;
+	std::function<void(int, double, double)> PointMovedCallback;
 private:
 	struct point
 	{
