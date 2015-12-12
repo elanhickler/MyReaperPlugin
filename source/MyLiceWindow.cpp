@@ -201,9 +201,7 @@ void TestControl::mousePressed(const MouseEvent& ev)
 		{
 			menu.add_menu_item(std::to_string(i + 1), [i]()
 			{
-				char buf[100];
-				sprintf(buf, "You chose number %d\n", i + 1);
-				ShowConsoleMsg(buf);
+				readbg() << "You chose number " << i + 1 << "\n";
 			});
 		}
 		menu.execute(ev.m_x, ev.m_y);
