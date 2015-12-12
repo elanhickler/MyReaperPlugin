@@ -23,6 +23,7 @@ public:
 	virtual void mouseReleased(int x, int y) {}
 	virtual void mouseWheel(int x, int y, int delta) {}
 	void setSize(int w, int h);
+	void setBounds(int x, int y, int w, int h);
 	void repaint();
 private:
 	HWND m_hwnd = NULL;

@@ -102,6 +102,13 @@ void LiceControl::setSize(int w, int h)
 	SetWindowPos(m_hwnd, 0, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
+void LiceControl::setBounds(int x, int y, int w, int h)
+{
+	m_bitmap->resize(w, h);
+	SetWindowPos(m_hwnd, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+
 void LiceControl::repaint()
 {
 	InvalidateRect(m_hwnd, NULL, TRUE);
