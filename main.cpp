@@ -134,6 +134,8 @@ extern "C"
 				std::string id = "EXAMPLE_ACTION_FROM_LOOP" + std::to_string(i);
 				add_action(desc, id, CannotToggle, actionfunction);
 			}
+			
+			// Add action to show dialog box
 			add_action("Show my first dialog", "EXAMPLE_ACTION_SHOW_DIALOG1", ToggleOff, [](action_entry&) 
 			{
 				HWND hw = open_my_first_modeless_dialog(g_parent);
@@ -142,6 +144,8 @@ extern "C"
 					ShowConsoleMsg("Failed to create dialog window\n");
 				}
 			});
+			
+			// Add actions to show lice window
 			add_action("Show my Lice dialog", "EXAMPLE_ACTION_SHOW_DIALOG2", ToggleOff, [](action_entry&)
 			{
 				open_lice_dialog(g_parent);
