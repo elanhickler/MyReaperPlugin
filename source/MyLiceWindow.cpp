@@ -190,8 +190,6 @@ int TestControl::find_hot_point(int x, int y)
 		}
 	}
 	return -1;
-
-
 }
 
 void TestControl::mousePressed(const MouseEvent& ev)
