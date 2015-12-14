@@ -11,6 +11,73 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <array>
+
+class ModifierKeys
+{
+public:
+	ModifierKeys() { reset(); }
+	ModifierKeys(bool shiftdown, bool controldown, bool altdown, bool winappledown=false)
+	{
+		reset();
+		if (shiftdown == true)
+			m_keys[0] = 1;
+		if (controldown == true)
+			m_keys[1] = 1;
+		if (altdown == true)
+			m_keys[2] = 1;
+		if (winappledown == true)
+			m_keys[3] = 1;
+	}
+	enum ModifierKey
+	{
+		MKNone,
+		MKShift,
+		MKControl,
+		MKAlt,
+		MKAppleOrWindowsKey // not sure if this can be nicely supported, but added here anyway...
+	};
+	void reset()
+	{
+		for (int i = 0; i < m_keys.size(); ++i)
+			m_keys[i] = 0;
+	}
+	bool isModifierKeyDown(ModifierKey k) const
+	{
+		if (k == MKShift && m_keys[0] != 0)
+			return true;
+		if (k == MKControl && m_keys[1] != 0)
+			return true;
+		if (k == MKAlt && m_keys[2] != 0)
+			return true;
+		if (k == MKAppleOrWindowsKey && m_keys[3] != 0)
+			return true;
+		return false;
+	}
+	bool areModifiersDown(std::initializer_list<ModifierKey> ks) const
+	{
+		int cnt = 0;
+		for (auto& e : ks)
+			if (isModifierKeyDown(e) == true)
+				++cnt;
+		if (cnt == ks.size())
+			return true;
+		return false;
+	}
+	void setModifierDown(ModifierKey k, bool b)
+	{
+		if (k == MKShift)
+			m_keys[0] = b;
+		if (k == MKControl)
+			m_keys[1] = b;
+		if (k == MKAlt)
+			m_keys[2] = b;
+		if (k == MKAppleOrWindowsKey)
+			m_keys[3] = b;
+	}
+private:
+	std::array<char,4> m_keys;
+};
 
 class MouseEvent
 {
@@ -23,6 +90,8 @@ public:
 	int m_y = 0;
 	int m_wheel = 0;
 	MouseButton m_mb = MBLeft;
+	ModifierKeys m_modkeys;
+private:
 };
 
 class LiceControl
