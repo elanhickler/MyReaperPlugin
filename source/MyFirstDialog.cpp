@@ -13,10 +13,61 @@
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 #include "MyLiceWindow.h"
-
+#include <unordered_map>
 #include <memory>
+#include "utilfuncs.h"
 
 extern HINSTANCE g_hInst;
+
+std::unordered_map<HWND, ReaperDialog*> g_dialogmap;
+
+ReaperDialog::ReaperDialog(HWND parent, int dialogresource)
+{
+	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(dialogresource), parent, dlgproc, (LPARAM)this);
+	if (m_hwnd == NULL)
+		readbg() << "Failed to create native dialog for " << this << "\n";
+}
+
+ReaperDialog::~ReaperDialog()
+{
+	if (m_hwnd != NULL)
+	{
+		DestroyWindow(m_hwnd);
+	}
+}
+
+INT_PTR CALLBACK ReaperDialog::dlgproc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	if (msg == WM_INITDIALOG)
+	{
+		ReaperDialog* d = (ReaperDialog*)lParam;
+		if (d != nullptr)
+		{
+			g_dialogmap[hwnd] = d;
+			if (d->DialogProc)
+				d->DialogProc(hwnd, msg, wParam, lParam);
+		}
+		return TRUE;
+	}
+	if (msg == WM_DESTROY)
+	{
+		g_dialogmap.erase(hwnd);
+		return TRUE;
+	}
+	ReaperDialog* d = nullptr;
+	if (g_dialogmap.count(hwnd)>0)
+		d = g_dialogmap[hwnd];
+	if (d != nullptr)
+	{
+		if (d->DialogProc)
+		{
+			if (d->DialogProc(hwnd, msg, wParam, lParam) == true)
+				return TRUE;
+			else return FALSE;
+		}
+	}
+	return FALSE;
+}
 
 INT_PTR CALLBACK myfirstdialogproc(
 	HWND   hwndDlg,
