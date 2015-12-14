@@ -103,13 +103,13 @@ int LiceControl::getHeight() const
 
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
-	if (wParam & MK_SHIFT)
+	if (wParam & VK_SHIFT)
 		keys.setModifierDown(MKShift, true);
-	if (wParam & MK_CONTROL)
+	if (wParam & VK_CONTROL)
 		keys.setModifierDown(MKControl, true);
-	if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
+	if (HIBYTE(GetAsyncKeyState(VK_MENU)) & 0x80)
 		keys.setModifierDown(MKAlt, true);
-	if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
+	if (HIBYTE(GetAsyncKeyState(VK_LWIN)) & 0x80)
 		keys.setModifierDown(MKAppleOrWindowsKey, true);
 }
 
