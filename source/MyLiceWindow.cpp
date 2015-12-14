@@ -123,11 +123,11 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 				but = MouseEvent::MBMiddle;
 			MouseEvent me(x, y, but);
 			if (wParam & MK_SHIFT)
-				me.m_modkeys.setModifierDown(ModifierKeys::MKShift, true);
+				me.m_modkeys.setModifierDown(MKShift, true);
 			if (wParam & MK_CONTROL)
-				me.m_modkeys.setModifierDown(ModifierKeys::MKControl, true);
+				me.m_modkeys.setModifierDown(MKControl, true);
 			if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
-				me.m_modkeys.setModifierDown(ModifierKeys::MKAlt, true);
+				me.m_modkeys.setModifierDown(MKAlt, true);
 			c->mousePressed(me);
 		}
 		if (msg==WM_MOUSEMOVE)
@@ -212,22 +212,22 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
-	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(ModifierKeys::MKControl) == true)
+	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKControl) == true)
 	{
 		readbg() << "you pressed left button with control key down\n";
 		return;
 	}
-	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(ModifierKeys::MKShift) == true)
+	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKShift) == true)
 	{
 		readbg() << "you pressed left button with shift key down\n";
 		return;
 	}
-	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(ModifierKeys::MKAlt) == true)
+	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKAlt) == true)
 	{
 		readbg() << "you pressed left button with alt key down\n";
 		return;
 	}
-	if (ev.m_mb == MouseEvent::MBRight && ev.m_modkeys.areModifiersDown({ ModifierKeys::MKAlt,ModifierKeys::MKShift }))
+	if (ev.m_mb == MouseEvent::MBRight && ev.m_modkeys.areModifiersDown({ MKAlt, MKShift }))
 	{
 		readbg() << "you pressed right button with alt and shift keys down\n";
 		return;

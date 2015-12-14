@@ -13,6 +13,16 @@
 #include <string>
 #include <array>
 
+ 
+enum ModifierKey
+{
+	MKNone,
+	MKShift,
+	MKControl,
+	MKAlt,
+	MKAppleOrWindowsKey // not sure if this can be nicely supported, but added here anyway...
+};
+
 class ModifierKeys
 {
 public:
@@ -29,14 +39,7 @@ public:
 		if (winappledown == true)
 			m_keys[3] = 1;
 	}
-	enum ModifierKey
-	{
-		MKNone,
-		MKShift,
-		MKControl,
-		MKAlt,
-		MKAppleOrWindowsKey // not sure if this can be nicely supported, but added here anyway...
-	};
+	
 	void reset()
 	{
 		for (int i = 0; i < m_keys.size(); ++i)
