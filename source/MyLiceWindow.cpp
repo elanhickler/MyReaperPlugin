@@ -2,6 +2,8 @@
 #include "MyLiceWindow.h"
 #include "utilfuncs.h"
 
+bool g_popupmenushowing = false;
+
 void TestControl::paint(LICE_IBitmap * bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
@@ -30,6 +32,11 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
+	if (g_popupmenushowing == true)
+	{
+		g_popupmenushowing = false;
+		return;
+	}
 	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKAppleOrWindowsKey) == true)
 	{
 		readbg() << "you pressed left button with Windows key down\n";
@@ -79,6 +86,7 @@ void TestControl::mousePressed(const MouseEvent& ev)
 				readbg() << "You chose number " << i + 1 << "\n";
 			});
 		}
+		g_popupmenushowing = true;
 		menu.execute(ev.m_x, ev.m_y);
 		return;
 	}
