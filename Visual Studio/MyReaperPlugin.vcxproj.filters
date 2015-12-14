@@ -39,6 +39,7 @@
     <ClInclude Include="..\header\MyLiceWindow.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\reascript.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">

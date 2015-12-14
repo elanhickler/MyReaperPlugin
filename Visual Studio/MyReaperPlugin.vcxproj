@@ -34,6 +34,7 @@
     <ClInclude Include="..\library\reaper plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
+    <ClInclude Include="..\reascript.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
