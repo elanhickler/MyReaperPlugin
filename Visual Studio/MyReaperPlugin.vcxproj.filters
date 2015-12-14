@@ -20,6 +20,9 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice_arc.cpp">
       <Filter>library\WDL\Lice</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\lice_control.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -40,6 +43,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\reascript.hpp" />
+    <ClInclude Include="..\header\lice_control.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">
