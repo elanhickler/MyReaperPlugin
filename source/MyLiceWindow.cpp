@@ -128,6 +128,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 				me.m_modkeys.setModifierDown(MKControl, true);
 			if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
 				me.m_modkeys.setModifierDown(MKAlt, true);
+			if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
+				me.m_modkeys.setModifierDown(MKAppleOrWindowsKey, true);
 			c->mousePressed(me);
 		}
 		if (msg==WM_MOUSEMOVE)
@@ -212,6 +214,11 @@ int TestControl::find_hot_point(int x, int y)
 
 void TestControl::mousePressed(const MouseEvent& ev)
 {
+	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKAppleOrWindowsKey) == true)
+	{
+		readbg() << "you pressed left button with Windows key down\n";
+		return;
+	}
 	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKControl) == true)
 	{
 		readbg() << "you pressed left button with control key down\n";
