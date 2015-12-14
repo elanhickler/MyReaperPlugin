@@ -2,6 +2,13 @@
 
 #include "lice_control.h"
 
+struct fx_param_t
+{
+	int tracknum = -1;
+	int fxnum = 0;
+	int paramnum = 0;
+};
+
 // Development test control
 class TestControl : public LiceControl
 {
@@ -14,6 +21,8 @@ public:
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;
 	std::function<void(int, double, double)> PointMovedCallback;
+	fx_param_t m_x_target;
+	fx_param_t m_y_target;
 private:
 	struct point
 	{
@@ -28,6 +37,7 @@ private:
 	float m_circlesize = 10.0f;
 	bool m_mousedown = false;
 	bool m_delete_point_when_dragged_outside = false;
+	
 };
 
 

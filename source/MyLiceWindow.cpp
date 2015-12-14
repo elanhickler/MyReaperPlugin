@@ -30,6 +30,20 @@ int TestControl::find_hot_point(int x, int y)
 	return -1;
 }
 
+void update_touched_fx(fx_param_t& entry)
+{
+	int trackout = 0;
+	int fxout = 0;
+	int paramout = 0;
+	if (GetLastTouchedFX(&trackout, &fxout, &paramout) == true)
+	{
+		entry.tracknum = trackout;
+		entry.fxnum = fxout;
+		entry.paramnum = paramout;
+		//readbg() << trackout << " " << fxout << " " << paramout << "\n";
+	}
+}
+
 void TestControl::mousePressed(const MouseEvent& ev)
 {
 	if (g_popupmenushowing == true)
@@ -72,13 +86,24 @@ void TestControl::mousePressed(const MouseEvent& ev)
 	{
 		PopupMenu menu(getWindowHandle());
 		menu.add_menu_item("First action", []() { readbg() << "first action chosen\n"; });
-		if (m_hot_point>=0)
-			menu.add_menu_item("Remove point", [this]() 
-			{ 
+		if (m_hot_point >= 0)
+		{
+			menu.add_menu_item("Control last touched parameter with X position", [this]()
+			{
+				update_touched_fx(m_x_target);
+			});
+			menu.add_menu_item("Control last touched parameter with Y position", [this]()
+			{
+				update_touched_fx(m_y_target);
+			});
+			menu.add_menu_item("Remove point", [this]()
+			{
 				m_points.erase(m_points.begin() + m_hot_point);
 				m_hot_point = -1;
 				repaint();
 			});
+			
+		}
 		for (int i = 0; i < 10; ++i)
 		{
 			menu.add_menu_item(std::to_string(i + 1), [i]()
