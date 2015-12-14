@@ -114,14 +114,16 @@ INT_PTR CALLBACK mylicedialogproc(
 				TestControl* ptr = temp.get();
 				temp->PointMovedCallback = [ptr](int ptindex, double x, double y)
 				{
-					if (ptindex==0)
+					fx_param_t* x_target = ptr->getFXParamTarget(ptindex, 0);
+					fx_param_t* y_target = ptr->getFXParamTarget(ptindex, 1);
+					if (x_target != nullptr && y_target != nullptr)
 					{
-						if (ptr->m_x_target.tracknum>=1)
-							TrackFX_SetParamNormalized(GetTrack(nullptr,ptr->m_x_target.tracknum-1),
-								ptr->m_x_target.fxnum, ptr->m_x_target.paramnum, x);
-						if (ptr->m_y_target.tracknum>=1)
-							TrackFX_SetParamNormalized(GetTrack(nullptr, ptr->m_y_target.tracknum-1),
-								ptr->m_y_target.fxnum, ptr->m_y_target.paramnum, y);
+						if (x_target->tracknum >= 1)
+							TrackFX_SetParamNormalized(GetTrack(nullptr, x_target->tracknum - 1),
+								x_target->fxnum, x_target->paramnum, x);
+						if (y_target->tracknum >= 1)
+							TrackFX_SetParamNormalized(GetTrack(nullptr, y_target->tracknum - 1),
+								y_target->fxnum, y_target->paramnum, y);
 					}
 				};
 			}

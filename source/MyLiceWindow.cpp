@@ -90,11 +90,11 @@ void TestControl::mousePressed(const MouseEvent& ev)
 		{
 			menu.add_menu_item("Control last touched parameter with X position", [this]()
 			{
-				update_touched_fx(m_x_target);
+				update_touched_fx(m_points[m_hot_point].m_x_target);
 			});
 			menu.add_menu_item("Control last touched parameter with Y position", [this]()
 			{
-				update_touched_fx(m_y_target);
+				update_touched_fx(m_points[m_hot_point].m_y_target);
 			});
 			menu.add_menu_item("Remove point", [this]()
 			{
@@ -179,5 +179,17 @@ void TestControl::mouseWheel(int x, int y, int delta)
 		temp=-1.0f;
 	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
 	repaint();
+}
+
+fx_param_t * TestControl::getFXParamTarget(int index, int which)
+{
+	if (index >= 0 && index < m_points.size())
+	{
+		if (which == 0)
+			return &m_points[index].m_x_target;
+		if (which == 1)
+			return &m_points[index].m_y_target;
+	}
+	return nullptr;
 }
 
