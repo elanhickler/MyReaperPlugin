@@ -87,7 +87,7 @@ public:
 	PopupMenu(HWND parent);
 	~PopupMenu();
 	void add_menu_item(std::string txt, std::function<void(void)> action);
-	void execute(int x, int y);
+	void execute(int x, int y, bool use_screen_coordinates=false);
 private:
 	struct menu_entry_t
 	{

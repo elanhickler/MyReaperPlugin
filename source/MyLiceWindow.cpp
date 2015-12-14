@@ -48,6 +48,11 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 LiceControl::LiceControl(HWND parent)
 {
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
+	if (m_hwnd == NULL)
+	{
+		readbg() << "Failed to create window for LiceControl " << this << "\n";
+		return;
+	}
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
 	setBounds(20,60,200, 200);
@@ -56,7 +61,12 @@ LiceControl::LiceControl(HWND parent)
 
 LiceControl::~LiceControl()
 {
-	ShowConsoleMsg("Lice Control dtor\n");
+	//readbg() << "Lice Control dtor\n";
+	if (m_hwnd != NULL)
+	{
+		g_controlsmap.erase(m_hwnd);
+		DestroyWindow(m_hwnd);
+	}
 }
 
 void LiceControl::setSize(int w, int h)
@@ -161,6 +171,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	{
 		//ShowConsoleMsg("lice control window destroy\n");
 		g_controlsmap.erase(hwnd);
+		c->m_hwnd = NULL;
 		return 0;
 	}
 	return DefWindowProc(hwnd, Message, wParam, lParam);
@@ -314,7 +325,7 @@ void PopupMenu::add_menu_item(std::string txt, std::function<void(void)> action)
 	m_entries.push_back(entry);
 }
 
-void PopupMenu::execute(int x, int y)
+void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 {
 	if (m_entries.size() == 0)
 		return;
@@ -323,7 +334,8 @@ void PopupMenu::execute(int x, int y)
 	POINT pt;
 	pt.x = x;
 	pt.y = y;
-	ClientToScreen(m_hwnd, &pt);
+	if (use_screen_coordinates==false)
+		ClientToScreen(m_hwnd, &pt);
 	BOOL result = TrackPopupMenu(m_menu, TPM_LEFTALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hwnd, NULL);
 	if (result > 0)
 	{
