@@ -249,4 +249,14 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 	{
 		m_entries[result - 1].m_f();
 	}
+	else
+	{
+		if (m_none_chosen_f)
+			m_none_chosen_f();
+	}
+}
+
+void PopupMenu::set_none_chosen_handler(std::function<void(void)> f)
+{
+	m_none_chosen_f = f;
 }

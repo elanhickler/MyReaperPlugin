@@ -26,7 +26,12 @@ enum ModifierKey
 class ModifierKeys
 {
 public:
-	ModifierKeys() { reset(); }
+	ModifierKeys() 
+	{ 
+		// std::array doesn't explicitly default construct non-class elements!
+		// so we have to reset it manually to zeros.
+		reset(); 
+	}
 	ModifierKeys(bool shiftdown, bool controldown, bool altdown, bool winappledown = false)
 	{
 		reset();
@@ -57,7 +62,7 @@ public:
 			return true;
 		return false;
 	}
-	bool areModifiersDown(std::initializer_list<ModifierKey> ks) const
+	bool areModifiersDown(const std::initializer_list<ModifierKey>& ks) const
 	{
 		int cnt = 0;
 		for (auto& e : ks)
@@ -79,6 +84,7 @@ public:
 			m_keys[3] = b;
 	}
 private:
+	// could maybe use std::bitset here but probably not worth it...
 	std::array<char, 4> m_keys;
 };
 
@@ -105,7 +111,6 @@ public:
 
 	virtual void paint(LICE_IBitmap*) = 0;
 
-	// TODO: pass mouse button and key modifiers states...
 	virtual void mousePressed(const MouseEvent& ev) {}
 	virtual void mouseMoved(const MouseEvent& ev) {}
 	virtual void mouseReleased(int x, int y) {}
@@ -117,7 +122,7 @@ public:
 	int getHeight() const;
 	void repaint();
 
-	// for nefarious purposes. use responsibly.
+	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:
 	HWND m_hwnd = NULL;
@@ -131,6 +136,7 @@ public:
 	PopupMenu(HWND parent);
 	~PopupMenu();
 	void add_menu_item(std::string txt, std::function<void(void)> action);
+	void set_none_chosen_handler(std::function<void(void)> action);
 	void execute(int x, int y, bool use_screen_coordinates = false);
 private:
 	struct menu_entry_t
@@ -141,5 +147,6 @@ private:
 	HWND m_hwnd = NULL;
 	HMENU m_menu = NULL;
 	std::vector<menu_entry_t> m_entries;
+	std::function<void(void)> m_none_chosen_f;
 };
 
