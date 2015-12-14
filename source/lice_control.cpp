@@ -115,8 +115,6 @@ void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 
 bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	//auto foo=std::mem_fn(&LiceControl::mousePressed);
-
 	if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN
 		|| msg == WM_MOUSEMOVE || msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP)
 	{

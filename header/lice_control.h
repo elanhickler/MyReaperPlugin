@@ -109,6 +109,9 @@ public:
 	LiceControl(HWND parent);
 	virtual ~LiceControl();
 
+	// The bitmap to be used for drawing is passed into the method instead of
+	// the method using the object's bitmap directly. This may be useful in the future,
+	// although for now the LiceControl's internal bitmap is always passed.
 	virtual void paint(LICE_IBitmap*) = 0;
 
 	virtual void mousePressed(const MouseEvent& ev) {}
