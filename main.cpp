@@ -58,7 +58,8 @@ std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggl
 	return entry;
 }
 
-#include "main.hpp" // *** HERE THE ACTIONS DO THEIR WORK ***
+#include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
+#include "reascript.hpp" /*** HERE WE HANDLE REASCRIPT EXPORT FUNCTIONS ***/
 
 // Reaper calls back to this when it wants to execute an action registered by the extension plugin
 bool hookCommandProc(int command, int flag) {
@@ -150,8 +151,10 @@ extern "C"
 			{
 				open_lice_dialog(g_parent);
 			});
-			rec->Register("hookcommand", (void*)hookCommandProc);
-			rec->Register("toggleaction", (void*)toggleActionCallback);
+			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
+			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
+			if ((!RegisterExportedFuncs(rec) || !RegisterExportedAPI(rec))) { /*todo: error*/ }
+
 
 			if (togact->m_command_id != 0) {
 				// restore extension global settings
