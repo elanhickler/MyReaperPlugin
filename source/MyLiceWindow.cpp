@@ -101,6 +101,18 @@ int LiceControl::getHeight() const
 	return r.bottom-r.top;
 }
 
+void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
+{
+	if (wParam & MK_SHIFT)
+		keys.setModifierDown(MKShift, true);
+	if (wParam & MK_CONTROL)
+		keys.setModifierDown(MKControl, true);
+	if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
+		keys.setModifierDown(MKAlt, true);
+	if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
+		keys.setModifierDown(MKAppleOrWindowsKey, true);
+}
+
 bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//auto foo=std::mem_fn(&LiceControl::mousePressed);
@@ -122,18 +134,20 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			else if (msg == WM_MBUTTONDOWN)
 				but = MouseEvent::MBMiddle;
 			MouseEvent me(x, y, but);
-			if (wParam & MK_SHIFT)
-				me.m_modkeys.setModifierDown(MKShift, true);
-			if (wParam & MK_CONTROL)
-				me.m_modkeys.setModifierDown(MKControl, true);
-			if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
-				me.m_modkeys.setModifierDown(MKAlt, true);
-			if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
-				me.m_modkeys.setModifierDown(MKAppleOrWindowsKey, true);
+			update_modifiers_state(me.m_modkeys, wParam);
 			c->mousePressed(me);
 		}
-		if (msg==WM_MOUSEMOVE)
-			c->mouseMoved(x, y);
+		if (msg == WM_MOUSEMOVE)
+		{
+			MouseEvent::MouseButton but(MouseEvent::MBLeft);
+			if (wParam & MK_RBUTTON)
+				but = MouseEvent::MBRight;
+			if (wParam & MK_MBUTTON)
+				but = MouseEvent::MBMiddle;
+			MouseEvent me(x, y, but);
+			update_modifiers_state(me.m_modkeys, wParam);
+			c->mouseMoved(me);
+		}
 		if (msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP)
 		{
 			ReleaseCapture();
@@ -227,6 +241,7 @@ void TestControl::mousePressed(const MouseEvent& ev)
 	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKShift) == true)
 	{
 		readbg() << "you pressed left button with shift key down\n";
+		m_mousedown = true;
 		return;
 	}
 	if (ev.m_mb == MouseEvent::MBLeft && ev.m_modkeys.isModifierKeyDown(MKAlt) == true)
@@ -274,11 +289,16 @@ void TestControl::mousePressed(const MouseEvent& ev)
 	}
 }
 
-void TestControl::mouseMoved(int x, int y)
+void TestControl::mouseMoved(const MouseEvent& ev)
 {
+	if (m_mousedown == true && ev.m_modkeys.isModifierKeyDown(MKShift) == true)
+	{
+		readbg() << "mouse dragged with shift " << ev.m_x << " " << ev.m_y << "\n";
+		return;
+	}
 	if (m_mousedown==false)
 	{
-		int found=find_hot_point(x, y);
+		int found=find_hot_point(ev.m_x, ev.m_y);
 		if (found!=m_hot_point)
 		{
 			m_hot_point=found;
@@ -299,12 +319,12 @@ void TestControl::mouseMoved(int x, int y)
 					return;
 				}
 			}
-			m_points[m_hot_point].m_x = x; // bound_value(0, x, getWidth());
-			m_points[m_hot_point].m_y = y; // bound_value(0, y, getHeight());
+			m_points[m_hot_point].m_x = ev.m_x; // bound_value(0, x, getWidth());
+			m_points[m_hot_point].m_y = ev.m_y; // bound_value(0, y, getHeight());
 			if (PointMovedCallback)
 			{
-				double normx = bound_value(0.0, 1.0 / getWidth()*x, 1.0);
-				double normy = bound_value(0.0, 1.0 / getHeight()*y, 1.0);
+				double normx = bound_value(0.0, 1.0 / getWidth()*ev.m_x, 1.0);
+				double normy = bound_value(0.0, 1.0 / getHeight()*ev.m_y, 1.0);
 				PointMovedCallback(m_hot_point, normx, normy);
 			}
 			repaint();

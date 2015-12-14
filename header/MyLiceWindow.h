@@ -107,7 +107,7 @@ public:
 	
 	// TODO: pass mouse button and key modifiers states...
 	virtual void mousePressed(const MouseEvent& ev) {}
-	virtual void mouseMoved(int x, int y) {}
+	virtual void mouseMoved(const MouseEvent& ev) {}
 	virtual void mouseReleased(int x, int y) {}
 	virtual void mouseWheel(int x, int y, int delta) {}
 	
@@ -133,7 +133,7 @@ public:
 		LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) {}
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(const MouseEvent& ev) override;
-	void mouseMoved(int x, int y) override;
+	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;
 	std::function<void(int, double, double)> PointMovedCallback;
