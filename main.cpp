@@ -89,38 +89,22 @@ int toggleActionCallback(int command_id) {
 	return -1; // -1 if action not provided by this extension or is not togglable
 }
 
-// Register exported functions
+// Register exported function and html documentation
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
 	bool ok = rec != 0;
 	int i=-1;
 	while (ok && g_apidefs[++i].func) {
 		ok &= rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0;
-		if (g_apidefs[i].regkey_vararg && g_apidefs[i].func_vararg) {
-			ok &= rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0;
-		}
-	}
-	return ok;
-}
 
-// Register exported function definitions (html documentation)
-bool RegisterExportedAPI(reaper_plugin_info_t* rec) {
-	bool ok = rec != 0;
-	int i=-1;
-	while (ok && g_apidefs[++i].func) {
-		if (g_apidefs[i].regkey_def) {
-			std::string tmp = g_apidefs[i].ret_val +'\r'+ g_apidefs[i].parm_types +'\r'+ g_apidefs[i].parm_names +'\r'+ g_apidefs[i].help;
+		if (g_apidefs[i].regkey_vararg && !g_apidefs[i].func_vararg) continue;
 
-			size_t length = 1+strlen(tmp.c_str());
-			g_apidefs[i].dyn_def = new char[length];
-			memcpy(g_apidefs[i].dyn_def, tmp.c_str(), length);
-			char* p = g_apidefs[i].dyn_def;
-			while (*p) { 
-				if (*p=='\r') *p='\0'; 
-				++p; 
-			}
+		ok &= rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0;
 
-			ok &= rec->Register(g_apidefs[i].regkey_def, g_apidefs[i].dyn_def) != 0;
-		}
+		if (!g_apidefs[i].regkey_def) continue;
+
+		g_apidefs[i].dyn_def = g_apidefs[i].ret_val+'\0'+g_apidefs[i].parm_types+'\0'+g_apidefs[i].parm_names+'\0'+g_apidefs[i].html_help+'\0';
+
+		ok &= rec->Register(g_apidefs[i].regkey_def, &g_apidefs[i].dyn_def[0]) != 0;
 	}
 	return ok;
 }
@@ -190,7 +174,7 @@ extern "C"
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
-			if ((!RegisterExportedFuncs(rec) || !RegisterExportedAPI(rec))) { /*todo: error*/ }
+			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
 
 			// restore extension global settings
 			// saving extension data into reaper project files is another thing and 

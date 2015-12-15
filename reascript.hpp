@@ -48,8 +48,8 @@ struct APIdef {
 	std::string ret_val;       // return type, parameter types
 	std::string parm_types;    // csv of parameter types
 	std::string parm_names;    // csv of names for parameter types
-	std::string help;          // help text for function
-	char* dyn_def;             // used for dynamic allocations/cleanups
+	std::string html_help;     // help text for function
+	std::string dyn_def;       // used for dynamic allocations/cleanups
 };
 
 struct In { // Helpers for creating export functions
