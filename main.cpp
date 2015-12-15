@@ -59,7 +59,40 @@ std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggl
 }
 
 #include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
-#include "reascript.hpp" /*** HERE WE HANDLE REASCRIPT EXPORT FUNCTIONS ***/
+
+class function_entry { // Little C++ class to deal with the functions
+public:
+	function_entry(void* func, std::string func_name, std::string ret_val,
+		std::string par_types, std::string par_names, std::string html_help,
+		bool c_func_only = false) {
+		regkey_func = "API_" + func_name;
+		func_c_api = func;
+		c_only = c_func_only;
+
+		if (c_only) return;
+
+		func_script = func;
+		regkey_vararg = "APIvararg_" + func_name;
+		regkey_def = "APIdef_" + func_name;
+		document = ret_val + '\0' + par_types + '\0' + par_names + '\0' + html_help + '\0';
+	}
+	void* func_c_api;
+	void* func_script;
+	std::string regkey_vararg; // registry type/name for func_vararg
+	std::string regkey_func;   // registry type/name for func
+	std::string regkey_def;    // registry type/name for dyn_def
+	std::string document;      // documentation for function
+	bool c_only;
+};
+
+std::vector<function_entry> g_functions;
+
+void add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false) {
+	auto entry = function_entry(func, func_name, ret_val, par_types, par_names, html_help, c_func_only = false);
+	g_functions.push_back(entry);
+}
+
+#include "reascript.hpp" /*** HERE THE FUNCTIONS DO THEIR WORK ***/
 
 // Reaper calls back to this when it wants to execute an action registered by the extension plugin
 bool hookCommandProc(int command, int flag) {
@@ -92,30 +125,23 @@ int toggleActionCallback(int command_id) {
 // Register exported function and html documentation
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
 	bool ok = rec != 0;
-	int i=-1;
-	while (ok && g_apidefs[++i].func) {
-		ok &= rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0;
+	for (auto& e : g_functions) {
+		if (!ok) break;
 
-		if (g_apidefs[i].regkey_vararg && !g_apidefs[i].func_vararg) continue;
+		ok &= rec->Register(e.regkey_func.c_str(), e.func_c_api) != 0;
+		ok &= rec->Register(e.regkey_def.c_str(), &e.document[0]) != 0;
 
-		ok &= rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0;
+		if (e.c_only) continue;
 
-		if (!g_apidefs[i].regkey_def) continue;
-
-		g_apidefs[i].dyn_def = g_apidefs[i].ret_val+'\0'+g_apidefs[i].parm_types+'\0'+g_apidefs[i].parm_names+'\0'+g_apidefs[i].html_help+'\0';
-
-		ok &= rec->Register(g_apidefs[i].regkey_def, &g_apidefs[i].dyn_def[0]) != 0;
+		ok &= rec->Register(e.regkey_vararg.c_str(), e.func_script) != 0;
 	}
 	return ok;
 }
 
 // Unregister exported functions
 void UnregisterExportedFuncs() {
-	char tmp[512];
-	int i=-1;
-	while (g_apidefs[++i].func) {
-		snprintf(tmp, sizeof(tmp), "-%s", g_apidefs[i].regkey_func);
-		plugin_register(tmp, g_apidefs[i].func);
+	for (auto& e : g_functions) {
+		plugin_register(std::string("-"+e.regkey_func).c_str(), e.func_c_api);
 	}
 }
 
@@ -171,6 +197,10 @@ extern "C"
 			{
 				open_lice_dialog(g_parent);
 			});
+
+			// Add functions
+			add_function(DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
+			add_function(IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
