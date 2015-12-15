@@ -89,6 +89,36 @@ int toggleActionCallback(int command_id) {
 	return -1; // -1 if action not provided by this extension or is not togglable
 }
 
+// Register exported function and html documentation
+bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
+	bool ok = rec != 0;
+	int i=-1;
+	while (ok && g_apidefs[++i].func) {
+		ok &= rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0;
+
+		if (g_apidefs[i].regkey_vararg && !g_apidefs[i].func_vararg) continue;
+
+		ok &= rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0;
+
+		if (!g_apidefs[i].regkey_def) continue;
+
+		g_apidefs[i].dyn_def = g_apidefs[i].ret_val+'\0'+g_apidefs[i].parm_types+'\0'+g_apidefs[i].parm_names+'\0'+g_apidefs[i].html_help+'\0';
+
+		ok &= rec->Register(g_apidefs[i].regkey_def, &g_apidefs[i].dyn_def[0]) != 0;
+	}
+	return ok;
+}
+
+// Unregister exported functions
+void UnregisterExportedFuncs() {
+	char tmp[512];
+	int i=-1;
+	while (g_apidefs[++i].func) {
+		snprintf(tmp, sizeof(tmp), "-%s", g_apidefs[i].regkey_func);
+		plugin_register(tmp, g_apidefs[i].func);
+	}
+}
+
 extern "C"
 {
 	// this is the only function that needs to be exported by a Reaper extension plugin dll
@@ -98,7 +128,7 @@ extern "C"
 		g_hInst=hInstance;
 		if (rec) {
 			if (rec->caller_version != REAPER_PLUGIN_VERSION || !rec->GetFunc)
-				return 0;
+				return 0; /*todo: proper error*/
 			g_plugin_info = rec;
 			g_parent = rec->hwnd_main;
 
@@ -141,9 +171,10 @@ extern "C"
 			{
 				open_lice_dialog(g_parent);
 			});
+
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
-			if ((!RegisterExportedFuncs(rec) || !RegisterExportedAPI(rec))) { /*todo: error*/ }
+			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
 
 			// restore extension global settings
 			// saving extension data into reaper project files is another thing and 
