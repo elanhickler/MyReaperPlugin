@@ -103,6 +103,7 @@ int LiceControl::getHeight() const
 
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
+#ifdef WIN32
 	if (wParam & MK_SHIFT)
 		keys.setModifierDown(MKShift, true);
 	if (wParam & MK_CONTROL)
@@ -111,6 +112,16 @@ void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 		keys.setModifierDown(MKAlt, true);
 	if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
 		keys.setModifierDown(MKAppleOrWindowsKey, true);
+#else
+	if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) & 0x80)
+		keys.setModifierDown(MKShift, true);
+	if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) & 0x80)
+		keys.setModifierDown(MKControl, true);
+	if (HIBYTE(GetAsyncKeyState(VK_MENU)) & 0x80)
+		keys.setModifierDown(MKAlt, true);
+	if (HIBYTE(GetAsyncKeyState(VK_LWIN)) & 0x80)
+		keys.setModifierDown(MKAppleOrWindowsKey, true);
+#endif
 }
 
 bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
