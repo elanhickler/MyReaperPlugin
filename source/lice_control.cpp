@@ -113,9 +113,9 @@ void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 	if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
 		keys.setModifierDown(MKAppleOrWindowsKey, true);
 #else
-	if (wParam & VK_SHIFT)
+	if (HIBYTE(GetAsyncKeyState(VK_SHIFT)) & 0x80)
 		keys.setModifierDown(MKShift, true);
-	if (wParam & VK_CONTROL)
+	if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) & 0x80)
 		keys.setModifierDown(MKControl, true);
 	if (HIBYTE(GetAsyncKeyState(VK_MENU)) & 0x80)
 		keys.setModifierDown(MKAlt, true);
