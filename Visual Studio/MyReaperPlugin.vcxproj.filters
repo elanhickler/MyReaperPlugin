@@ -26,6 +26,9 @@
     <ClCompile Include="..\source\utilfuncs.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_text.cpp">
+      <Filter>library\WDL\Lice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />

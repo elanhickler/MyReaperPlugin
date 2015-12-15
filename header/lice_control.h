@@ -130,6 +130,8 @@ public:
 	bool hasFocus() const;
 	void setFocused();
 
+	virtual bool keyPressed(int keycode) { return false; }
+
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:

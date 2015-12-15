@@ -20,6 +20,7 @@ public:
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;
+	bool keyPressed(int keycode) override;
 	std::function<void(int, double, double)> PointMovedCallback;
 	fx_param_t* getFXParamTarget(int index, int which);
 private:
@@ -38,7 +39,7 @@ private:
 	float m_circlesize = 10.0f;
 	bool m_mousedown = false;
 	bool m_delete_point_when_dragged_outside = false;
-	
+	std::string m_test_text;
 };
 
 

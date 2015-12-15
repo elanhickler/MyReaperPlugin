@@ -217,7 +217,9 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	}
 	if (Message == WM_KEYDOWN)
 	{
-		readbg() << c << " " << wParam << "\n";
+		//readbg() << c << " " << wParam << "\n";
+		if (c->keyPressed(wParam) == true)
+			return 0;
 	}
 	if (Message == WM_DESTROY)
 	{
