@@ -1,13 +1,13 @@
 #include "lice_control.h"
 #include <unordered_map>
-#include "WDL/WDL/lice/lice.h"
-#include "reaper_plugin/reaper_plugin_functions.h"
 #include "utilfuncs.h"
 #include <string>
 
 std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
 extern HINSTANCE g_hInst;
+bool g_kbdhookinstalled = false;
+extern reaper_plugin_info_t* g_plugin_info;
 
 // creates a plain child window (control).
 // wndProc will receive a WM_CREATE, but it will have lParam set to lParamContext rather than LPCREATESTRUCT
@@ -45,6 +45,30 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 #endif
 }
 
+static int acProc(MSG *msg, accelerator_register_t *ctx)
+{
+	HWND myChildWindow = *(HWND*)ctx->user;
+	int x;
+	if (myChildWindow && msg->hwnd && (msg->hwnd == myChildWindow || IsChild(myChildWindow, msg->hwnd)))
+	{
+#ifdef __APPLE__
+		SendMessage(msg->hwnd, msg->message, msg->wParam, msg->lParam);
+		return 1;
+#else
+		return -1;
+#endif
+	}
+	return 0;
+}
+
+static accelerator_register_t g_acRec =
+{
+	acProc,
+	true,
+};
+
+bool g_acrecinstalled=false;
+
 LiceControl::LiceControl(HWND parent)
 {
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
@@ -52,6 +76,16 @@ LiceControl::LiceControl(HWND parent)
 	{
 		readbg() << "Failed to create window for LiceControl " << this << "\n";
 		return;
+	}
+	m_parenthwnd = parent;
+	//m_acreg.isLocal = true;
+	//m_acreg.translateAccel = acProc;
+	//m_acreg.user = (void*)&m_hwnd;
+	if (g_plugin_info != nullptr && g_acrecinstalled == false)
+	{
+		g_acRec.user = (void*)&m_parenthwnd;
+		g_plugin_info->Register("accelerator", (void*)&g_acRec);
+		g_acrecinstalled = true;
 	}
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
@@ -182,6 +216,107 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 	}
 	return false;
 }
+// Taken from WDL curses_win32.cpp
+#define ERR -1
+static LRESULT xlateKey(int msg, WPARAM wParam, LPARAM lParam)
+{
+	if (msg == WM_KEYDOWN)
+	{
+#ifndef _WIN32
+		if (lParam & FVIRTKEY)
+#endif
+			switch (wParam)
+			{
+			case VK_HOME: return KEY_HOME;
+			case VK_UP: return KEY_UP;
+			case VK_PRIOR: return KEY_PPAGE;
+			case VK_LEFT: return KEY_LEFT;
+			case VK_RIGHT: return KEY_RIGHT;
+			case VK_END: return KEY_END;
+			case VK_DOWN: return KEY_DOWN;
+			case VK_NEXT: return KEY_NPAGE;
+			case VK_INSERT: return KEY_IC;
+			case VK_DELETE: return KEY_DC;
+			case VK_F1: return KEY_F1;
+			case VK_F2: return KEY_F2;
+			case VK_F3: return KEY_F3;
+			case VK_F4: return KEY_F4;
+			case VK_F5: return KEY_F5;
+			case VK_F6: return KEY_F6;
+			case VK_F7: return KEY_F7;
+			case VK_F8: return KEY_F8;
+			case VK_F9: return KEY_F9;
+			case VK_F10: return KEY_F10;
+			case VK_F11: return KEY_F11;
+			case VK_F12: return KEY_F12;
+#ifndef _WIN32
+			case VK_SUBTRACT: return '-'; // numpad -
+			case VK_ADD: return '+';
+			case VK_MULTIPLY: return '*';
+			case VK_DIVIDE: return '/';
+			case VK_DECIMAL: return '.';
+			case VK_NUMPAD0: return '0';
+			case VK_NUMPAD1: return '1';
+			case VK_NUMPAD2: return '2';
+			case VK_NUMPAD3: return '3';
+			case VK_NUMPAD4: return '4';
+			case VK_NUMPAD5: return '5';
+			case VK_NUMPAD6: return '6';
+			case VK_NUMPAD7: return '7';
+			case VK_NUMPAD8: return '8';
+			case VK_NUMPAD9: return '9';
+			case (32768 | VK_RETURN) : return VK_RETURN;
+#endif
+			}
+
+		switch (wParam)
+		{
+		case VK_RETURN: case VK_BACK: case VK_TAB: case VK_ESCAPE: return wParam;
+		case VK_CONTROL: break;
+
+		default:
+			if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+			{
+				if (wParam >= 'a' && wParam <= 'z')
+				{
+					wParam += 1 - 'a';
+					return wParam;
+				}
+				if (wParam >= 'A' && wParam <= 'Z')
+				{
+					wParam += 1 - 'A';
+					return wParam;
+				}
+				if ((wParam&~0x80) == '[') return 27;
+				if ((wParam&~0x80) == ']') return 29;
+			}
+		}
+	}
+
+#ifdef _WIN32 // todo : fix for nonwin32
+	if (msg == WM_CHAR)
+	{
+		if (wParam >= 32) return wParam;
+	}
+#else
+	//osx/linux
+	if (wParam >= 32)
+	{
+		if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000))
+		{
+			if (wParam >= 'A' && wParam <= 'Z')
+			{
+				if ((GetAsyncKeyState(VK_LWIN) & 0x8000)) wParam -= 'A' - 1;
+				else
+					wParam += 'a' - 'A';
+			}
+		}
+		return wParam;
+	}
+
+#endif
+	return ERR;
+}
 
 LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
@@ -215,11 +350,17 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		c->mouseWheel(0, 0, (short)HIWORD(wParam));
 		return 0;
 	}
-	if (Message == WM_KEYDOWN)
+	if (Message == WM_KEYDOWN || Message == WM_CHAR)
 	{
 		//readbg() << c << " " << wParam << "\n";
-		if (c->keyPressed(wParam) == true)
-			return 0;
+		const int a = (int)xlateKey(Message, wParam, lParam);
+		if (a != ERR)
+		{
+			if (c->keyPressed(a) == true)
+				return 0;
+		}
+		else readbg() << "error xlating kbd\n";
+		return 1;
 	}
 	if (Message == WM_DESTROY)
 	{

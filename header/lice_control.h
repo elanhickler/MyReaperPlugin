@@ -7,11 +7,42 @@
 #endif
 
 #include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
 #include <memory>
 #include <vector>
 #include <functional>
 #include <string>
 #include <array>
+
+enum
+{
+	KEY_DOWN = 4096,
+	KEY_UP,
+	KEY_PPAGE,
+	KEY_NPAGE,
+	KEY_RIGHT,
+	KEY_LEFT,
+	KEY_HOME,
+	KEY_END,
+	KEY_IC,
+	KEY_DC,
+	KEY_F1,
+	KEY_F2,
+	KEY_F3,
+	KEY_F4,
+	KEY_F5,
+	KEY_F6,
+	KEY_F7,
+	KEY_F8,
+	KEY_F9,
+	KEY_F10,
+	KEY_F11,
+	KEY_F12,
+};
+
+#define KEY_BACKSPACE '\b'
+
+#define KEY_F(x) (KEY_F1 + (x) - 1)
 
 
 enum ModifierKey
@@ -136,9 +167,11 @@ public:
 	HWND getWindowHandle() const { return m_hwnd; }
 private:
 	HWND m_hwnd = NULL;
+	HWND m_parenthwnd = NULL;
 	static LRESULT WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	std::unique_ptr<LICE_SysBitmap> m_bitmap;
 	bool m_wants_focus = true;
+	accelerator_register_t m_acreg;
 };
 
 class PopupMenu
