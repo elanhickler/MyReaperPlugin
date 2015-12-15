@@ -25,18 +25,6 @@
 /
 ******************************************************************************/
 
-// Include generated file from reascript_vararg.php
-#ifdef _WIN32
-#pragma warning(push, 0)
-#pragma warning(disable: 4800) // disable "forcing value to bool..." warnings
-#endif
-#include "reascript_vararg.h"
-#ifdef _WIN32
-#pragma warning(pop)
-#endif
-
-#include <limits.h>
-
 #define APIFUNC(x) (void*)x,#x,(void*) ## x,"APIvararg_" #x "","API_" #x "","APIdef_" #x ""
 #define CAPIFUNC(x) (void*)x,#x,NULL,NULL,"API_" #x "",NULL // export to C/C++ only
 
@@ -148,7 +136,7 @@ APIdef g_apidefs[] =
 
 /*
 todo: create macro so you can define functions like this:
-APIFUNC(DoublePointer, "double EH_DoublePointer(double n1, double n2)", "This is the help text for my awesome function")
+APIFUNC(EH_DoublePointer, "double (double n1, double n2)", "This is the help text for my awesome function")
 the below functions will be replaced with string stuff and string algorithms to parse correctly.
 */
 
