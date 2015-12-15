@@ -25,25 +25,6 @@
 /
 ******************************************************************************/
 
-#define APIFUNC(x) (void*)x,#x,(void*) ## x,"APIvararg_" #x "","API_" #x "","APIdef_" #x ""
-#define CAPIFUNC(x) (void*)x,#x,NULL,NULL,"API_" #x "",NULL // export to C/C++ only
-
-struct APIdef {
-	void* func;
-	const char* func_name;
-	void* func_vararg;
-	const char* regkey_vararg;
-	const char* regkey_func;
-	const char* regkey_def;
-	const char* ret_val;
-	const char* parm_types;
-
-	// if additionnal data are needed, add them below (see top remark)
-	const char* parm_names;
-	const char* help;
-	char* dyn_def; // used for dynamic allocations/cleanups
-};
-
 /*
 When documenting API function parameters:
 - if a (char*,int) pair is encountered, name them buf, buf_sz
@@ -57,7 +38,21 @@ At the moment (REAPER v5pre6) the supported return types are:
 - AnyStructOrClass* (handled as an opaque pointer)
 */
 
-struct In {
+struct APIdef {
+	void* func;                // function to export to C
+	const char* func_name;     // function name
+	void* func_vararg;         // function to export to EEL,LUA,PY
+	const char* regkey_vararg; // registry type/name for func_vararg
+	const char* regkey_func;   // registry type/name for func
+	const char* regkey_def;    // registry type/name for dyn_def
+	std::string ret_val;       // return type, parameter types
+	std::string parm_types;    // csv of parameter types
+	std::string parm_names;    // csv of names for parameter types
+	std::string help;          // help text for function
+	char* dyn_def;             // used for dynamic allocations/cleanups
+};
+
+struct In { // Helpers for creating export functions
 	void* v;
 
 	In(void* const& v) : v(v) {}
@@ -75,13 +70,12 @@ struct In {
 	operator char*() { return (char*)v; }
 	operator const char*() { return (const char*)v; }
 };
-
 void* Out(int a) { return (void*)(INT_PTR)a; }
 void* Out(bool a) { return (void*)(INT_PTR)a; }
 void* Out(const char* a) { return (void*)(INT_PTR)a; }
 void* Out(double a) { return (void*)(INT_PTR)a; }
 
-/*DEFINE EXPORT FUNCTIONS HERE*/
+/*** DEFINE EXPORT FUNCTIONS HERE ***/
 static void* DoublePointer(void** arg, int arg_sz) {//return:double parameters:double,double
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
@@ -116,14 +110,16 @@ static void* CastDoubleToInt(void** arg, int arg_sz) {//return:int parameters:do
 static void* CastIntToDouble(void** arg, int arg_sz) {//return:double parameters:int,int
 	double n1 = (int)In(arg[0]);
 	double n2 = (int)In(arg[1]);
-	double* n3 = In(arg[arg_sz-1]);
+	double* n3 = In(arg[2]);
 
 	*n3 = n1 + n2;
 
 	return n3;
 }
 
-// Add functions to array
+#define  APIFUNC(x) (void*)x, #x, (void*) ## x, "APIvararg_" #x "", "API_" #x "", "APIdef_" #x ""
+#define CAPIFUNC(x) (void*)x, #x,         NULL,               NULL, "API_" #x "",            NULL // export to C/C++ only
+/*** REGISTER EXPORT FUNCTIONS HERE ***/
 APIdef g_apidefs[] =
 {
 	{ APIFUNC(DoublePointer), "double", "double,double", "n1,n2", "Add one to input and return the value", },
@@ -133,49 +129,5 @@ APIdef g_apidefs[] =
 	{ APIFUNC(CastIntToDouble), "double", "int,int", "n1,n2", "Add one to input and return the value", },
 	{ 0, } // denote end of table
 };
-
-/*
-todo: create macro so you can define functions like this:
-APIFUNC(EH_DoublePointer, "double (double n1, double n2)", "This is the help text for my awesome function")
-the below functions will be replaced with string stuff and string algorithms to parse correctly.
-*/
-
-// register exported functions
-bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
-	bool ok = (rec!=NULL);
-	int i=-1;
-	while (ok && g_apidefs[++i].func) {
-		ok &= (rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0);
-		if (g_apidefs[i].regkey_vararg && g_apidefs[i].func_vararg) {
-			ok &= (rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0);
-		}
-	}
-	return ok;
-}
-
-// unregister exported functions
-void UnregisterExportedFuncs() {
-	char tmp[512];
-	int i=-1;
-	while (g_apidefs[++i].func) {
-		snprintf(tmp, sizeof(tmp), "-%s", g_apidefs[i].regkey_func);
-		plugin_register(tmp, g_apidefs[i].func);
-	}
-}
-
-// register exported function definitions (html documentation)
-bool RegisterExportedAPI(reaper_plugin_info_t* rec) {
-	bool ok = (rec!=NULL);
-	int i=-1;
-	char tmp[8*1024];
-	while (ok && g_apidefs[++i].func) {
-		if (g_apidefs[i].regkey_def) {
-			memset(tmp, 0, sizeof(tmp));
-			snprintf(tmp, sizeof(tmp), "%s\r%s\r%s\r%s", g_apidefs[i].ret_val, g_apidefs[i].parm_types, g_apidefs[i].parm_names, g_apidefs[i].help);
-			char* p = g_apidefs[i].dyn_def = strdup(tmp);
-			while (*p) { if (*p=='\r') *p='\0'; p++; }
-			ok &= (rec->Register(g_apidefs[i].regkey_def, g_apidefs[i].dyn_def) != 0);
-		}
-	}
-	return ok;
-}
+#undef APIFUNC
+#undef CAPIFUNC
