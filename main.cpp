@@ -103,26 +103,16 @@ extern "C"
 			g_parent = rec->hwnd_main;
 
 			// load all Reaper API functions in one go, byebye ugly IMPAPI macro!
-			if (REAPERAPI_LoadAPI(rec->GetFunc) > 0) {
-				return 0;
-			}
+			if (REAPERAPI_LoadAPI(rec->GetFunc) > 0) { return 0; /*todo: proper error*/ }
 
 			// Use C++11 lambda to call the doAction1() function that doesn't have the action_entry& as input parameter
-			add_action("Simple extension test action",
-				"EXAMPLE_ACTION_01",
-				CannotToggle,
-				[](action_entry&) { doAction1(); });
+			add_action("Simple extension test action", "EXAMPLE_ACTION_01", CannotToggle, [](action_entry&) { doAction1(); });
 
 			// Pass in the doAction2() function directly since it's compatible with the action adding function signature
-			auto togact=add_action("Simple extension togglable test action",
-				"EXAMPLE_ACTION_02",
-				ToggleOff,
-				doAction2);
+			auto togact = add_action("Simple extension togglable test action", "EXAMPLE_ACTION_02", ToggleOff, doAction2);
 
 			// Use C++11 lambda to directly define the action code right here
-			add_action("Simple extension another test action",
-				"EXAMPLE_ACTION_03",
-				CannotToggle,
+			add_action("Simple extension another test action", "EXAMPLE_ACTION_03", CannotToggle,
 				[](action_entry&) { ShowMessageBox("Hello from C++11 lambda!", "Reaper extension API test", 0); });
 
 			// Add 4 actions in a loop, using C++11 lambda capture [i] to make a small customization for each action
@@ -155,18 +145,18 @@ extern "C"
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
 			if ((!RegisterExportedFuncs(rec) || !RegisterExportedAPI(rec))) { /*todo: error*/ }
 
-
+			// restore extension global settings
+			// saving extension data into reaper project files is another thing and 
+			// at the moment not done in this example plugin
 			if (togact->m_command_id != 0) {
-				// restore extension global settings
-				// saving extension data into reaper project files is another thing and 
-				// at the moment not done in this example plugin
 				const char* numberString = GetExtState("simple_extension", "toggleaction_state");
 				if (numberString != nullptr) {
 					int initogstate = atoi(numberString);
 					if (initogstate == 1)
 						togact->m_togglestate = ToggleOn;
 				}
-			}			
+			}		
+
 			return 1; // our plugin registered, return success
 		}
 		else {

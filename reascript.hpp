@@ -116,7 +116,7 @@ static void* CastDoubleToInt(void** arg, int arg_sz) {//return:int parameters:do
 static void* CastIntToDouble(void** arg, int arg_sz) {//return:double parameters:int,int
 	double n1 = (int)In(arg[0]);
 	double n2 = (int)In(arg[1]);
-	double* n3 = In(arg[2]);
+	double* n3 = In(arg[arg_sz-1]);
 
 	*n3 = n1 + n2;
 
@@ -141,13 +141,13 @@ the below functions will be replaced with string stuff and string algorithms to 
 */
 
 // register exported functions
-bool RegisterExportedFuncs(reaper_plugin_info_t* _rec) {
-	bool ok = (_rec!=NULL);
+bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
+	bool ok = (rec!=NULL);
 	int i=-1;
 	while (ok && g_apidefs[++i].func) {
-		ok &= (_rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0);
+		ok &= (rec->Register(g_apidefs[i].regkey_func, g_apidefs[i].func) != 0);
 		if (g_apidefs[i].regkey_vararg && g_apidefs[i].func_vararg) {
-			ok &= (_rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0);
+			ok &= (rec->Register(g_apidefs[i].regkey_vararg, g_apidefs[i].func_vararg) != 0);
 		}
 	}
 	return ok;
@@ -164,8 +164,8 @@ void UnregisterExportedFuncs() {
 }
 
 // register exported function definitions (html documentation)
-bool RegisterExportedAPI(reaper_plugin_info_t* _rec) {
-	bool ok = (_rec!=NULL);
+bool RegisterExportedAPI(reaper_plugin_info_t* rec) {
+	bool ok = (rec!=NULL);
 	int i=-1;
 	char tmp[8*1024];
 	while (ok && g_apidefs[++i].func) {
@@ -174,7 +174,7 @@ bool RegisterExportedAPI(reaper_plugin_info_t* _rec) {
 			snprintf(tmp, sizeof(tmp), "%s\r%s\r%s\r%s", g_apidefs[i].ret_val, g_apidefs[i].parm_types, g_apidefs[i].parm_names, g_apidefs[i].help);
 			char* p = g_apidefs[i].dyn_def = strdup(tmp);
 			while (*p) { if (*p=='\r') *p='\0'; p++; }
-			ok &= (_rec->Register(g_apidefs[i].regkey_def, g_apidefs[i].dyn_def) != 0);
+			ok &= (rec->Register(g_apidefs[i].regkey_def, g_apidefs[i].dyn_def) != 0);
 		}
 	}
 	return ok;
