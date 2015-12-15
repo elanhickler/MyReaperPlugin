@@ -101,6 +101,11 @@ int LiceControl::getHeight() const
 	return r.bottom - r.top;
 }
 
+bool LiceControl::hasFocus() const
+{
+	return GetFocus() == m_hwnd;
+}
+
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
 #ifdef WIN32
@@ -137,6 +142,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
 		{
 			SetCapture(hwnd);
+			if (c->wantsFocus()==true)
+				SetFocus(hwnd);
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (msg == WM_RBUTTONDOWN)
 				but = MouseEvent::MBRight;
@@ -198,6 +205,10 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	{
 		c->mouseWheel(0, 0, (short)HIWORD(wParam));
 		return 0;
+	}
+	if (Message == WM_KEYDOWN)
+	{
+		readbg() << c << " " << wParam << "\n";
 	}
 	if (Message == WM_DESTROY)
 	{
