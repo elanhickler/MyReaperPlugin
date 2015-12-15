@@ -25,8 +25,6 @@
 /
 ******************************************************************************/
 
-
-
 // Include generated file from reascript_vararg.php
 #ifdef _WIN32
 #pragma warning(push, 0)
@@ -38,12 +36,6 @@
 #endif
 
 #include <limits.h>
-
-// Important, keep APIFUNC() as it is defined: both scripts reascript_vararg.php
-// and reascript_python.pl parse g_apidefs to generate variable argument wrappers
-// for EEL and Lua (reascript_vararg.h, automatically generated at compilation time
-// on OSX), as well as python wrappers (sws_python.py, automatically generated at
-// compilation time both on Win & OSX).
 
 #define APIFUNC(x) (void*)x,#x,(void*) ## x,"APIvararg_" #x "","API_" #x "","APIdef_" #x ""
 #define CAPIFUNC(x) (void*)x,#x,NULL,NULL,"API_" #x "",NULL // export to C/C++ only
@@ -63,6 +55,19 @@ struct APIdef {
 	const char* help;
 	char* dyn_def; // used for dynamic allocations/cleanups
 };
+
+/*
+When documenting API function parameters:
+- if a (char*,int) pair is encountered, name them buf, buf_sz
+- if a (const char*,int) pair is encountered, buf, buf_sz as well
+- if a lone basicType *, use varNameOut or varNameIn or  varNameInOptional (if last parameter(s))
+At the moment (REAPER v5pre6) the supported parameter types are:
+- int, int*, bool, bool*, double, double*, char*, const char*
+- AnyStructOrClass* (handled as an opaque pointer)
+At the moment (REAPER v5pre6) the supported return types are:
+- int, bool, double, const char*
+- AnyStructOrClass* (handled as an opaque pointer)
+*/
 
 struct In {
 	void* v;
@@ -87,19 +92,6 @@ void* Out(int a) { return (void*)(INT_PTR)a; }
 void* Out(bool a) { return (void*)(INT_PTR)a; }
 void* Out(const char* a) { return (void*)(INT_PTR)a; }
 void* Out(double a) { return (void*)(INT_PTR)a; }
-
-/*
-When documenting API function parameters:
-- if a (char*,int) pair is encountered, name them buf, buf_sz
-- if a (const char*,int) pair is encountered, buf, buf_sz as well
-- if a lone basicType *, use varNameOut or varNameIn or  varNameInOptional (if last parameter(s))
-At the moment (REAPER v5pre6) the supported parameter types are:
-- int, int*, bool, bool*, double, double*, char*, const char*
-- AnyStructOrClass* (handled as an opaque pointer)
-At the moment (REAPER v5pre6) the supported return types are:
-- int, bool, double, const char*
-- AnyStructOrClass* (handled as an opaque pointer)
-*/
 
 /*DEFINE EXPORT FUNCTIONS HERE*/
 static void* DoublePointer(void** arg, int arg_sz) {//return:double parameters:double,double
