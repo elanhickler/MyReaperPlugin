@@ -1,6 +1,8 @@
 
 #include "MyLiceWindow.h"
 #include "utilfuncs.h"
+#include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
 
 bool g_popupmenushowing = false;
 
@@ -15,6 +17,8 @@ void TestControl::paint(LICE_IBitmap * bm)
 		auto& e = m_points[i];
 		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, color);
 	}
+	if (m_test_text.size()>0)
+		LICE_DrawText(bm, 5, 5, m_test_text.c_str(), LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
 }
 
 int TestControl::find_hot_point(int x, int y)
@@ -179,6 +183,19 @@ void TestControl::mouseWheel(int x, int y, int delta)
 		temp=-1.0f;
 	m_circlesize = bound_value(1.0f, m_circlesize+temp, 100.0f);
 	repaint();
+}
+
+bool TestControl::keyPressed(int keycode)
+{
+	//readbg() << keycode;
+	if ((keycode >= 'A' && keycode <= 'Z') || (keycode>='0' && keycode<='9'))
+	{
+		
+		m_test_text.push_back(char(keycode));
+		repaint();
+		return true;
+	}
+	return false;
 }
 
 fx_param_t * TestControl::getFXParamTarget(int index, int which)

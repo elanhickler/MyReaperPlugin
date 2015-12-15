@@ -125,12 +125,20 @@ public:
 	int getHeight() const;
 	void repaint();
 
+	bool wantsFocus() const { return m_wants_focus; }
+	void setWantsFocus(bool b) { m_wants_focus = b; }
+	bool hasFocus() const;
+	void setFocused();
+
+	virtual bool keyPressed(int keycode) { return false; }
+
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:
 	HWND m_hwnd = NULL;
 	static LRESULT WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	std::unique_ptr<LICE_SysBitmap> m_bitmap;
+	bool m_wants_focus = true;
 };
 
 class PopupMenu

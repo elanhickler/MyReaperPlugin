@@ -5,12 +5,12 @@
 #else
 #include "WDL/WDL/swell/swell.h"
 #endif
-
+#include "utilfuncs.h"
 #include <memory>
 #include <functional>
 #include <vector>
 
-class ReaperDialog
+class ReaperDialog : public NoCopyNoMove
 {
 public:
 	ReaperDialog(HWND parent, int dialogresource, std::function<bool(HWND, UINT, WPARAM, LPARAM)> proc);
