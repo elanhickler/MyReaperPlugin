@@ -25,8 +25,7 @@
 /
 ******************************************************************************/
 
-/*DEFINE EXPORT FUNCTIONS HERE*/
-int AddTwoNumbers(int n1, int n2) { return n1 + n2; }
+
 
 // Include generated file from reascript_vararg.php
 #ifdef _WIN32
@@ -38,13 +37,15 @@ int AddTwoNumbers(int n1, int n2) { return n1 + n2; }
 #pragma warning(pop)
 #endif
 
+#include <limits.h>
+
 // Important, keep APIFUNC() as it is defined: both scripts reascript_vararg.php
 // and reascript_python.pl parse g_apidefs to generate variable argument wrappers
 // for EEL and Lua (reascript_vararg.h, automatically generated at compilation time
 // on OSX), as well as python wrappers (sws_python.py, automatically generated at
 // compilation time both on Win & OSX).
 
-#define APIFUNC(x) (void*)x,#x,(void*)__vararg_ ## x,"APIvararg_" #x "","API_" #x "","APIdef_" #x ""
+#define APIFUNC(x) (void*)x,#x,(void*) ## x,"APIvararg_" #x "","API_" #x "","APIdef_" #x ""
 #define CAPIFUNC(x) (void*)x,#x,NULL,NULL,"API_" #x "",NULL // export to C/C++ only
 
 struct APIdef {
@@ -63,14 +64,101 @@ struct APIdef {
 	char* dyn_def; // used for dynamic allocations/cleanups
 };
 
+struct In {
+	void* v;
+
+	In(void* const& v) : v(v) {}
+
+	operator double() { return *(double*)v; }
+	operator double*() { return (double*)v; }
+
+	operator int() { return (int)(INT_PTR)v; }
+	operator int*() { return (int*)(INT_PTR)&v; }
+
+	operator bool() { return *(bool*)v; }
+	operator bool*() { return (bool*)v; }
+
+	operator char() { return *(char*)v; }
+	operator char*() { return (char*)v; }
+	operator const char*() { return (const char*)v; }
+};
+
+void* Out(int a) { return (void*)(INT_PTR)a; }
+void* Out(bool a) { return (void*)(INT_PTR)a; }
+void* Out(const char* a) { return (void*)(INT_PTR)a; }
+void* Out(double a) { return (void*)(INT_PTR)a; }
+
+/*
+When documenting API function parameters:
+- if a (char*,int) pair is encountered, name them buf, buf_sz
+- if a (const char*,int) pair is encountered, buf, buf_sz as well
+- if a lone basicType *, use varNameOut or varNameIn or  varNameInOptional (if last parameter(s))
+At the moment (REAPER v5pre6) the supported parameter types are:
+- int, int*, bool, bool*, double, double*, char*, const char*
+- AnyStructOrClass* (handled as an opaque pointer)
+At the moment (REAPER v5pre6) the supported return types are:
+- int, bool, double, const char*
+- AnyStructOrClass* (handled as an opaque pointer)
+*/
+
+/*DEFINE EXPORT FUNCTIONS HERE*/
+static void* DoublePointer(void** arg, int arg_sz) {//return:double parameters:double,double
+	double* n1 = In(arg[0]);
+	double* n2 = In(arg[1]);
+	double* n3 = In(arg[arg_sz-1]);
+
+	*n3 = *n1 + *n2;
+
+	return n3;
+}
+
+static void* IntPointer(void** arg, int arg_sz) {//return:int parameters:int,int
+	int* n1 = In(arg[0]);
+	int* n2 = In(arg[1]);
+
+	return Out(*n1+*n2);
+}
+
+static void* DoublePointerAsInt(void** arg, int arg_sz) {//return:int parameters:double,double
+	double* n1 = In(arg[0]);
+	double* n2 = In(arg[1]);
+
+	return Out(*n1 + *n2);
+}
+
+static void* CastDoubleToInt(void** arg, int arg_sz) {//return:int parameters:double,double
+	int n1 = (double)In(arg[0]);
+	int n2 = (double)In(arg[1]);
+
+	return Out(n1+n2);
+}
+
+static void* CastIntToDouble(void** arg, int arg_sz) {//return:double parameters:int,int
+	double n1 = (int)In(arg[0]);
+	double n2 = (int)In(arg[1]);
+	double* n3 = In(arg[2]);
+
+	*n3 = n1 + n2;
+
+	return n3;
+}
+
 // Add functions to array
 APIdef g_apidefs[] =
 {
-	{ APIFUNC(AddTwoNumbers), "int", "int,int", "n1,n2", "Add one to input and return the value", },
+	{ APIFUNC(DoublePointer), "double", "double,double", "n1,n2", "Add one to input and return the value", },
+	{ APIFUNC(IntPointer), "int", "int,int", "n1,n2", "Add one to input and return the value", },
+	{ APIFUNC(DoublePointerAsInt), "int", "double,double", "n1,n2", "Add one to input and return the value", },
+	{ APIFUNC(CastDoubleToInt), "int", "double,double", "n1,n2", "Add one to input and return the value", },
+	{ APIFUNC(CastIntToDouble), "double", "int,int", "n1,n2", "Add one to input and return the value", },
 	{ 0, } // denote end of table
 };
 
-///////////////////////////////////////////////////////////////////////////////
+/*
+todo: create macro so you can define functions like this:
+APIFUNC(DoublePointer, "double EH_DoublePointer(double n1, double n2)", "This is the help text for my awesome function")
+the below functions will be replaced with string stuff and string algorithms to parse correctly.
+*/
 
 // register exported functions
 bool RegisterExportedFuncs(reaper_plugin_info_t* _rec) {
