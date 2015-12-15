@@ -172,7 +172,11 @@ bool RegisterExportedAPI(reaper_plugin_info_t* rec) {
 		if (g_apidefs[i].regkey_def) {
 			memset(tmp, 0, sizeof(tmp));
 			snprintf(tmp, sizeof(tmp), "%s\r%s\r%s\r%s", g_apidefs[i].ret_val, g_apidefs[i].parm_types, g_apidefs[i].parm_names, g_apidefs[i].help);
+#ifdef WIN32
+			char* p = g_apidefs[i].dyn_def = _strdup(tmp);
+#else
 			char* p = g_apidefs[i].dyn_def = strdup(tmp);
+#endif
 			while (*p) { if (*p=='\r') *p='\0'; p++; }
 			ok &= (rec->Register(g_apidefs[i].regkey_def, g_apidefs[i].dyn_def) != 0);
 		}
