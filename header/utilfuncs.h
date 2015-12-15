@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <ostream>
-#include "../library/reaper_plugin/reaper_plugin_functions.h"
 
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
@@ -25,19 +24,8 @@ inline bool is_point_in_rect(int px, int py, int rx, int ry, int rw, int rh)
 class readbgbuf : public std::streambuf
 {
 public:
-	int overflow(int c) {
-		if (c != traits_type::eof()) {
-			char ch[2] = { traits_type::to_char_type(c), 0 };
-			ShowConsoleMsg(ch);
-		}
-		return c;
-	}
-
-	std::streamsize xsputn(const char *buffer, std::streamsize n) {
-		std::string buf(buffer, buffer + n);
-		ShowConsoleMsg(buf.c_str());
-		return n;
-	}
+	int overflow(int c);
+	std::streamsize xsputn(const char *buffer, std::streamsize n);
 };
 
 class readbg : public std::ostream
@@ -47,4 +35,13 @@ public:
 	readbg() :std::ostream(&buf) { }
 };
 
+class NoCopyNoMove
+{
+public:
+	NoCopyNoMove(){}
+	NoCopyNoMove(const NoCopyNoMove&) = delete;
+	NoCopyNoMove& operator=(const NoCopyNoMove&) = delete;
+	NoCopyNoMove(NoCopyNoMove&&) = delete;
+	NoCopyNoMove& operator=(NoCopyNoMove&&) = delete;
+};
 #endif /* utilfuncs_h */

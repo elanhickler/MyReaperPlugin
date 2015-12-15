@@ -23,6 +23,9 @@
     <ClCompile Include="..\source\lice_control.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\utilfuncs.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -44,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="..\reascript.hpp" />
     <ClInclude Include="..\header\lice_control.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\utilfuncs.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

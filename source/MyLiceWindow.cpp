@@ -1,6 +1,8 @@
 
 #include "MyLiceWindow.h"
 #include "utilfuncs.h"
+#include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
 
 bool g_popupmenushowing = false;
 

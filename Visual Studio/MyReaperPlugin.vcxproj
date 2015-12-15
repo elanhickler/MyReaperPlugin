@@ -27,12 +27,14 @@
     <ClCompile Include="..\source\MyFirstClass.cpp" />
     <ClCompile Include="..\source\MyFirstDialog.cpp" />
     <ClCompile Include="..\source\MyLiceWindow.cpp" />
+    <ClCompile Include="..\source\utilfuncs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\lice_control.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\MyFirstDialog.h" />
     <ClInclude Include="..\header\MyLiceWindow.h" />
+    <ClInclude Include="..\header\utilfuncs.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
