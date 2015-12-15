@@ -187,10 +187,9 @@ void TestControl::mouseWheel(int x, int y, int delta)
 
 bool TestControl::keyPressed(int keycode)
 {
-	//readbg() << keycode;
-	if ((keycode >= 'A' && keycode <= 'Z') || (keycode>='0' && keycode<='9'))
+	readbg() << keycode << "\n";
+	if (is_alphaspacenumeric(keycode)==true)
 	{
-		
 		m_test_text.push_back(char(keycode));
 		repaint();
 		return true;
