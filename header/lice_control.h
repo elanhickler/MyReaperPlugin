@@ -128,6 +128,7 @@ public:
 	bool wantsFocus() const { return m_wants_focus; }
 	void setWantsFocus(bool b) { m_wants_focus = b; }
 	bool hasFocus() const;
+	void setFocused();
 
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }

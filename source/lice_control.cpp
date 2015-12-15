@@ -106,6 +106,16 @@ bool LiceControl::hasFocus() const
 	return GetFocus() == m_hwnd;
 }
 
+void LiceControl::setFocused()
+{
+	if (m_wants_focus == true)
+	{
+		SetFocus(m_hwnd);
+		// Might be nice to have some customization point for what happens when the focus is got...
+		repaint();
+	}
+}
+
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
 #ifdef WIN32
@@ -142,8 +152,7 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN)
 		{
 			SetCapture(hwnd);
-			if (c->wantsFocus()==true)
-				SetFocus(hwnd);
+			c->setFocused();
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (msg == WM_RBUTTONDOWN)
 				but = MouseEvent::MBRight;
