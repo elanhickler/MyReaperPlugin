@@ -194,3 +194,18 @@ private:
 	std::function<void(void)> m_none_chosen_f;
 };
 
+class Timer
+{
+public:
+	Timer() {}
+	void start(int milliseconds);
+	void stop();
+	void set_callback(std::function<void(void)> f)
+	{
+		m_callback = f;
+	}
+private:
+	UINT_PTR m_id = 0;
+	std::function<void(void)> m_callback;
+	static VOID CALLBACK thetimerproc(HWND hwnd, UINT uMsg,UINT_PTR idEvent, DWORD dwTime);
+};

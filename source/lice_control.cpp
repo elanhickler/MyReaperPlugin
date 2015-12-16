@@ -439,3 +439,35 @@ void PopupMenu::set_none_chosen_handler(std::function<void(void)> f)
 {
 	m_none_chosen_f = f;
 }
+
+std::unordered_map<UINT_PTR, Timer*> g_timer_map;
+
+void Timer::start(int milliseconds)
+{
+	if (m_id != 0)
+	{
+		KillTimer(NULL, m_id);
+		g_timer_map.erase(m_id);
+	}
+	m_id = SetTimer(NULL, 0, milliseconds, thetimerproc);
+	g_timer_map[m_id] = this;
+}
+
+void Timer::stop()
+{
+	if (m_id != 0)
+	{
+		KillTimer(NULL, m_id);
+		g_timer_map.erase(m_id);
+		m_id = 0;
+	}
+}
+
+VOID CALLBACK Timer::thetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	Timer* timer = g_timer_map[idEvent];
+	if (timer != nullptr && timer->m_callback)
+	{
+		timer->m_callback();
+	}
+}

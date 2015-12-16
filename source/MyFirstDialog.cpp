@@ -231,6 +231,7 @@ HWND open_my_first_modeless_dialog(HWND parent)
 }
 #else
 std::unique_ptr<ReaperDialog> g_my_dialog;
+Timer g_test_timer;
 HWND open_my_first_modeless_dialog(HWND parent)
 {
 	auto dlg_proc = [](HWND hwnd, UINT msg, WPARAM, LPARAM)
@@ -243,6 +244,7 @@ HWND open_my_first_modeless_dialog(HWND parent)
 		}
 		if (msg == WM_CLOSE)
 		{
+			g_test_timer.stop();
 			ShowWindow(hwnd, SW_HIDE);
 			return true;
 		}
@@ -263,6 +265,14 @@ HWND open_my_first_modeless_dialog(HWND parent)
 		{
 			set_selected_take_name_from_line_edit(g_my_dialog->getWindowHandle());
 		});
+		int counter = 0;
+		g_test_timer.set_callback([counter]() mutable
+		{ 
+			std::string text = "My First Dialog " + std::to_string(counter);
+			SetWindowText(g_my_dialog->getWindowHandle(), text.c_str());
+			++counter;
+		});
+		g_test_timer.start(1000);
 	}
 	if (g_my_dialog->isVisible() == false)
 		g_my_dialog->setVisible(true);

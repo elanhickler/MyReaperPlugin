@@ -19,6 +19,10 @@ static void* MRP_IntPointer(void** arg, int arg_sz) {//return:int parameters:int
 
 // This function isn't really correct...it calculates a 64 bit hash
 // but returns it as a 32 bit int. Should reimplement this.
+// Or rather, even more confusingly : The hash will be 32 bit when building
+// for 32 bit architecture and 64 bit when building for 64 bit architecture!
+// It comes down to how size_t is of different size between the 32 and 64 bit
+// architectures.
 static void* MRP_CalculateEnvelopeHash(void** arg, int arg_sz)
 {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
