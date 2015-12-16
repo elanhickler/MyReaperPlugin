@@ -25,12 +25,11 @@ reaper_plugin_info_t* g_plugin_info = nullptr;
 REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful for making win32 API calls
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
 
-#include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
+#include "main.hpp" 
 #include "reascript.hpp" /*** HERE THE FUNCTIONS DO THEIR WORK ***/
 
 void doAction1() {
 	ShowMessageBox("Hello World!", "Reaper extension", 0);
-	g_plugin_info = nullptr;
 }
 
 void doAction2(action_entry& act) {
