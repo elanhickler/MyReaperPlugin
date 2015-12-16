@@ -1,8 +1,4 @@
 #include "reaper_action_helper.h"
-#include <memory>
-#include <vector>
-#include <string>
-#include <functional>
 
 extern reaper_plugin_info_t* g_plugin_info;
 

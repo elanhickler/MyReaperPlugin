@@ -5,7 +5,9 @@
 #include "reaper_plugin/reaper_plugin_functions.h"
 
 #include <functional>
+#include <string>
 #include <memory>
+#include <vector>
 
 enum toggle_state { CannotToggle, ToggleOff, ToggleOn };
 

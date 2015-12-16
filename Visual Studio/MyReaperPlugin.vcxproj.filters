@@ -32,9 +32,6 @@
     <ClCompile Include="..\source\reaper_action_helper.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\reaper_function_helper.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -62,9 +59,6 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\reaper_action_helper.h">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\reaper_function_helper.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
