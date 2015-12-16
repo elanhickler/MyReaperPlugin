@@ -34,7 +34,5 @@ private:
 	std::vector<command_entry_t> m_simple_command_handlers;
 };
 
-
-
 HWND open_my_first_modeless_dialog(HWND parent);
 HWND open_lice_dialog(HWND parent);
