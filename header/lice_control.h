@@ -210,5 +210,7 @@ public:
 private:
 	UINT_PTR m_id = 0;
 	std::function<void(void)> m_callback;
-	static VOID CALLBACK thetimerproc(HWND hwnd, UINT uMsg,UINT_PTR idEvent, DWORD dwTime);
+	static void CALLBACK thetimerproc(HWND hwnd, UINT uMsg,UINT_PTR idEvent, DWORD dwTime);
 };
+
+

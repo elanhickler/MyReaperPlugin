@@ -131,6 +131,7 @@ extern "C"
 			return 1; // our plugin registered, return success
 		}
 		else {
+			clean_up_gui();
 			return 0;
 		}
 	}

@@ -360,3 +360,8 @@ HWND open_lice_dialog(HWND parent)
 	ShowWindow(g_licetestwindow, SW_SHOW);
 	return g_licetestwindow;
 }
+
+void clean_up_gui()
+{
+	g_test_timer.stop();
+}

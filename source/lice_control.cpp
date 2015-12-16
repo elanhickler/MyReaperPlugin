@@ -471,7 +471,7 @@ void Timer::stop()
 	}
 }
 
-VOID CALLBACK Timer::thetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+void CALLBACK Timer::thetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	Timer* timer = get_from_map(g_timer_map, idEvent);
 	if (timer != nullptr && timer->m_callback)
@@ -479,3 +479,4 @@ VOID CALLBACK Timer::thetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 		timer->m_callback();
 	}
 }
+

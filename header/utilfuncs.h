@@ -46,7 +46,7 @@ inline auto get_from_map(Cont& c, const Key& k)
 {
 	if (c.count(k) > 0)
 		return c[k];
-	return Cont::mapped_type();
+	return typename Cont::mapped_type();
 }
 
 class readbgbuf : public std::streambuf
