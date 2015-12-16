@@ -110,7 +110,8 @@ extern "C"
 			// Add functions
 			add_function(MRP_DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
 			add_function(MRP_IntPointer, "MRP_DoublePointer", "int", "int,int", "n1,n2", "add two numbers and return value");
-
+			add_function(MRP_CalculateEnvelopeHash, "MRP_CalculateEnvelopeHash", "int", "TrackEnvelope*", "env", "Calculate hash from an envelope");
+			
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
 			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }

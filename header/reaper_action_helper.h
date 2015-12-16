@@ -30,3 +30,4 @@ bool hookCommandProc(int command, int flag);
 int toggleActionCallback(int command_id);
 
 std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggle_state togst, std::function<void(action_entry&)> f);
+

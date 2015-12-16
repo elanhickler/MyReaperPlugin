@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <ostream>
+#include <functional>
 
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
@@ -24,6 +25,18 @@ inline bool is_point_in_rect(int px, int py, int rx, int ry, int rw, int rh)
 inline bool is_alphaspacenumeric(char c)
 {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c < 'Z') || c == ' ';
+}
+
+template<typename T>
+inline void hash_combine(std::size_t& seed, const T& v)
+{
+	std::hash<T> hasher;
+	const std::size_t kMul = 0x9ddfea08eb382d69ULL;
+	std::size_t a = (hasher(v) ^ seed) * kMul;
+	a ^= (a >> 47);
+	std::size_t b = (seed ^ a) * kMul;
+	b ^= (b >> 47);
+	seed = b * kMul;
 }
 
 class readbgbuf : public std::streambuf
