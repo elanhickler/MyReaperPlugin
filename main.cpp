@@ -199,8 +199,8 @@ extern "C"
 			});
 
 			// Add functions
-			add_function(DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
-			add_function(IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
+			add_function((void*)DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
+			add_function((void*)IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
