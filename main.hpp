@@ -2,6 +2,7 @@
 
 #include "MyFirstClass.hpp"
 #include "MyFirstDialog.h"
+#include "utilfuncs.h"
 
 void doAction1() {
 	ShowMessageBox("Hello World!", "Reaper extension", 0);
@@ -25,11 +26,6 @@ void doAction2(action_entry& act) {
 }
 
 void doAction3(action_entry& act) {
-	if (act.m_cycle_state == 0)
-		ShowConsoleMsg("action in state 0\n");
-	if (act.m_cycle_state == 1)
-		ShowConsoleMsg("action in state 1\n");
-	if (act.m_cycle_state == 2)
-		ShowConsoleMsg("action in state 2\n");
+	readbg() << "action in cycle state " << act.m_cycle_state << "\n";
 	act.m_cycle_state = (act.m_cycle_state + 1) % 3;
 }
