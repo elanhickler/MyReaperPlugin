@@ -3,7 +3,7 @@
 #include <string>
 #include <functional>
 #include <vector>
-#include "WDL\WDL\lice\lice.h"
+#include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 
 class function_entry { // Little C++ class to deal with the functions
@@ -23,7 +23,13 @@ public:
 	std::function<void*(void**, int)> funcmem;
 };
 
-void add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false);
+void impl_add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false);
+
+template<typename F>
+inline void add_function(F func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false)
+{
+	impl_add_function((void*)func, func_name, ret_val, par_types, par_names, html_help);
+}
 
 // Register exported function and html documentation
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec);

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
+		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
 		C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6851C1BAD49005C6CCC /* swell-dlg.mm */; };
 		C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6861C1BAD49005C6CCC /* swell-gdi.mm */; };
 		C484E68F1C1BAD49005C6CCC /* swell-kb.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6871C1BAD49005C6CCC /* swell-kb.mm */; };
@@ -37,6 +39,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
+		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
 		C484E6851C1BAD49005C6CCC /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../library/WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
 		C484E6861C1BAD49005C6CCC /* swell-gdi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-gdi.mm"; path = "../library/WDL/WDL/swell/swell-gdi.mm"; sourceTree = "<group>"; };
 		C484E6871C1BAD49005C6CCC /* swell-kb.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-kb.mm"; path = "../library/WDL/WDL/swell/swell-kb.mm"; sourceTree = "<group>"; };
@@ -111,6 +115,7 @@
 		E3EAC6761C1C989600F619AA /* header */ = {
 			isa = PBXGroup;
 			children = (
+				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
 				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
@@ -123,6 +128,7 @@
 		E3EAC6771C1C989700F619AA /* source */ = {
 			isa = PBXGroup;
 			children = (
+				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
 				C4C574221C1F87EA00A1CE31 /* lice_control.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
 				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
@@ -196,6 +202,7 @@
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
+				C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +259,7 @@
 			files = (
 				C4DED3B71C20E16B00275B4A /* utilfuncs.cpp in Sources */,
 				C484E6931C1BAD49005C6CCC /* swell-wnd.mm in Sources */,
+				C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */,
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */,

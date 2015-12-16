@@ -80,10 +80,10 @@ extern "C"
 			});
 
 			// Add functions
-#define reascript(f, r, p, n, h) add_function((void*)f, #f, r, p, n, h)
-			reascript(MRP_DoublePointer, "double", "double,double", "n1,n2", "add two numbers and return value");
-			reascript(MRP_IntPointer, "int", "int,int", "n1,n2", "add two numbers and return value");
-#undef reascript
+//#define reascript(f, r, p, n, h) add_function((void*)f, #f, r, p, n, h)
+			add_function(MRP_DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
+			add_function(MRP_IntPointer, "MRP_DoublePointer", "int", "int,int", "n1,n2", "add two numbers and return value");
+//#undef reascript
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }

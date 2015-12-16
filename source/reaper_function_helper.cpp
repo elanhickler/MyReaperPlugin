@@ -16,7 +16,7 @@ function_entry::function_entry(void* func, std::string func_name, std::string re
 
 std::vector<function_entry> g_functions;
 
-void add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only) {
+void impl_add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only) {
 	auto entry = function_entry(func, func_name, ret_val, par_types, par_names, html_help, c_func_only);
 	g_functions.push_back(entry);
 }
