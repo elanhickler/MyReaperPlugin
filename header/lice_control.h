@@ -193,7 +193,9 @@ private:
 	std::vector<menu_entry_t> m_entries;
 	std::function<void(void)> m_none_chosen_f;
 };
-
+// Wrapper for Windows timer. This isn't tied to a window and the
+// WM_TIMER messages, so you can create these wherever a timer can work,
+// namely when the win32 message loop is free to run
 class Timer
 {
 public:
