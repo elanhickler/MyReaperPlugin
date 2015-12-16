@@ -29,6 +29,7 @@
     <ClCompile Include="..\source\MyFirstDialog.cpp" />
     <ClCompile Include="..\source\MyLiceWindow.cpp" />
     <ClCompile Include="..\source\reaper_action_helper.cpp" />
+    <ClCompile Include="..\source\reaper_function_helper.cpp" />
     <ClCompile Include="..\source\utilfuncs.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -37,9 +38,10 @@
     <ClInclude Include="..\header\MyFirstDialog.h" />
     <ClInclude Include="..\header\MyLiceWindow.h" />
     <ClInclude Include="..\header\reaper_action_helper.h" />
+    <ClInclude Include="..\header\reaper_function_helper.h" />
     <ClInclude Include="..\header\utilfuncs.h" />
-    <ClInclude Include="..\library\reaper plugin\reaper_plugin.h" />
-    <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h" />
+    <ClInclude Include="..\library\reaper_plugin\reaper_plugin.h" />
+    <ClInclude Include="..\library\reaper_plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
     <ClInclude Include="..\reascript.hpp" />
     <ClInclude Include="resource.h" />

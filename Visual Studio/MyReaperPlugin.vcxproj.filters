@@ -32,17 +32,14 @@
     <ClCompile Include="..\source\reaper_action_helper.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\reaper_function_helper.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
     <ClInclude Include="..\header\MyFirstClass.hpp">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\reaper plugin\reaper_plugin.h">
-      <Filter>library\reaper_plugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\reaper plugin\reaper_plugin_functions.h">
-      <Filter>library\reaper_plugin</Filter>
     </ClInclude>
     <ClInclude Include="..\header\MyFirstDialog.h">
       <Filter>header</Filter>
@@ -60,6 +57,15 @@
     </ClInclude>
     <ClInclude Include="..\header\reaper_action_helper.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\reaper_function_helper.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\library\reaper_plugin\reaper_plugin.h">
+      <Filter>library\reaper_plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\library\reaper_plugin\reaper_plugin_functions.h">
+      <Filter>library\reaper_plugin</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
