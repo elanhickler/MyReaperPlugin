@@ -18,6 +18,7 @@
 #include <vector>
 #include <memory>
 #include "reaper_action_helper.h"
+#include "reaper_function_helper.h"
 reaper_plugin_info_t* g_plugin_info = nullptr;
 REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful for making win32 API calls
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
@@ -25,62 +26,8 @@ HWND g_parent; // global variable that holds the handle to the Reaper main windo
 
 #include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
 
-class function_entry { // Little C++ class to deal with the functions
-public:
-	function_entry(void* func, std::string func_name, std::string ret_val,
-		std::string par_types, std::string par_names, std::string html_help,
-		bool c_func_only = false) {
-		regkey_func = "API_" + func_name;
-		func_c_api = func;
-		c_only = c_func_only;
-
-		if (c_only) return;
-
-		func_script = func;
-		regkey_vararg = "APIvararg_" + func_name;
-		regkey_def = "APIdef_" + func_name;
-		document = ret_val + '\0' + par_types + '\0' + par_names + '\0' + html_help + '\0';
-	}
-	void* func_c_api;
-	void* func_script;
-	std::string regkey_vararg; // registry type/name for func_vararg
-	std::string regkey_func;   // registry type/name for func
-	std::string regkey_def;    // registry type/name for dyn_def
-	std::string document;      // documentation for function
-	bool c_only;
-};
-
-std::vector<function_entry> g_functions;
-
-void add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false) {
-	auto entry = function_entry(func, func_name, ret_val, par_types, par_names, html_help, c_func_only = false);
-	g_functions.push_back(entry);
-}
-
 #include "reascript.hpp" /*** HERE THE FUNCTIONS DO THEIR WORK ***/
 
-// Register exported function and html documentation
-bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
-	bool ok = rec != 0;
-	for (auto& e : g_functions) {
-		if (!ok) break;
-
-		ok &= rec->Register(e.regkey_func.c_str(), e.func_c_api) != 0;
-		ok &= rec->Register(e.regkey_def.c_str(), &e.document[0]) != 0;
-
-		if (e.c_only) continue;
-
-		ok &= rec->Register(e.regkey_vararg.c_str(), e.func_script) != 0;
-	}
-	return ok;
-}
-
-// Unregister exported functions
-void UnregisterExportedFuncs() {
-	for (auto& e : g_functions) {
-		plugin_register(std::string("-"+e.regkey_func).c_str(), e.func_c_api);
-	}
-}
 
 extern "C"
 {
@@ -136,12 +83,12 @@ extern "C"
 			});
 
 			// Add functions
-			add_function((void*)DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
-			add_function((void*)IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
+			//add_function((void*)DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
+			//add_function((void*)IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
-			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
+			//if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
 
 			// restore extension global settings
 			// saving extension data into reaper project files is another thing and 

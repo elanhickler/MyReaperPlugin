@@ -4,7 +4,6 @@
 #include <string>
 #include <functional>
 
-
 extern reaper_plugin_info_t* g_plugin_info;
 
 action_entry::action_entry(std::string description, std::string idstring, toggle_state togst, std::function<void(action_entry&)> func) :
