@@ -17,44 +17,16 @@
 #include <functional>
 #include <vector>
 #include <memory>
-
+#include "reaper_action_helper.h"
 reaper_plugin_info_t* g_plugin_info = nullptr;
 REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful for making win32 API calls
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
 
-enum toggle_state { CannotToggle, ToggleOff, ToggleOn };
 
-// Little C++ class to deal with the actions
-class action_entry : public NoCopyNoMove {
-public:
-	action_entry(std::string description, std::string idstring, toggle_state togst, std::function<void(action_entry&)> func) :
-		m_desc(description), m_id_string(idstring), m_func(func), m_togglestate(togst) {
-		if (g_plugin_info != nullptr) {
-			m_accel_reg.accel ={ 0,0,0 };
-			m_accel_reg.desc = m_desc.c_str();
-			m_accel_reg.accel.cmd = m_command_id = g_plugin_info->Register("command_id", (void*)m_id_string.c_str());
-			g_plugin_info->Register("gaccel", &m_accel_reg);
-		}
-	}
-// These are not private and behind getters/setters because we assume people
-// know what they are doing ;) 
-	int m_command_id = 0;
-	gaccel_register_t m_accel_reg;
-	std::function<void(action_entry&)> m_func;
-	std::string m_desc;
-	std::string m_id_string;
-	toggle_state m_togglestate = CannotToggle;
-	int m_cycle_state = 0;
-};
-
-// use (shared) pointers for the action entries to prevent certain complications
-std::vector<std::shared_ptr<action_entry>> g_actions;
-
-std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggle_state togst, std::function<void(action_entry&)> f) {
-	auto entry = std::make_shared<action_entry>(name, id, togst, f);
-	g_actions.push_back(entry);
-	return entry;
-}
+/* Use (shared) pointers for the action entries to prevent certain complications, that is
+ complications with how the action_entry objects should be copied or even moved if they
+ were handled as C++ values. This way we can just create them once and make them point to the pointers and that's it.
+*/
 
 #include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
 
@@ -91,34 +63,6 @@ void add_function(void* func, std::string func_name, std::string ret_val, std::s
 }
 
 #include "reascript.hpp" /*** HERE THE FUNCTIONS DO THEIR WORK ***/
-
-// Reaper calls back to this when it wants to execute an action registered by the extension plugin
-bool hookCommandProc(int command, int flag) {
-	// it might happen Reaper calls with 0 for the command and if the action
-	// registration has failed the plugin's command id would also be 0
-	// therefore, check the plugins command id is not 0 and then if it matches with
-	// what Reaper called with
-	for (auto& e : g_actions) {
-		if (e->m_command_id != 0 && e->m_command_id == command) {
-			e->m_func(*e);
-			return true;
-		}
-	}	
-	return false; // failed to run relevant action
-}
-
-// Reaper calls back to this when it wants to know an actions's toggle state
-int toggleActionCallback(int command_id) {
-	for (auto& e : g_actions) {
-		if (command_id != 0 && e->m_togglestate != CannotToggle && e->m_command_id == command_id) {
-			if (e->m_togglestate == ToggleOff)
-				return 0;
-			if (e->m_togglestate == ToggleOn)
-				return 1;
-		}
-	}	
-	return -1; // -1 if action not provided by this extension or is not togglable
-}
 
 // Register exported function and html documentation
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {

@@ -29,6 +29,7 @@
 		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
 		C4DED3B71C20E16B00275B4A /* utilfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */; };
 		C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3B81C20E23700275B4A /* lice_text.cpp */; };
+		C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */; };
 		E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3248BDE1C17C8BA00308A5F /* main.cpp */; };
 		E3E1DB111C18C67100D648F5 /* main.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BDB1C17C8AF00308A5F /* main.hpp */; };
 		E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */; };
@@ -59,6 +60,8 @@
 		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utilfuncs.cpp; path = ../source/utilfuncs.cpp; sourceTree = "<group>"; };
 		C4DED3B81C20E23700275B4A /* lice_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_text.cpp; path = ../../WDL/WDL/lice/lice_text.cpp; sourceTree = "<group>"; };
+		C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = reaper_action_helper.h; path = ../header/reaper_action_helper.h; sourceTree = "<group>"; };
+		C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_action_helper.cpp; path = ../source/reaper_action_helper.cpp; sourceTree = "<group>"; };
 		E3248BDB1C17C8AF00308A5F /* main.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = main.hpp; path = ../main.hpp; sourceTree = "<group>"; };
 		E3248BDE1C17C8BA00308A5F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = "<group>"; };
 		E3E1DB161C18C67100D648F5 /* reaper_MyReaperPlugin.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_MyReaperPlugin.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +115,7 @@
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
 				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
 				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
+				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -123,6 +127,7 @@
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
 				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
 				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
+				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 			);
 			name = source;
 			sourceTree = "<group>";
@@ -248,6 +253,7 @@
 				C4DED3B71C20E16B00275B4A /* utilfuncs.cpp in Sources */,
 				C484E6931C1BAD49005C6CCC /* swell-wnd.mm in Sources */,
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
+				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
