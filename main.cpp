@@ -23,11 +23,6 @@ REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful 
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
 
 
-/* Use (shared) pointers for the action entries to prevent certain complications, that is
- complications with how the action_entry objects should be copied or even moved if they
- were handled as C++ values. This way we can just create them once and make them point to the pointers and that's it.
-*/
-
 #include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
 
 class function_entry { // Little C++ class to deal with the functions

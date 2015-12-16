@@ -16,6 +16,10 @@ m_desc(description), m_id_string(idstring), m_func(func), m_togglestate(togst) {
 	}
 }
 
+/* Use (shared) pointers for the action entries to prevent certain complications, that is
+ complications with how the action_entry objects should be copied or even moved if they
+ were handled as C++ values. This way we can just create them once and make them point to the pointers and that's it.
+ */
 std::vector<std::shared_ptr<action_entry>> g_actions;
 
 std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggle_state togst, std::function<void(action_entry&)> f) {
