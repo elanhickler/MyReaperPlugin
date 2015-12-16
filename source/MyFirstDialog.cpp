@@ -125,6 +125,40 @@ INT_PTR CALLBACK ReaperDialog::dlgproc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 	return FALSE;
 }
 
+void set_selected_take_name_to_line_edit(HWND hwndDlg)
+{
+	if (CountSelectedMediaItems(nullptr) > 0)
+	{
+		MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (take != nullptr)
+		{
+			char buf[1024];
+			if (GetSetMediaItemTakeInfo_String(take, "P_NAME", buf, false)==true)
+				SetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), buf);
+		}
+		
+	}
+	else
+		SetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), "No item selected!");
+}
+
+void set_selected_take_name_from_line_edit(HWND hwndDlg)
+{
+	if (CountSelectedMediaItems(nullptr) > 0)
+	{
+		MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (take != nullptr)
+		{
+			char buf[1024];
+			GetWindowText(GetDlgItem(hwndDlg, IDC_EDIT1), buf, 1024);
+			GetSetMediaItemTakeInfo_String(take, "P_NAME", buf, true);
+			UpdateArrange();
+		}
+	}
+}
+
 INT_PTR CALLBACK myfirstdialogproc(
 	HWND   hwndDlg,
 	UINT   uMsg,
@@ -221,8 +255,14 @@ HWND open_my_first_modeless_dialog(HWND parent)
 		{
 			readbg() << "edit2 text changed to : " << text << "\n";
 		});
-		g_my_dialog->add_command_handler(IDC_DO1, BN_CLICKED, []() { readbg() << "button 1 clicked\n"; });
-		g_my_dialog->add_command_handler(IDC_DO2, BN_CLICKED, []() { readbg() << "button 2 clicked\n"; });
+		g_my_dialog->add_command_handler(IDC_DO1, BN_CLICKED, []()
+		{
+			set_selected_take_name_to_line_edit(g_my_dialog->getWindowHandle());
+		});
+		g_my_dialog->add_command_handler(IDC_DO2, BN_CLICKED, []()
+		{
+			set_selected_take_name_from_line_edit(g_my_dialog->getWindowHandle());
+		});
 	}
 	if (g_my_dialog->isVisible() == false)
 		g_my_dialog->setVisible(true);
