@@ -23,9 +23,7 @@ reaper_plugin_info_t* g_plugin_info = nullptr;
 REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful for making win32 API calls
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
 
-
 #include "main.hpp" /*** HERE THE ACTIONS DO THEIR WORK ***/
-
 #include "reascript.hpp" /*** HERE THE FUNCTIONS DO THEIR WORK ***/
 
 extern "C"
@@ -82,8 +80,10 @@ extern "C"
 			});
 
 			// Add functions
-			add_function((void*)DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
-			add_function((void*)IntPointer, "MRP_IntPointer", "int", "int,int", "n1,n2", "add two numbers and return value");
+#define reascript(f, r, p, n, h) add_function((void*)f, #f, r, p, n, h)
+			reascript(MRP_DoublePointer, "double", "double,double", "n1,n2", "add two numbers and return value");
+			reascript(MRP_IntPointer, "int", "int,int", "n1,n2", "add two numbers and return value");
+#undef reascript
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
