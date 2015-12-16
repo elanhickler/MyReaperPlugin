@@ -12,13 +12,15 @@
 #include "reaper_plugin/reaper_plugin_functions.h"
 
 #include "utilfuncs.h"
+#include "reaper_action_helper.h"
+#include "reaper_function_helper.h"
+
 #include <stdio.h>
 #include <string>
 #include <functional>
 #include <vector>
 #include <memory>
-#include "reaper_action_helper.h"
-#include "reaper_function_helper.h"
+
 reaper_plugin_info_t* g_plugin_info = nullptr;
 REAPER_PLUGIN_HINSTANCE g_hInst; // handle to the dll instance. could be useful for making win32 API calls
 HWND g_parent; // global variable that holds the handle to the Reaper main window, useful for various win32 API calls
@@ -80,10 +82,8 @@ extern "C"
 			});
 
 			// Add functions
-//#define reascript(f, r, p, n, h) add_function((void*)f, #f, r, p, n, h)
 			add_function(MRP_DoublePointer, "MRP_DoublePointer", "double", "double,double", "n1,n2", "add two numbers and return value");
 			add_function(MRP_IntPointer, "MRP_DoublePointer", "int", "int,int", "n1,n2", "add two numbers and return value");
-//#undef reascript
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }

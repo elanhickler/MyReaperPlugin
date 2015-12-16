@@ -6,6 +6,7 @@
 
 void doAction1() {
 	ShowMessageBox("Hello World!", "Reaper extension", 0);
+	g_plugin_info = nullptr;
 }
 
 void doAction2(action_entry& act) {

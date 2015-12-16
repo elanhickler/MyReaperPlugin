@@ -1,10 +1,11 @@
 #pragma once
 
+#include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
+
 #include <string>
 #include <functional>
 #include <vector>
-#include "WDL/WDL/lice/lice.h"
-#include "reaper_plugin/reaper_plugin_functions.h"
 
 class function_entry { // Little C++ class to deal with the functions
 public:
@@ -12,23 +13,20 @@ public:
 		std::string par_types, std::string par_names, std::string html_help,
 		bool c_func_only = false);
 
-	void* func_c_api;
-	void* func_script;
+	void* func_c_api;  // function pointer for c api
+	void* func_script; // function pointer for reascript
 	std::string regkey_vararg; // registry type/name for func_vararg
 	std::string regkey_func;   // registry type/name for func
 	std::string regkey_def;    // registry type/name for dyn_def
 	std::string document;      // documentation for function
 	bool c_only;
-
-	std::function<void*(void**, int)> funcmem;
 };
 
-void impl_add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false);
-
+void impl_add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only);
 template<typename F>
 inline void add_function(F func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only = false)
 {
-	impl_add_function((void*)func, func_name, ret_val, par_types, par_names, html_help);
+	impl_add_function((void*)func, func_name, ret_val, par_types, par_names, html_help, c_func_only);
 }
 
 // Register exported function and html documentation
@@ -55,7 +53,7 @@ struct In { // Helpers for creating export functions
 	operator char*() { return (char*)v; }
 	operator const char*() { return (const char*)v; }
 };
-void* Out(int a);
-void* Out(bool a);
-void* Out(const char* a);
-void* Out(double a);
+inline void* Out(int a);
+inline void* Out(bool a);
+inline void* Out(const char* a);
+inline void* Out(double a);
