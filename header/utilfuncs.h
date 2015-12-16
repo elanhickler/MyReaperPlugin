@@ -39,6 +39,16 @@ inline void hash_combine(std::size_t& seed, const T& v)
 	seed = b * kMul;
 }
 
+// Get a value from a map style container without inserting an element if the key wasn't present
+// and instead return default constructed value of the map value type
+template<typename Key, typename Cont>
+inline auto get_from_map(Cont& c, const Key& k)
+{
+	if (c.count(k) > 0)
+		return c[k];
+	return Cont::mapped_type();
+}
+
 class readbgbuf : public std::streambuf
 {
 public:

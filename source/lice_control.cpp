@@ -440,6 +440,9 @@ void PopupMenu::set_none_chosen_handler(std::function<void(void)> f)
 	m_none_chosen_f = f;
 }
 
+// Yet another punishment from win32. The timer callback function isn't provided
+// a context pointer, but rather the timer id, so we need to map ourselves
+// from that id to the Timer pointers...
 std::unordered_map<UINT_PTR, Timer*> g_timer_map;
 
 Timer::~Timer()
@@ -470,7 +473,7 @@ void Timer::stop()
 
 VOID CALLBACK Timer::thetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	Timer* timer = g_timer_map[idEvent];
+	Timer* timer = get_from_map(g_timer_map, idEvent);
 	if (timer != nullptr && timer->m_callback)
 	{
 		timer->m_callback();
