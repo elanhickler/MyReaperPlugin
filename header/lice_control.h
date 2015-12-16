@@ -198,6 +198,7 @@ class Timer
 {
 public:
 	Timer() {}
+	~Timer();
 	void start(int milliseconds);
 	void stop();
 	void set_callback(std::function<void(void)> f)

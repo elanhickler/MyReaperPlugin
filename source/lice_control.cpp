@@ -442,6 +442,11 @@ void PopupMenu::set_none_chosen_handler(std::function<void(void)> f)
 
 std::unordered_map<UINT_PTR, Timer*> g_timer_map;
 
+Timer::~Timer()
+{
+	stop();
+}
+
 void Timer::start(int milliseconds)
 {
 	if (m_id != 0)
