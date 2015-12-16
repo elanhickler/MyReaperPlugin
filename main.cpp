@@ -11,6 +11,7 @@
 #define REAPERAPI_IMPLEMENT
 #include "reaper_plugin/reaper_plugin_functions.h"
 
+#include "utilfuncs.h"
 #include <stdio.h>
 #include <string>
 #include <functional>
@@ -24,7 +25,7 @@ HWND g_parent; // global variable that holds the handle to the Reaper main windo
 enum toggle_state { CannotToggle, ToggleOff, ToggleOn };
 
 // Little C++ class to deal with the actions
-class action_entry {
+class action_entry : public NoCopyNoMove {
 public:
 	action_entry(std::string description, std::string idstring, toggle_state togst, std::function<void(action_entry&)> func) :
 		m_desc(description), m_id_string(idstring), m_func(func), m_togglestate(togst) {
@@ -35,11 +36,8 @@ public:
 			g_plugin_info->Register("gaccel", &m_accel_reg);
 		}
 	}
-	action_entry(const action_entry&) = delete; // prevent copying
-	action_entry& operator=(const action_entry&) = delete; // prevent copying
-	action_entry(action_entry&&) = delete; // prevent moving
-	action_entry& operator=(action_entry&&) = delete; // prevent moving
-
+// These are not private and behind getters/setters because we assume people
+// know what they are doing ;) 
 	int m_command_id = 0;
 	gaccel_register_t m_accel_reg;
 	std::function<void(action_entry&)> m_func;
