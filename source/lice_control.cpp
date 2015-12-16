@@ -3,6 +3,8 @@
 #include "utilfuncs.h"
 #include <string>
 
+//#define BUILD_BROKEN_KB_HANDLING
+
 std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
 extern HINSTANCE g_hInst;
@@ -78,15 +80,18 @@ LiceControl::LiceControl(HWND parent)
 		return;
 	}
 	m_parenthwnd = parent;
+#ifdef BUILD_BROKEN_KB_HANDLING
 	//m_acreg.isLocal = true;
 	//m_acreg.translateAccel = acProc;
 	//m_acreg.user = (void*)&m_hwnd;
+	
 	if (g_plugin_info != nullptr && g_acrecinstalled == false)
 	{
 		g_acRec.user = (void*)&m_parenthwnd;
 		g_plugin_info->Register("accelerator", (void*)&g_acRec);
 		g_acrecinstalled = true;
 	}
+#endif
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
 	setBounds(20, 60, 200, 200);
@@ -350,6 +355,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		c->mouseWheel(0, 0, (short)HIWORD(wParam));
 		return 0;
 	}
+#ifdef BUILD_BROKEN_KB_HANDLING
 	if (Message == WM_KEYDOWN || Message == WM_CHAR)
 	{
 		//readbg() << c << " " << wParam << "\n";
@@ -362,6 +368,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		else readbg() << "error xlating kbd\n";
 		return 1;
 	}
+#endif
 	if (Message == WM_DESTROY)
 	{
 		//ShowConsoleMsg("lice control window destroy\n");
