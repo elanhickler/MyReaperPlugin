@@ -185,15 +185,26 @@ void TestControl::mouseWheel(int x, int y, int delta)
 	repaint();
 }
 
+void TestControl::shift_points(double x, double y)
+{
+	for (auto& e : m_points)
+	{
+		e.m_x += x;
+		e.m_y += y;
+	}
+}
+
 bool TestControl::keyPressed(int keycode)
 {
-	readbg() << keycode << "\n";
-	if (is_alphaspacenumeric(keycode)==true)
-	{
-		m_test_text.push_back(char(keycode));
-		repaint();
-		return true;
-	}
+	if (keycode == KEY_LEFT)
+		shift_points(-1.0, 0.0);
+	if (keycode == KEY_RIGHT)
+		shift_points(1.0, 0.0);
+	if (keycode == KEY_UP)
+		shift_points(0.0, -1.0);
+	if (keycode == KEY_DOWN)
+		shift_points(0.0, 1.0);
+	repaint();
 	return false;
 }
 

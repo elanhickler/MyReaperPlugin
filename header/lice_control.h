@@ -14,6 +14,8 @@
 #include <string>
 #include <array>
 
+int acProc(MSG *msg, accelerator_register_t *ctx);
+
 enum
 {
 	KEY_DOWN = 4096,

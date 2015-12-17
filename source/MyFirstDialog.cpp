@@ -272,6 +272,8 @@ INT_PTR CALLBACK mylicedialogproc(
 		}
 		return TRUE;
 	}
+	//if (uMsg == WM_KEYDOWN || uMsg == WM_CHAR || uMsg == WM_KEYUP)
+	//	return FALSE;
 	return FALSE;
 }
 

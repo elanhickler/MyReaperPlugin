@@ -40,6 +40,7 @@ private:
 	bool m_mousedown = false;
 	bool m_delete_point_when_dragged_outside = false;
 	std::string m_test_text;
+	void shift_points(double x, double y);
 };
 
 

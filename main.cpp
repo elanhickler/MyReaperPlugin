@@ -127,7 +127,6 @@ extern "C"
 						togact->m_togglestate = ToggleOn;
 				}
 			}		
-
 			return 1; // our plugin registered, return success
 		}
 		else {

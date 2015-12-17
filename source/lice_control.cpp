@@ -3,8 +3,6 @@
 #include "utilfuncs.h"
 #include <string>
 
-//#define BUILD_BROKEN_KB_HANDLING
-
 std::unordered_map<HWND, LiceControl*> g_controlsmap;
 
 extern HINSTANCE g_hInst;
@@ -47,9 +45,11 @@ HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, 
 #endif
 }
 
-static int acProc(MSG *msg, accelerator_register_t *ctx)
+HWND g_myfocuswindow;
+
+int acProc(MSG *msg, accelerator_register_t *ctx)
 {
-	HWND myChildWindow = *(HWND*)ctx->user;
+	HWND myChildWindow = g_myfocuswindow; //*((HWND*)ctx->user);
 	int x;
 	if (myChildWindow && msg->hwnd && (msg->hwnd == myChildWindow || IsChild(myChildWindow, msg->hwnd)))
 	{
@@ -66,7 +66,7 @@ static int acProc(MSG *msg, accelerator_register_t *ctx)
 static accelerator_register_t g_acRec =
 {
 	acProc,
-	true,
+	true, nullptr
 };
 
 bool g_acrecinstalled=false;
@@ -80,18 +80,18 @@ LiceControl::LiceControl(HWND parent)
 		return;
 	}
 	m_parenthwnd = parent;
-#ifdef BUILD_BROKEN_KB_HANDLING
-	//m_acreg.isLocal = true;
-	//m_acreg.translateAccel = acProc;
-	//m_acreg.user = (void*)&m_hwnd;
+
+	m_acreg.isLocal = true;
+	m_acreg.translateAccel = acProc;
+	m_acreg.user = (void*)&m_hwnd;
 	
-	if (g_plugin_info != nullptr && g_acrecinstalled == false)
+	if (g_plugin_info != nullptr) // && g_acrecinstalled == false)
 	{
-		g_acRec.user = (void*)&m_parenthwnd;
-		g_plugin_info->Register("accelerator", (void*)&g_acRec);
+		//g_acRec.user = (void*)&m_hwnd;
+		
 		g_acrecinstalled = true;
 	}
-#endif
+
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
 	setBounds(20, 60, 200, 200);
@@ -103,6 +103,7 @@ LiceControl::~LiceControl()
 	//readbg() << "Lice Control dtor\n";
 	if (m_hwnd != NULL)
 	{
+		//g_plugin_info->Register("-accelerator", (void*)&m_acreg);
 		g_controlsmap.erase(m_hwnd);
 		DestroyWindow(m_hwnd);
 	}
@@ -149,6 +150,7 @@ void LiceControl::setFocused()
 {
 	if (m_wants_focus == true)
 	{
+		
 		SetFocus(m_hwnd);
 		// Might be nice to have some customization point for what happens when the focus is got...
 		repaint();
@@ -192,6 +194,7 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		{
 			SetCapture(hwnd);
 			c->setFocused();
+			g_myfocuswindow = hwnd;
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (msg == WM_RBUTTONDOWN)
 				but = MouseEvent::MBRight;
@@ -355,20 +358,35 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		c->mouseWheel(0, 0, (short)HIWORD(wParam));
 		return 0;
 	}
-#ifdef BUILD_BROKEN_KB_HANDLING
-	if (Message == WM_KEYDOWN || Message == WM_CHAR)
+
+	if (Message == WM_GETDLGCODE)
 	{
-		//readbg() << c << " " << wParam << "\n";
-		const int a = (int)xlateKey(Message, wParam, lParam);
-		if (a != ERR)
-		{
-			if (c->keyPressed(a) == true)
-				return 0;
-		}
-		else readbg() << "error xlating kbd\n";
-		return 1;
+		return DLGC_WANTALLKEYS;
 	}
-#endif
+	if (Message == WM_KEYDOWN) // || Message == WM_CHAR)
+	{
+		int k = 0;
+		//readbg() << wParam << " ";
+		if (wParam == VK_LEFT) k = KEY_LEFT;
+		if (wParam == VK_RIGHT) k = KEY_RIGHT;
+		if (wParam == VK_UP) k = KEY_UP;
+		if (wParam == VK_DOWN) k = KEY_DOWN;
+		if (wParam == VK_BACK) k = KEY_BACKSPACE;
+		if (wParam >= 'A' && wParam <= 'Z')
+			k = wParam;
+		if (wParam >= '0' && wParam <= '9')
+			k = wParam;
+		if (k != 0)
+		{
+			c->keyPressed(k);
+			return 0;
+		}
+	}
+	if (Message == WM_KEYUP)
+	{
+		
+	}
+
 	if (Message == WM_DESTROY)
 	{
 		//ShowConsoleMsg("lice control window destroy\n");
