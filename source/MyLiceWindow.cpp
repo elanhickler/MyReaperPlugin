@@ -194,16 +194,38 @@ void TestControl::shift_points(double x, double y)
 	}
 }
 
-bool TestControl::keyPressed(int keycode)
+std::vector<point> g_points_clipboard;
+
+bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
-	if (keycode == KEY_LEFT)
-		shift_points(-1.0, 0.0);
-	if (keycode == KEY_RIGHT)
-		shift_points(1.0, 0.0);
-	if (keycode == KEY_UP)
-		shift_points(0.0, -1.0);
-	if (keycode == KEY_DOWN)
-		shift_points(0.0, 1.0);
+	if (keycode == 'C' && modkeys.isModifierKeyDown(MKControl) == true)
+	{
+		g_points_clipboard = m_points;
+	}
+	if (keycode == 'V' && modkeys.isModifierKeyDown(MKControl) == true)
+	{
+		for (auto& e : g_points_clipboard)
+			m_points.push_back(e);
+	}
+	if (modkeys.isModifierKeyDown(MKShift) == false)
+	{
+		if (keycode == KEY_LEFT)
+			shift_points(-1.0, 0.0);
+		if (keycode == KEY_RIGHT)
+			shift_points(1.0, 0.0);
+		if (keycode == KEY_UP)
+			shift_points(0.0, -1.0);
+		if (keycode == KEY_DOWN)
+			shift_points(0.0, 1.0);
+	}
+	if (keycode == KEY_LEFT && modkeys.isModifierKeyDown(MKShift)==true)
+	{
+		m_test_text = "Left pressed with shift";
+	}
+	if (keycode == KEY_RIGHT && modkeys.isModifierKeyDown(MKShift) == true)
+	{
+		m_test_text.clear();
+	}
 	repaint();
 	return false;
 }

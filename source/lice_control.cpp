@@ -160,9 +160,15 @@ void LiceControl::setFocused()
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
 #ifdef WIN32
+	/*
 	if (wParam & MK_SHIFT)
 		keys.setModifierDown(MKShift, true);
 	if (wParam & MK_CONTROL)
+		keys.setModifierDown(MKControl, true);
+	*/
+	if (HIBYTE(GetKeyState(VK_SHIFT)) & 0x80)
+		keys.setModifierDown(MKShift, true);
+	if (HIBYTE(GetKeyState(VK_CONTROL)) & 0x80)
 		keys.setModifierDown(MKControl, true);
 	if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
 		keys.setModifierDown(MKAlt, true);
@@ -365,6 +371,8 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	}
 	if (Message == WM_KEYDOWN) // || Message == WM_CHAR)
 	{
+		ModifierKeys modkeys;
+		update_modifiers_state(modkeys, wParam);
 		int k = 0;
 		//readbg() << wParam << " ";
 		if (wParam == VK_LEFT) k = KEY_LEFT;
@@ -378,7 +386,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 			k = wParam;
 		if (k != 0)
 		{
-			c->keyPressed(k);
+			c->keyPressed(modkeys,k);
 			return 0;
 		}
 	}

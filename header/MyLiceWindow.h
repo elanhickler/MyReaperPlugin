@@ -9,6 +9,16 @@ struct fx_param_t
 	int paramnum = 0;
 };
 
+struct point
+{
+	point() {}
+	point(int x, int y) : m_x(x), m_y(y) {}
+	int m_x = 0;
+	int m_y = 0;
+	fx_param_t m_x_target;
+	fx_param_t m_y_target;
+};
+
 // Development test control
 class TestControl : public LiceControl
 {
@@ -20,19 +30,11 @@ public:
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;
-	bool keyPressed(int keycode) override;
+	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::function<void(int, double, double)> PointMovedCallback;
 	fx_param_t* getFXParamTarget(int index, int which);
 private:
-	struct point
-	{
-		point() {}
-		point(int x, int y) : m_x(x), m_y(y) {}
-		int m_x = 0;
-		int m_y = 0;
-		fx_param_t m_x_target;
-		fx_param_t m_y_target;
-	};
+	
 	std::vector<point> m_points;
 	int find_hot_point(int x, int y);
 	int m_hot_point = -1;
