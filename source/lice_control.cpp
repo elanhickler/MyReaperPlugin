@@ -371,6 +371,7 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	}
 	if (Message == WM_KEYDOWN || Message == WM_SYSKEYDOWN)
 	{
+		const char* validkeys = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-,.'";
 		ModifierKeys modkeys;
 		update_modifiers_state(modkeys, wParam);
 		int k = 0;
@@ -381,6 +382,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		if (wParam == VK_NEXT) k = KEY_NPAGE;
 		if (wParam == VK_PRIOR) k = KEY_PPAGE;
 		if (wParam == VK_BACK) k = KEY_BACKSPACE;
+		if (wParam == '+') k = wParam;
+		if (wParam == '-') k = wParam;
+		if (wParam == ',') k = wParam;
+		if (wParam == '.') k = wParam;
+		if (wParam == '\'') k = wParam;
 		if (wParam >= VK_F1 && wParam <= VK_F12)
 			k = wParam - VK_F1 + KEY_F1;
 		if (wParam >= 'A' && wParam <= 'Z')
