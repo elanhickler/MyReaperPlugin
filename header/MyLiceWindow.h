@@ -27,6 +27,7 @@ public:
 		LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) {}
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(const MouseEvent& ev) override;
+	void mouseDoubleClicked(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(int x, int y) override;
 	void mouseWheel(int x, int y, int delta) override;

@@ -189,7 +189,8 @@ void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN
-		|| msg == WM_MOUSEMOVE || msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP)
+		|| msg == WM_MOUSEMOVE || msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP
+		|| msg == WM_LBUTTONDBLCLK)
 	{
 		// LOWORD/HIWORD are not technically correct according to MSDN
 		// However, SWELL does not seem to provide the alternative macros
@@ -210,6 +211,14 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 			update_modifiers_state(me.m_modkeys, wParam);
 			c->mousePressed(me);
 		}
+		if (msg == WM_LBUTTONDBLCLK)
+		{
+			//readbg() << "double click ";
+			MouseEvent::MouseButton but(MouseEvent::MBLeft);
+			MouseEvent me(x, y, but);
+			update_modifiers_state(me.m_modkeys, wParam);
+			c->mouseDoubleClicked(me);
+		}
 		if (msg == WM_MOUSEMOVE)
 		{
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
@@ -229,107 +238,6 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		return true;
 	}
 	return false;
-}
-// Taken from WDL curses_win32.cpp
-#define ERR -1
-static LRESULT xlateKey(int msg, WPARAM wParam, LPARAM lParam)
-{
-	if (msg == WM_KEYDOWN)
-	{
-#ifndef _WIN32
-		if (lParam & FVIRTKEY)
-#endif
-			switch (wParam)
-			{
-			case VK_HOME: return KEY_HOME;
-			case VK_UP: return KEY_UP;
-			case VK_PRIOR: return KEY_PPAGE;
-			case VK_LEFT: return KEY_LEFT;
-			case VK_RIGHT: return KEY_RIGHT;
-			case VK_END: return KEY_END;
-			case VK_DOWN: return KEY_DOWN;
-			case VK_NEXT: return KEY_NPAGE;
-			case VK_INSERT: return KEY_IC;
-			case VK_DELETE: return KEY_DC;
-			case VK_F1: return KEY_F1;
-			case VK_F2: return KEY_F2;
-			case VK_F3: return KEY_F3;
-			case VK_F4: return KEY_F4;
-			case VK_F5: return KEY_F5;
-			case VK_F6: return KEY_F6;
-			case VK_F7: return KEY_F7;
-			case VK_F8: return KEY_F8;
-			case VK_F9: return KEY_F9;
-			case VK_F10: return KEY_F10;
-			case VK_F11: return KEY_F11;
-			case VK_F12: return KEY_F12;
-#ifndef _WIN32
-			case VK_SUBTRACT: return '-'; // numpad -
-			case VK_ADD: return '+';
-			case VK_MULTIPLY: return '*';
-			case VK_DIVIDE: return '/';
-			case VK_DECIMAL: return '.';
-			case VK_NUMPAD0: return '0';
-			case VK_NUMPAD1: return '1';
-			case VK_NUMPAD2: return '2';
-			case VK_NUMPAD3: return '3';
-			case VK_NUMPAD4: return '4';
-			case VK_NUMPAD5: return '5';
-			case VK_NUMPAD6: return '6';
-			case VK_NUMPAD7: return '7';
-			case VK_NUMPAD8: return '8';
-			case VK_NUMPAD9: return '9';
-			case (32768 | VK_RETURN) : return VK_RETURN;
-#endif
-			}
-
-		switch (wParam)
-		{
-		case VK_RETURN: case VK_BACK: case VK_TAB: case VK_ESCAPE: return wParam;
-		case VK_CONTROL: break;
-
-		default:
-			if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
-			{
-				if (wParam >= 'a' && wParam <= 'z')
-				{
-					wParam += 1 - 'a';
-					return wParam;
-				}
-				if (wParam >= 'A' && wParam <= 'Z')
-				{
-					wParam += 1 - 'A';
-					return wParam;
-				}
-				if ((wParam&~0x80) == '[') return 27;
-				if ((wParam&~0x80) == ']') return 29;
-			}
-		}
-	}
-
-#ifdef _WIN32 // todo : fix for nonwin32
-	if (msg == WM_CHAR)
-	{
-		if (wParam >= 32) return wParam;
-	}
-#else
-	//osx/linux
-	if (wParam >= 32)
-	{
-		if (!(GetAsyncKeyState(VK_SHIFT) & 0x8000))
-		{
-			if (wParam >= 'A' && wParam <= 'Z')
-			{
-				if ((GetAsyncKeyState(VK_LWIN) & 0x8000)) wParam -= 'A' - 1;
-				else
-					wParam += 'a' - 'A';
-			}
-		}
-		return wParam;
-	}
-
-#endif
-	return ERR;
 }
 
 LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)

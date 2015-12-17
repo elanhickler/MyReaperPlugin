@@ -152,6 +152,7 @@ public:
 	virtual void paint(LICE_IBitmap*) = 0;
 
 	virtual void mousePressed(const MouseEvent& ev) {}
+	virtual void mouseDoubleClicked(const MouseEvent& ev) {}
 	virtual void mouseMoved(const MouseEvent& ev) {}
 	virtual void mouseReleased(int x, int y) {}
 	virtual void mouseWheel(int x, int y, int delta) {}

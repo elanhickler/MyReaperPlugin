@@ -48,6 +48,16 @@ void update_touched_fx(fx_param_t& entry)
 	}
 }
 
+void TestControl::mouseDoubleClicked(const MouseEvent &ev)
+{
+	if (m_hot_point==-1)
+	{
+		m_points.push_back({ ev.m_x,ev.m_y });
+		m_hot_point=(int)m_points.size()-1;
+		repaint();
+	}
+}
+
 void TestControl::mousePressed(const MouseEvent& ev)
 {
 	if (g_popupmenushowing == true)
@@ -120,12 +130,7 @@ void TestControl::mousePressed(const MouseEvent& ev)
 		return;
 	}
 	m_mousedown=true;
-	if (m_hot_point==-1)
-	{
-		m_points.push_back({ ev.m_x,ev.m_y });
-		m_hot_point=(int)m_points.size()-1;
-		repaint();
-	}
+	
 }
 
 void TestControl::mouseMoved(const MouseEvent& ev)
