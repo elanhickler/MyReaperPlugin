@@ -83,6 +83,10 @@ public:
 		for (int i = 0; i < m_keys.size(); ++i)
 			m_keys[i] = 0;
 	}
+	bool noneDown() const
+	{
+		return std::all_of(m_keys.begin(), m_keys.end(), [](char x) { return x == 0; });
+	}
 	bool isModifierKeyDown(ModifierKey k) const
 	{
 		if (k == MKShift && m_keys[0] != 0)

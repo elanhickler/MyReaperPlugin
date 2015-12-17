@@ -227,7 +227,7 @@ bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 			}
 		}
 	}
-	if (modkeys.isModifierKeyDown(MKShift) == false)
+	if (modkeys.noneDown() == true)
 	{
 		if (keycode == KEY_LEFT)
 			shift_points(-1.0, 0.0);
@@ -238,14 +238,19 @@ bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 		if (keycode == KEY_DOWN)
 			shift_points(0.0, 1.0);
 	}
-	if (keycode == KEY_LEFT && modkeys.isModifierKeyDown(MKShift)==true)
+	if (modkeys.isModifierKeyDown(MKControl) == true)
 	{
-		m_test_text = "Left pressed with shift";
+		int step = 1;
+		if (keycode == KEY_LEFT)
+			step = -1;
+		int newhot = m_hot_point + step;
+		if (newhot == m_points.size())
+			newhot = 0;
+		if (newhot < 0)
+			newhot = m_points.size() - 1;
+		m_hot_point = newhot;
 	}
-	if (keycode == KEY_RIGHT && modkeys.isModifierKeyDown(MKShift) == true)
-	{
-		m_test_text.clear();
-	}
+	
 	repaint();
 	return false;
 }
