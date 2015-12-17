@@ -170,7 +170,7 @@ void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 		keys.setModifierDown(MKShift, true);
 	if (HIBYTE(GetKeyState(VK_CONTROL)) & 0x80)
 		keys.setModifierDown(MKControl, true);
-	if (HIBYTE(GetKeyState(VK_MENU)) & 0x80)
+	if (HIBYTE(GetAsyncKeyState(VK_MENU)) & 0x80)
 		keys.setModifierDown(MKAlt, true);
 	if (HIBYTE(GetKeyState(VK_LWIN)) & 0x80)
 		keys.setModifierDown(MKAppleOrWindowsKey, true);
@@ -369,12 +369,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	{
 		return DLGC_WANTALLKEYS;
 	}
-	if (Message == WM_KEYDOWN) // || Message == WM_CHAR)
+	if (Message == WM_KEYDOWN || Message == WM_SYSKEYDOWN)
 	{
 		ModifierKeys modkeys;
 		update_modifiers_state(modkeys, wParam);
 		int k = 0;
-		//readbg() << wParam << " ";
 		if (wParam == VK_LEFT) k = KEY_LEFT;
 		if (wParam == VK_RIGHT) k = KEY_RIGHT;
 		if (wParam == VK_UP) k = KEY_UP;

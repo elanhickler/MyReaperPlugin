@@ -207,6 +207,22 @@ bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 		for (auto& e : g_points_clipboard)
 			m_points.push_back(e);
 	}
+	if (keycode == KEY_BACKSPACE)
+	{
+		if (modkeys.isModifierKeyDown(MKAlt) == true)
+		{
+			m_points.clear();
+			m_hot_point = -1;
+		}
+		else
+		{
+			if (m_hot_point >= 0)
+			{
+				m_points.erase(m_points.begin() + m_hot_point);
+				m_hot_point = -1;
+			}
+		}
+	}
 	if (modkeys.isModifierKeyDown(MKShift) == false)
 	{
 		if (keycode == KEY_LEFT)
