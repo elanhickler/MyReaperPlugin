@@ -364,14 +364,15 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		c->mouseWheel(0, 0, (short)HIWORD(wParam));
 		return 0;
 	}
-
+#ifdef WIN32
 	if (Message == WM_GETDLGCODE)
 	{
 		return DLGC_WANTALLKEYS;
 	}
+#endif
 	if (Message == WM_KEYDOWN || Message == WM_SYSKEYDOWN)
 	{
-		const char* validkeys = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-,.'";
+		//const char* validkeys = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-,.'";
 		ModifierKeys modkeys;
 		update_modifiers_state(modkeys, wParam);
 		int k = 0;

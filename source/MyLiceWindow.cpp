@@ -237,8 +237,10 @@ bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 			shift_points(0.0, -1.0);
 		if (keycode == KEY_DOWN)
 			shift_points(0.0, 1.0);
+		repaint();
+		return false;
 	}
-	if (modkeys.isModifierKeyDown(MKControl) == true)
+	if (modkeys.isModifierKeyDown(MKControl) == true && (keycode==KEY_LEFT || keycode==KEY_RIGHT))
 	{
 		int step = 1;
 		if (keycode == KEY_LEFT)
