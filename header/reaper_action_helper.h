@@ -1,14 +1,5 @@
 #pragma once
 
-#include "utilfuncs.h"
-#include "WDL/WDL/lice/lice.h"
-#include "reaper_plugin/reaper_plugin_functions.h"
-
-#include <functional>
-#include <string>
-#include <memory>
-#include <vector>
-
 enum toggle_state { CannotToggle, ToggleOff, ToggleOn };
 
 // Little C++ class to deal with the actions

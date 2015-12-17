@@ -1,3 +1,12 @@
+#include "utilfuncs.h"
+#include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
+
+#include <functional>
+#include <string>
+#include <memory>
+#include <vector>
+
 #include "reaper_action_helper.h"
 
 extern reaper_plugin_info_t* g_plugin_info;

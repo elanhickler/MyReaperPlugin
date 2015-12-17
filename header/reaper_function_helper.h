@@ -1,12 +1,5 @@
 #pragma once
 
-#include "WDL/WDL/lice/lice.h"
-#include "reaper_plugin/reaper_plugin_functions.h"
-
-#include <string>
-#include <functional>
-#include <vector>
-
 class function_entry { // Little C++ class to deal with the functions
 public:
 	function_entry(void* func, std::string func_name, std::string ret_val,
