@@ -378,7 +378,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		if (wParam == VK_RIGHT) k = KEY_RIGHT;
 		if (wParam == VK_UP) k = KEY_UP;
 		if (wParam == VK_DOWN) k = KEY_DOWN;
+		if (wParam == VK_NEXT) k = KEY_NPAGE;
+		if (wParam == VK_PRIOR) k = KEY_PPAGE;
 		if (wParam == VK_BACK) k = KEY_BACKSPACE;
+		if (wParam >= VK_F1 && wParam <= VK_F12)
+			k = wParam - VK_F1 + KEY_F1;
 		if (wParam >= 'A' && wParam <= 'Z')
 			k = wParam;
 		if (wParam >= '0' && wParam <= '9')

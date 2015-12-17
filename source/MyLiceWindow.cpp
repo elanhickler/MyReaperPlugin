@@ -198,6 +198,10 @@ std::vector<point> g_points_clipboard;
 
 bool TestControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
+	if (keycode >= KEY_F1 && keycode <= KEY_F12)
+	{
+		readbg() << "F" << (keycode - KEY_F1)+1 << " pressed\n";
+	}
 	if (keycode == 'C' && modkeys.isModifierKeyDown(MKControl) == true)
 	{
 		g_points_clipboard = m_points;
