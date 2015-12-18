@@ -120,6 +120,25 @@ function_entry MRP_MultiplyArrays("", "MRP_Array*,MRP_Array*", "array1, array2",
 "Multiply 2 MRP_Arrays of same length. First array is overwritten with result!"
 );
 
+function_entry MRP_SetArrayValue("", "MRP_Array*,int,double", "array, index, value", [](params) {
+	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
+	int index = (in)arg[1];
+	double v = *(double*)arg[2];
+	vecref0[index] = v;
+	return (void*)nullptr;
+},
+"Set MRP_Array element value. No safety checks done for array or index validity, so use at your own peril!"
+);
+
+function_entry MRP_GetArrayValue("double", "MRP_Array*,int", "array, index", [](params) {
+	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
+	int index = (in)arg[1];
+	double value = vecref0[index];
+	return_double(value);
+},
+"Get MRP_Array element value. No safety checks done for array or index validity, so use at your own peril!"
+);
+
 function_entry MRP_WriteArrayToFile("", "MRP_Array*,const char*,double", "array,filename,samplerate", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
