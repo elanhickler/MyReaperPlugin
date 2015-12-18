@@ -81,6 +81,20 @@ function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 "Destroy a previously created MRP_Array"
 );
 
+function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerate,frequency", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0)
+		return (void*)nullptr;
+	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
+	double sr = *(double*)arg[1];
+	double hz = *(double*)arg[2];
+	int numsamples = vecptr->size();
+	for (int i = 0; i < numsamples; ++i)
+		(*vecptr)[i] = sin(2*3.141592653*sr*hz*i);
+	return (void*)nullptr;
+},
+"Generate a sine wave into a MRP_Array"
+);
+
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](params) 
 {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
