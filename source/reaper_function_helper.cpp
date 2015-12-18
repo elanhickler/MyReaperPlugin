@@ -9,23 +9,23 @@
 
 std::vector<function_entry> g_functions;
 
-function_entry::function_entry(void* func, std::string func_name, std::string ret_val,
-	std::string par_types, std::string par_names, std::string html_help,	bool c_func_only) {
-	regkey_func = "API_" + func_name;
-	func_c_api = func;
-	c_only = c_func_only;
+function_entry::function_entry(std::string ret_val, std::string par_types, std::string par_names, reaper_function_t func,
+	std::string html_help, bool c_func_only) : m_function(func), c_only(c_func_only) {
+	func_c_api = m_function;
+	document = ret_val + '\0' + par_types + '\0' + par_names + '\0' + html_help + '\0';
 
 	if (c_only) return;
 
-	func_script = func;
-	regkey_vararg = "APIvararg_" + func_name;
-	regkey_def = "APIdef_" + func_name;
-	document = ret_val + '\0' + par_types + '\0' + par_names + '\0' + html_help + '\0';
+	func_script = m_function;	
 }
 
-void impl_add_function(void* func, std::string func_name, std::string ret_val, std::string par_types, std::string par_names, std::string html_help, bool c_func_only) {
-	g_functions.push_back(function_entry(func, func_name, ret_val, par_types, par_names, html_help, c_func_only));
+void add_function(function_entry& f, const std::string& name) {
+	f.regkey_func = "API_" + name;
+	f.regkey_vararg = "APIvararg_" + name;
+	f.regkey_def = "APIdef_" + name;
+	g_functions.push_back(f);
 }
+
 
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
 	bool ok = rec != 0;
@@ -48,6 +48,7 @@ void UnregisterExportedFuncs() {
 	}
 }
 
+void* Out(double* a) { return (void*)a; }
 void* Out(int a) { return (void*)(INT_PTR)a; }
 void* Out(bool a) { return (void*)(INT_PTR)a; }
 void* Out(const char* a) { return (void*)(INT_PTR)a; }
