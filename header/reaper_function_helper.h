@@ -24,22 +24,3 @@ bool RegisterExportedFuncs(reaper_plugin_info_t* rec);
 
 // Unregister exported functions
 void UnregisterExportedFuncs();
-
-struct In { // Helpers for creating export functions
-	void* v;
-
-	In(void* const& v) : v(v) {}
-
-	operator double() { return *(double*)v; }
-	operator double*() { return (double*)v; }
-
-	operator int() { return (int)(INT_PTR)v; }
-	operator int*() { return (int*)(INT_PTR)&v; }
-
-	operator bool() { return *(bool*)v; }
-	operator bool*() { return (bool*)v; }
-
-	operator char() { return *(char*)v; }
-	operator char*() { return (char*)v; }
-	operator const char*() { return (const char*)v; }
-};

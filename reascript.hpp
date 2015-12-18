@@ -1,5 +1,31 @@
 #include "utilfuncs.h"
 
+struct in { // Convenience struct to convert void** to supported parameter types
+	void* v;
+
+	in(void* const& v) : v(v) {}
+
+	operator double() { return *(double*)v; }
+	operator double*() { return (double*)v; }
+
+	operator int() { return (int)(INT_PTR)v; }
+	operator int*() { return (int*)(INT_PTR)&v; }
+
+	operator bool() { return *(bool*)v; }
+	operator bool*() { return (bool*)v; }
+
+	operator char() { return *(char*)v; }
+	operator char*() { return (char*)v; }
+	operator const char*() { return (const char*)v; }
+};
+
+// These macros helps in dealing with the function definition and supported return types. 
+// Use return_int to return anything that is not a double.
+#define lambda void** arg, int arg_sz
+#define return_double(v) { double* lhs_arg = (double*)(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
+#define return_int(v) return (void*)(INT_PTR)(v)
+#define return_null return (void*)0
+
 // At the moment (REAPER v5pre6) the supported parameter types are:
 //  - int, int*, bool, bool*, double, double*, char*, const char*
 //  - AnyStructOrClass* (handled as an opaque pointer)
@@ -7,16 +33,9 @@
 //  - int, bool, double, const char*
 //  - AnyStructOrClass* (handled as an opaque pointer)
 
-// These macros helps in dealing with various return types. 
-// Use return_int to return anything that is not a double.
-#define lambda void** arg, int arg_sz
-#define return_double(v) { double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
-#define return_int(v) return (void*)(INT_PTR)(v)
-#define return_void return (void*)0
-
 function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](lambda) {
-	double* n1 = In(arg[0]);
-	double* n2 = In(arg[1]);
+	double* n1 = (in)arg[0];
+	double* n2 = (in)arg[1];
 
 	return_double(*n1 + *n2);
 },
@@ -24,8 +43,8 @@ function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](lambda) 
 );
 
 function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](lambda) {
-	int* n1 = In(arg[0]);
-	int* n2 = In(arg[1]);
+	int* n1 = (in)arg[0];
+	int* n2 = (in)arg[1];
 
 	return_int(*n1+*n2);
 },
@@ -35,7 +54,7 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](lambda) {
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](lambda) {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
 	if (env == nullptr)
-		return_void;
+		return_null;
 	int numpoints = CountEnvelopePoints(env);
 	size_t seed = 0;
 	for (int i = 0; i < numpoints; ++i) {
@@ -59,21 +78,21 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](lamb
 "architectures."
 );
 
-function_entry MRP_ReturnMediaItem("MediaItem*", "", "item", [](lambda) {
+function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](lambda) {
 	return_int(GetSelectedMediaItem(0, 0));
 },
 "return media item"
 );
 
-function_entry MRP_ReturnVoid("MediaItem*", "", "item", [](lambda) {
-	return_void;
+function_entry MRP_DoNothing("", "", "", [](lambda) {
+	return_null;
 },
-"return nothing"
+"do nothing, return null"
 );
 
 function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](lambda) {
-	double* n1 = In(arg[0]);
-	double* n2 = In(arg[1]);
+	double* n1 = in(arg[0]);
+	double* n2 = in(arg[1]);
 
 	return_double(*n1 + *n2);
 },
@@ -81,8 +100,8 @@ function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](lambda
 );
 
 function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](lambda) {
-	int n1 = (double)In(arg[0]);
-	int n2 = (double)In(arg[1]);
+	int n1 = *(double*)arg[0];
+	int n2 = *(double*)arg[1];
 
 	return_int(n1+n2);
 },
@@ -90,8 +109,8 @@ function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](lambda) {
 );
 
 function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, int arg_sz) {
-	double n1 = (int)In(arg[0]);
-	double n2 = (int)In(arg[1]);
+	double n1 = *(int*)arg[0];
+	double n2 = *(int*)arg[1];
 
 	return_int(n1 + n2);
 },

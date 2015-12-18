@@ -115,7 +115,7 @@ extern "C"
 			func(MRP_DoublePointerAsInt);
 			func(MRP_CastDoubleToInt);
 			func(MRP_ReturnMediaItem);
-			func(MRP_ReturnVoid);
+			func(MRP_DoNothing);
 #undef func
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
