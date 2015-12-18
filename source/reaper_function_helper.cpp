@@ -43,8 +43,3 @@ void UnregisterExportedFuncs() {
 		plugin_register(std::string("-"+f.regkey_func).c_str(), f.func_c_api);
 	}
 }
-
-void* Out(int a) { return (void*)(INT_PTR)a; }
-void* Out(bool a) { return (void*)(INT_PTR)a; }
-void* Out(const char* a) { return (void*)(INT_PTR)a; }
-void* Out(double a) { return (void*)(INT_PTR)a; }

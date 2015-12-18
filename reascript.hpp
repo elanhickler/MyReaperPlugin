@@ -1,13 +1,22 @@
 #include "utilfuncs.h"
 
-// This macro helps in dealing with double-type returns. For some reason doubles must be treated very different.
-#define return(v) double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg
+// At the moment (REAPER v5pre6) the supported parameter types are:
+//  - int, int*, bool, bool*, double, double*, char*, const char*
+//  - AnyStructOrClass* (handled as an opaque pointer)
+// At the moment (REAPER v5pre6) the supported return types are:
+//  - int, bool, double, const char*
+//  - AnyStructOrClass* (handled as an opaque pointer)
+
+// These macros helps in dealing with various return types. 
+// Use return_int to return anything that is not a double.
+#define return_double(v) { double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
+#define return_int(v) return (void*)(INT_PTR)(v)
 
 function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 
-	return(*n1 + *n2);
+	return_double(*n1 + *n2);
 },
 "add two numbers"
 );
@@ -16,7 +25,7 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_
 	int* n1 = In(arg[0]);
 	int* n2 = In(arg[1]);
 
-	return Out(*n1+*n2);
+	return_int(*n1+*n2);
 },
 "add two numbers"
 );
@@ -38,7 +47,7 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void
 		hash_combine(seed, pt_tension);
 		hash_combine(seed, pt_shape);
 	}
-	return Out((int)seed);
+	return_int((int)seed);
 },
 "This <i>function</i> isn't really <b>correct...</b> it calculates a 64 bit hash "
 "but returns it as a 32 bit int. Should reimplement this. "
@@ -48,11 +57,18 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void
 "architectures."
 );
 
+function_entry MRP_ReturnMediaItem("MediaItem*", "MediaItem*", "item", [](void** arg, int arg_sz) {
+	auto item = (MediaItem*)arg[0];
+	return_int(item);
+},
+"return media item"
+);
+
 function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 
-	return Out(*n1 + *n2);
+	return_double(*n1 + *n2);
 },
 "add two numbers"
 );
@@ -61,7 +77,7 @@ function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** ar
 	int n1 = (double)In(arg[0]);
 	int n2 = (double)In(arg[1]);
 
-	return Out(n1+n2);
+	return_int(n1+n2);
 },
 "add two numbers"
 );
@@ -70,9 +86,11 @@ function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, 
 	double n1 = (int)In(arg[0]);
 	double n2 = (int)In(arg[1]);
 
-	return(n1 + n2);
+	return_int(n1 + n2);
 },
 "add two numbers"
 );
 
-#undef return
+#undef return_double
+#undef return_int
+#undef return_class
