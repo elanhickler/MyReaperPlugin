@@ -123,7 +123,9 @@ extern "C"
 			func(MRP_MultiplyArrays);
 			func(MRP_SetArrayValue);
 			func(MRP_GetArrayValue);
+#ifdef WIN32
 			func(MRP_MultiplyArraysMT);
+#endif
 #undef func
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }

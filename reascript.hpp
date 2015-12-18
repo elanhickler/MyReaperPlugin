@@ -153,10 +153,7 @@ function_entry MRP_MultiplyArraysMT("", "MRP_Array*,MRP_Array*", "array1, array2
 "Multiply 2 MRP_Arrays of same length. First array is overwritten with result! Uses multiple threads."
 );
 #else
-function_entry MRP_MultiplyArraysMT("", "MRP_Array*,MRP_Array*", "array1, array2", [](params)
-{
-	MRP_MultiplyArrays(params);
-}
+
 #endif
 function_entry MRP_SetArrayValue("", "MRP_Array*,int,double", "array, index, value", [](params) {
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
