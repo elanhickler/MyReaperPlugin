@@ -11,6 +11,7 @@
 // Use return_int to return anything that is not a double.
 #define return_double(v) { double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
 #define return_int(v) return (void*)(INT_PTR)(v)
+#define return_void return (void*)0
 
 function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
@@ -33,7 +34,7 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void** arg, int arg_sz) {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
 	if (env == nullptr)
-		return Out(0);
+		return_void;
 	int numpoints = CountEnvelopePoints(env);
 	size_t seed = 0;
 	for (int i = 0; i < numpoints; ++i) {
@@ -57,11 +58,16 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void
 "architectures."
 );
 
-function_entry MRP_ReturnMediaItem("MediaItem*", "MediaItem*", "item", [](void** arg, int arg_sz) {
-	auto item = (MediaItem*)arg[0];
-	return_int(item);
+function_entry MRP_ReturnMediaItem("MediaItem*", "", "item", [](void** arg, int arg_sz) {
+	return_int(GetSelectedMediaItem(0, 0));
 },
 "return media item"
+);
+
+function_entry MRP_ReturnVoid("MediaItem*", "", "item", [](void** arg, int arg_sz) {
+	return_void;
+},
+"return nothing"
 );
 
 function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {

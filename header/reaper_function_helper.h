@@ -43,7 +43,3 @@ struct In { // Helpers for creating export functions
 	operator char*() { return (char*)v; }
 	operator const char*() { return (const char*)v; }
 };
-void* Out(int a);
-void* Out(bool a);
-void* Out(const char* a);
-void* Out(double a);
