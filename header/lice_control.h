@@ -140,9 +140,13 @@ public:
 private:
 };
 /*
-Base class for implementing your own completely custom controls aka widgets. So useful for things like XY-controls, breakpoint envelope editors, spectral displays etc. These create an underlying win32 window and Lice system bitmap, so you probably should not go overboard instantiating these...It could get expensive. Likely hundreds can be instantiated without too many problems, though.
+Base class for implementing your own completely custom controls aka widgets. So useful for things like 
+XY-controls, breakpoint envelope editors, spectral displays etc. These create an underlying win32 
+window and Lice system bitmap, so you probably should not go overboard instantiating these...
+It could get expensive. Likely hundreds can be instantiated without too many problems, though.
  
- The paint virtual function is pure, so you are always required to implement that in your subclasses. An empty control wouldn't be much fun to look at anyway.
+The paint virtual function is pure, so you are always required to implement that in your subclasses. 
+An empty control wouldn't be much fun to look at anyway.
 */
 class LiceControl
 {
