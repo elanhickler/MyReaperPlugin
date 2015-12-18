@@ -1,5 +1,5 @@
 #include "utilfuncs.h"
-
+#include <unordered_set>
 struct in { // Convenience struct to cast void** to supported parameter types
 	void* v;
 
@@ -51,10 +51,13 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](params) {
 "add two numbers"
 );
 
+std::unordered_set<void*> g_active_mrp_arrays;
+
 function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 	int* arrsize = (in)arg[0];
 	std::vector<double>* ret = new std::vector<double>(*arrsize);
 	readbg() << "returning array " << ret << "\n";
+	g_active_mrp_arrays.insert((void*)ret);
 	return (void*)ret;
 },
 "Create an array of 64 bit floating point numbers."
@@ -63,9 +66,15 @@ function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
 	readbg() << "should delete array " << vecptr << "\n";
+	if (g_active_mrp_arrays.count(arg[0]) == 0)
+	{
+		readbg() << "script tried returning invalid pointer for destruction!\n";
+		return (void*)nullptr;
+	}
 	if (vecptr != nullptr)
 	{
 		delete vecptr;
+		g_active_mrp_arrays.erase(arg[0]);
 	}
 	return (void*)nullptr;
 },
