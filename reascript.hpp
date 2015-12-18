@@ -55,11 +55,22 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](params) {
 std::unordered_set<void*> g_active_mrp_arrays;
 
 function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
+	char buf[256];
 	int* arrsize = (in)arg[0];
-	std::vector<double>* ret = new std::vector<double>(*arrsize);
-	//readbg() << "returning array " << ret << "\n";
-	g_active_mrp_arrays.insert((void*)ret);
-	return (void*)ret;
+	std::vector<double>* ret;
+	try
+	{
+		ret = new std::vector<double>(*arrsize);
+		g_active_mrp_arrays.insert((void*)ret);
+		return (void*)ret;
+		//readbg() << "returning array " << ret << "\n";
+	}
+	catch (std::exception& ex)
+	{
+		sprintf(buf, "MRP_CreateArray : failed to create array (%s)", ex.what());
+		ReaScriptError(buf);
+	}
+	return_null;
 },
 "Create an array of 64 bit floating point numbers."
 );
