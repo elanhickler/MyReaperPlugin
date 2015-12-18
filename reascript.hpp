@@ -84,12 +84,12 @@ function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerate,frequency", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 		return (void*)nullptr;
-	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
-	double sr = *(double*)arg[1];
-	double hz = *(double*)arg[2];
-	int numsamples = vecptr->size();
+	std::vector<double>& vecref = *(std::vector<double>*)arg[0];
+	double sr = bound_value(1.0,*(double*)arg[1],1000000.0);
+	double hz = bound_value(0.0001,*(double*)arg[2],sr/2.0);
+	int numsamples = vecref.size();
 	for (int i = 0; i < numsamples; ++i)
-		(*vecptr)[i] = sin(2*3.141592653*sr*hz*i);
+		vecref[i] = sin(2*3.141592653*sr*hz*i);
 	return (void*)nullptr;
 },
 "Generate a sine wave into a MRP_Array"
