@@ -140,7 +140,7 @@ public:
 private:
 };
 /*
-Base class for implementing your own completely custom controls aka widgets. So useful for things like 
+Base class for implementing your own completely custom controls aka widgets. So, useful for things like 
 XY-controls, breakpoint envelope editors, spectral displays etc. These create an underlying win32 
 window and Lice system bitmap, so you probably should not go overboard instantiating these...
 It could get expensive. Likely hundreds can be instantiated without too many problems, though.

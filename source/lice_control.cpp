@@ -339,7 +339,6 @@ void add_menu_item_(HMENU menu, std::string text, int id)
 
 PopupMenu::PopupMenu(HWND parent) : m_hwnd(parent)
 {
-	m_menu = CreatePopupMenu();
 }
 
 PopupMenu::~PopupMenu()
@@ -360,6 +359,9 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 {
 	if (m_entries.size() == 0)
 		return;
+	if (m_menu != NULL)
+		DestroyMenu(m_menu);
+	m_menu = CreatePopupMenu();
 	for (int i = 0; i < m_entries.size(); ++i)
 		add_menu_item_(m_menu, m_entries[i].m_text, i + 1);
 	POINT pt;
