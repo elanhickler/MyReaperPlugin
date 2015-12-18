@@ -100,6 +100,26 @@ function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerat
 "Generate a sine wave into a MRP_Array"
 );
 
+function_entry MRP_MultiplyArrays("", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+	{
+		ReaScriptError("MRP_MultiplyArrays : passed in invalid MRP_Array(s)");
+		return (void*)nullptr;
+	}
+	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
+	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
+	if (vecref0.size() != vecref1.size())
+	{
+		ReaScriptError("MRP_MultiplyArrays : incompatible array lengths");
+		return (void*)nullptr;
+	}
+	for (int i = 0; i < vecref0.size(); ++i)
+		vecref0[i] = vecref0[i] * vecref1[i];
+	return (void*)nullptr;
+},
+"Multiply 2 MRP_Arrays of same length. First array is overwritten with result!"
+);
+
 function_entry MRP_WriteArrayToFile("", "MRP_Array*,const char*,double", "array,filename,samplerate", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
