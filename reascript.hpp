@@ -63,7 +63,6 @@ function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 		ret = new std::vector<double>(*arrsize);
 		g_active_mrp_arrays.insert((void*)ret);
 		return (void*)ret;
-		//readbg() << "returning array " << ret << "\n";
 	}
 	catch (std::exception& ex)
 	{
@@ -72,15 +71,13 @@ function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 	}
 	return_null;
 },
-"Create an array of 64 bit floating point numbers."
+"Create an array of 64 bit floating point numbers. Note that these will leak memory if they are not later destroyed with MRP_DestroyArray!"
 );
 
 function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
-	//readbg() << "should delete array " << vecptr << "\n";
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
-		//readbg() << "script tried returning invalid pointer for destruction!\n";
 		ReaScriptError("Script tried passing invalid MRP_Array for destruction");
 		return (void*)nullptr;
 	}
