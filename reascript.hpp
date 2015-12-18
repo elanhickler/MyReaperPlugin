@@ -57,7 +57,7 @@ std::unordered_set<void*> g_active_mrp_arrays;
 function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 	int* arrsize = (in)arg[0];
 	std::vector<double>* ret = new std::vector<double>(*arrsize);
-	readbg() << "returning array " << ret << "\n";
+	//readbg() << "returning array " << ret << "\n";
 	g_active_mrp_arrays.insert((void*)ret);
 	return (void*)ret;
 },
@@ -66,10 +66,11 @@ function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 
 function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
-	readbg() << "should delete array " << vecptr << "\n";
+	//readbg() << "should delete array " << vecptr << "\n";
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
-		readbg() << "script tried returning invalid pointer for destruction!\n";
+		//readbg() << "script tried returning invalid pointer for destruction!\n";
+		ReaScriptError("Script tried returning invalid MRP_Array for destruction");
 		return (void*)nullptr;
 	}
 	if (vecptr != nullptr)
@@ -80,6 +81,23 @@ function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 	return (void*)nullptr;
 },
 "Destroy a previously created MRP_Array"
+);
+
+function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerate,frequency", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0)
+	{
+		ReaScriptError("MRP_GenerateSine : passed in invalid MRP_Array");
+		return (void*)nullptr;
+	}
+	std::vector<double>& vecref = *(std::vector<double>*)arg[0];
+	double sr = bound_value(1.0,*(double*)arg[1],1000000.0);
+	double hz = bound_value(0.0001,*(double*)arg[2],sr/2.0);
+	int numsamples = vecref.size();
+	for (int i = 0; i < numsamples; ++i)
+		vecref[i] = sin(2*3.141592653*sr*hz*i);
+	return (void*)nullptr;
+},
+"Generate a sine wave into a MRP_Array"
 );
 
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](params) 
