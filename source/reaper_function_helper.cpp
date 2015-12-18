@@ -44,7 +44,6 @@ void UnregisterExportedFuncs() {
 	}
 }
 
-void* Out(double* a) { return (void*)a; }
 void* Out(int a) { return (void*)(INT_PTR)a; }
 void* Out(bool a) { return (void*)(INT_PTR)a; }
 void* Out(const char* a) { return (void*)(INT_PTR)a; }
