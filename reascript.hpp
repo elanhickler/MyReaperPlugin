@@ -70,7 +70,7 @@ function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
 		//readbg() << "script tried returning invalid pointer for destruction!\n";
-		ReaScriptError("Script tried returning invalid MRP_Array for destruction");
+		ReaScriptError("Script tried passing invalid MRP_Array for destruction");
 		return (void*)nullptr;
 	}
 	if (vecptr != nullptr)
@@ -93,7 +93,7 @@ function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerat
 	double sr = bound_value(1.0,*(double*)arg[1],1000000.0);
 	double hz = bound_value(0.0001,*(double*)arg[2],sr/2.0);
 	int numsamples = vecref.size();
-	for (int i = 0; i < numsamples; ++i)
+	for (size_t i = 0; i < numsamples; ++i)
 		vecref[i] = sin(2*3.141592653/sr*hz*i);
 	return (void*)nullptr;
 },
@@ -113,7 +113,7 @@ function_entry MRP_MultiplyArrays("", "MRP_Array*,MRP_Array*", "array1, array2",
 		ReaScriptError("MRP_MultiplyArrays : incompatible array lengths");
 		return (void*)nullptr;
 	}
-	for (int i = 0; i < vecref0.size(); ++i)
+	for (size_t i = 0; i < vecref0.size(); ++i)
 		vecref0[i] = vecref0[i] * vecref1[i];
 	return (void*)nullptr;
 },
