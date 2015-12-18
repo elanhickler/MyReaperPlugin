@@ -74,22 +74,4 @@ public:
 	NoCopyNoMove& operator=(NoCopyNoMove&&) = delete;
 };
 
-class Anything
-{
-public:
-	Anything() {}
-	template<typename T>
-	Anything(const T& x)
-	{
-		m_obj = std::shared_ptr<T>(new T(x), [](T* ptr) { delete ptr; });
-	}
-	template<typename T>
-	T& get() 
-	{ 
-		return *m_obj; 
-	}
-private:
-	std::shared_ptr<void> m_obj;
-};
-
 #endif /* utilfuncs_h */
