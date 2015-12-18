@@ -2,7 +2,7 @@
 
 #define LHS arg[arg_sz-1] // points to variable that is left of assignment operator e.g. x = my_func(), would give you *x
 
-function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz)->void* {
+function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 	double* n3 = In(LHS);
@@ -14,16 +14,16 @@ function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** a
 "add two numbers"
 );
 
-function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_sz)->void* {
+function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_sz) {
 	int* n1 = In(arg[0]);
 	int* n2 = In(arg[1]);
 
 	return Out(*n1+*n2);
 },
-"add two numbers "
+"add two numbers"
 );
 
-function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void** arg, int arg_sz)->void* {
+function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void** arg, int arg_sz) {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
 	if (env == nullptr)
 		return Out(0);
@@ -50,7 +50,7 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void
 "architectures."
 );
 
-function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz)->void* {
+function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 
@@ -59,7 +59,7 @@ function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void**
 "add two numbers"
 );
 
-function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz)->void* {
+function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	int n1 = (double)In(arg[0]);
 	int n2 = (double)In(arg[1]);
 
@@ -68,17 +68,16 @@ function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** ar
 "add two numbers"
 );
 
-function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, int arg_sz)->void* {
+function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, int arg_sz) {
 	double n1 = (int)In(arg[0]);
 	double n2 = (int)In(arg[1]);
 	double* n3 = In(LHS);
 
 	*n3 = n1 + n2;
 
-	return Out(n3);
+	return (void*)n3;
 },
 "add two numbers"
 );
 
-#undef lamdef
 #undef LHS

@@ -11,12 +11,9 @@ std::vector<function_entry> g_functions;
 
 function_entry::function_entry(std::string ret_val, std::string par_types, std::string par_names, reaper_function_t func,
 	std::string html_help, bool c_func_only) : m_function(func), c_only(c_func_only) {
-	func_c_api = m_function;
+	func_c_api = (void*)m_function;
+	func_script = (void*)m_function;
 	document = ret_val + '\0' + par_types + '\0' + par_names + '\0' + html_help + '\0';
-
-	if (c_only) return;
-
-	func_script = m_function;	
 }
 
 void add_function(function_entry& f, const std::string& name) {
@@ -25,7 +22,6 @@ void add_function(function_entry& f, const std::string& name) {
 	f.regkey_def = "APIdef_" + name;
 	g_functions.push_back(f);
 }
-
 
 bool RegisterExportedFuncs(reaper_plugin_info_t* rec) {
 	bool ok = rec != 0;
