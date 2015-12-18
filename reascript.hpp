@@ -9,11 +9,12 @@
 
 // These macros helps in dealing with various return types. 
 // Use return_int to return anything that is not a double.
+#define lambda void** arg, int arg_sz
 #define return_double(v) { double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
 #define return_int(v) return (void*)(INT_PTR)(v)
 #define return_void return (void*)0
 
-function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz) {
+function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](lambda) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 
@@ -22,7 +23,7 @@ function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** a
 "add two numbers"
 );
 
-function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_sz) {
+function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](lambda) {
 	int* n1 = In(arg[0]);
 	int* n2 = In(arg[1]);
 
@@ -31,7 +32,7 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](void** arg, int arg_
 "add two numbers"
 );
 
-function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void** arg, int arg_sz) {
+function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](lambda) {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
 	if (env == nullptr)
 		return_void;
@@ -58,19 +59,19 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](void
 "architectures."
 );
 
-function_entry MRP_ReturnMediaItem("MediaItem*", "", "item", [](void** arg, int arg_sz) {
+function_entry MRP_ReturnMediaItem("MediaItem*", "", "item", [](lambda) {
 	return_int(GetSelectedMediaItem(0, 0));
 },
 "return media item"
 );
 
-function_entry MRP_ReturnVoid("MediaItem*", "", "item", [](void** arg, int arg_sz) {
+function_entry MRP_ReturnVoid("MediaItem*", "", "item", [](lambda) {
 	return_void;
 },
 "return nothing"
 );
 
-function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {
+function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](lambda) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
 
@@ -79,7 +80,7 @@ function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](void**
 "add two numbers"
 );
 
-function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** arg, int arg_sz) {
+function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](lambda) {
 	int n1 = (double)In(arg[0]);
 	int n2 = (double)In(arg[1]);
 
@@ -97,6 +98,7 @@ function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, 
 "add two numbers"
 );
 
+#undef lambda
 #undef return_double
 #undef return_int
-#undef return_class
+#undef return_void
