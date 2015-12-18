@@ -123,6 +123,7 @@ extern "C"
 			func(MRP_MultiplyArrays);
 			func(MRP_SetArrayValue);
 			func(MRP_GetArrayValue);
+			func(MRP_MultiplyArraysMT);
 #undef func
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }

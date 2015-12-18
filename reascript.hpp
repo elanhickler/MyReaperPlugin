@@ -1,5 +1,8 @@
 #include "utilfuncs.h"
 #include <unordered_set>
+#ifdef WIN32
+#include <ppl.h>
+#endif
 struct in { // Convenience struct to cast void** to supported parameter types
 	void* v;
 
@@ -127,7 +130,34 @@ function_entry MRP_MultiplyArrays("", "MRP_Array*,MRP_Array*", "array1, array2",
 },
 "Multiply 2 MRP_Arrays of same length. First array is overwritten with result!"
 );
-
+#ifdef WIN32
+function_entry MRP_MultiplyArraysMT("", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+	{
+		ReaScriptError("MRP_MultiplyArraysMT : passed in invalid MRP_Array(s)");
+		return (void*)nullptr;
+	}
+	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
+	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
+	if (vecref0.size() != vecref1.size())
+	{
+		ReaScriptError("MRP_MultiplyArraysMT : incompatible array lengths");
+		return (void*)nullptr;
+	}
+	Concurrency::parallel_for((size_t)0, vecref0.size(), [&vecref0, &vecref1](size_t index) 
+	{
+		vecref0[index] = vecref0[index] * vecref1[index];
+	},Concurrency::static_partitioner());
+	return (void*)nullptr;
+},
+"Multiply 2 MRP_Arrays of same length. First array is overwritten with result! Uses multiple threads."
+);
+#else
+function_entry MRP_MultiplyArraysMT("", "MRP_Array*,MRP_Array*", "array1, array2", [](params)
+{
+	MRP_MultiplyArrays(params);
+}
+#endif
 function_entry MRP_SetArrayValue("", "MRP_Array*,int,double", "array, index, value", [](params) {
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	int index = (in)arg[1];
