@@ -25,6 +25,7 @@
 		C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */; };
 		C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064A1C1A3AE000186D68 /* MyFirstDialog.h */; };
 		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
+		C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C486A0C31C238CFC00FF41C8 /* reascript.hpp */; };
 		C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C574201C1F87D900A1CE31 /* lice_control.h */; };
 		C4C574231C1F87EA00A1CE31 /* lice_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4C574221C1F87EA00A1CE31 /* lice_control.cpp */; };
 		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
@@ -58,6 +59,7 @@
 		C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstDialog.cpp; path = ../source/MyFirstDialog.cpp; sourceTree = "<group>"; };
 		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
+		C486A0C31C238CFC00FF41C8 /* reascript.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reascript.hpp; path = ../reascript.hpp; sourceTree = "<group>"; };
 		C4C574201C1F87D900A1CE31 /* lice_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lice_control.h; path = ../header/lice_control.h; sourceTree = "<group>"; };
 		C4C574221C1F87EA00A1CE31 /* lice_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_control.cpp; path = ../source/lice_control.cpp; sourceTree = "<group>"; };
 		C4D434B81C1A41E3005DFFD3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
@@ -93,6 +95,7 @@
 				C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */,
 				E3248BDE1C17C8BA00308A5F /* main.cpp */,
 				E3248BDB1C17C8AF00308A5F /* main.hpp */,
+				C486A0C31C238CFC00FF41C8 /* reascript.hpp */,
 				C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */,
 				C486064C1C1A3C4000186D68 /* resource.h */,
 				C484E69F1C1BB435005C6CCC /* utilfuncs.h */,
@@ -196,6 +199,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */,
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
 				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
 				C484E69E1C1BAFCC005C6CCC /* MyLiceWindow.h in Headers */,
