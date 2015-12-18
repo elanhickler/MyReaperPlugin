@@ -1,6 +1,6 @@
 #include "utilfuncs.h"
 
-struct in { // Convenience struct to convert void** to supported parameter types
+struct in { // Convenience struct to cast void** to supported parameter types
 	void* v;
 
 	in(void* const& v) : v(v) {}
@@ -21,7 +21,7 @@ struct in { // Convenience struct to convert void** to supported parameter types
 
 // These macros helps in dealing with the function definition and supported return types. 
 // Use return_int to return anything that is not a double.
-#define lambda void** arg, int arg_sz
+#define params void** arg, int arg_sz
 #define return_double(v) { double* lhs_arg = (double*)(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
 #define return_int(v) return (void*)(INT_PTR)(v)
 #define return_null return (void*)0
@@ -33,7 +33,7 @@ struct in { // Convenience struct to convert void** to supported parameter types
 //  - int, bool, double, const char*
 //  - AnyStructOrClass* (handled as an opaque pointer)
 
-function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](lambda) {
+function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](params) {
 	double* n1 = (in)arg[0];
 	double* n2 = (in)arg[1];
 
@@ -42,7 +42,7 @@ function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](lambda) 
 "add two numbers"
 );
 
-function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](lambda) {
+function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](params) {
 	int* n1 = (in)arg[0];
 	int* n2 = (in)arg[1];
 
@@ -51,7 +51,8 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](lambda) {
 "add two numbers"
 );
 
-function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](lambda) {
+function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](params) 
+{
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
 	if (env == nullptr)
 		return_null;
@@ -78,37 +79,37 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](lamb
 "architectures."
 );
 
-function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](lambda) {
+function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_int(GetSelectedMediaItem(0, 0));
 },
 "return media item"
 );
 
-function_entry MRP_DoNothing("", "", "", [](lambda) {
+function_entry MRP_DoNothing("", "", "", [](params) {
 	return_null;
 },
 "do nothing, return null"
 );
 
-function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](lambda) {
-	double* n1 = in(arg[0]);
-	double* n2 = in(arg[1]);
+function_entry MRP_DoublePointerAsInt("int", "double,double", "n1,n2", [](params) {
+	double* n1 = (in)arg[0];
+	double* n2 = (in)arg[1];
 
 	return_double(*n1 + *n2);
 },
 "add two numbers"
 );
 
-function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](lambda) {
-	int n1 = *(double*)arg[0];
-	int n2 = *(double*)arg[1];
+function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](params) { // This is for demonstration purposes.
+	int n1 = *(double*)arg[0];                                                     // I don't know why you'd cast the type.
+	int n2 = *(double*)arg[1];                                                     // Instead, just use the right input types.
 
 	return_int(n1+n2);
 },
 "add two numbers"
 );
 
-function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, int arg_sz) {
+function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](params) {
 	double n1 = *(int*)arg[0];
 	double n2 = *(int*)arg[1];
 
