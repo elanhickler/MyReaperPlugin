@@ -1,15 +1,13 @@
 #include "utilfuncs.h"
 
-#define LHS arg[arg_sz-1] // points to variable that is left of assignment operator e.g. x = my_func(), would give you *x
+// This macro helps in dealing with double-type returns. For some reason doubles must be treated very different.
+#define return(v) double* lhs_arg = In(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg
 
 function_entry MRP_DoublePointer("double", "double,double", "n1,n2", [](void** arg, int arg_sz) {
 	double* n1 = In(arg[0]);
 	double* n2 = In(arg[1]);
-	double* n3 = In(LHS);
 
-	*n3 = *n1 + *n2;
-
-	return (void*)n3;
+	return(*n1 + *n2);
 },
 "add two numbers"
 );
@@ -71,13 +69,10 @@ function_entry MRP_CastDoubleToInt("int", "double,double", "n1,n2", [](void** ar
 function_entry MRP_CastIntToDouble("double", "int,int", "n1,n2", [](void** arg, int arg_sz) {
 	double n1 = (int)In(arg[0]);
 	double n2 = (int)In(arg[1]);
-	double* n3 = In(LHS);
 
-	*n3 = n1 + n2;
-
-	return (void*)n3;
+	return(n1 + n2);
 },
 "add two numbers"
 );
 
-#undef LHS
+#undef return
