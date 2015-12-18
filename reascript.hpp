@@ -93,10 +93,34 @@ function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerat
 	double hz = bound_value(0.0001,*(double*)arg[2],sr/2.0);
 	int numsamples = vecref.size();
 	for (int i = 0; i < numsamples; ++i)
-		vecref[i] = sin(2*3.141592653*sr*hz*i);
+		vecref[i] = sin(2*3.141592653/sr*hz*i);
 	return (void*)nullptr;
 },
 "Generate a sine wave into a MRP_Array"
+);
+
+function_entry MRP_WriteArrayToFile("", "MRP_Array*,const char*,double", "array,filename,samplerate", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0)
+	{
+		ReaScriptError("MRP_WriteArrayToFile : passed in invalid MRP_Array");
+		return (void*)nullptr;
+	}
+	std::vector<double>& vecref = *(std::vector<double>*)arg[0];
+	const char* outfn = (const char*)arg[1];
+	double sr = bound_value(1.0, *(double*)arg[2], 1000000.0);
+	char cfg[] = { 'e','v','a','w', 32, 0 };
+	PCM_sink* sink = PCM_Sink_Create(outfn, cfg, sizeof(cfg), 1, sr, false);
+	if (sink != nullptr)
+	{
+		double* sinkbuf[1];
+		sinkbuf[0] = vecref.data();
+		sink->WriteDoubles(sinkbuf, vecref.size(), 1, 0, 1);
+		delete sink;
+	} else
+		ReaScriptError("MRP_WriteArrayToFile : could not create output file");
+	return (void*)nullptr;
+},
+"Write MRP_Array to disk as a 32 bit floating point mono wav file"
 );
 
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](params) 

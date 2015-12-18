@@ -119,6 +119,7 @@ extern "C"
 			func(MRP_CreateArray);
 			func(MRP_DestroyArray);
 			func(MRP_GenerateSine);
+			func(MRP_WriteArrayToFile);
 #undef func
 
 			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
