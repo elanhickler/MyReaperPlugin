@@ -51,6 +51,27 @@ function_entry MRP_IntPointer("int", "int,int", "n1,n2", [](params) {
 "add two numbers"
 );
 
+function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
+	int* arrsize = (in)arg[0];
+	std::vector<double>* ret = new std::vector<double>(*arrsize);
+	readbg() << "returning array " << ret << "\n";
+	return (void*)ret;
+},
+"Create an array of 64 bit floating point numbers."
+);
+
+function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
+	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
+	readbg() << "should delete array " << vecptr << "\n";
+	if (vecptr != nullptr)
+	{
+		delete vecptr;
+	}
+	return (void*)nullptr;
+},
+"Destroy a previously created MRP_Array"
+);
+
 function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](params) 
 {
 	TrackEnvelope* env = (TrackEnvelope*)arg[0];
