@@ -20,11 +20,12 @@ struct in { // Convenience struct to cast void** to supported parameter types
 };
 
 // These macros helps in dealing with the function definition and supported return types. 
-// Use return_int to return anything that is not a double.
+// Use return_int to return anything that is not a double. Alternatively, use obj for class/struct.
 #define params void** arg, int arg_sz
 #define return_double(v) { double* lhs_arg = (double*)(arg[arg_sz-1]); *lhs_arg = (v); return (void*)lhs_arg; }
 #define return_int(v) return (void*)(INT_PTR)(v)
 #define return_null return (void*)0
+#define return_obj(c) return (void*)c
 
 // At the moment (REAPER v5pre6) the supported parameter types are:
 //  - int, int*, bool, bool*, double, double*, char*, const char*
@@ -152,7 +153,7 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](para
 );
 
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
-	return_int(GetSelectedMediaItem(0, 0));
+	return_obj(GetSelectedMediaItem(0, 0));
 },
 "return media item"
 );
