@@ -358,14 +358,14 @@ function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,na
 "Add a Reaper slider control to window"
 );
 
-function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,int,int,int,int", "window,name,x,y,w,h", [](params)
+function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
 {
 	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
 	const char* cname = (const char*)arg[1];
-	int x = (in)arg[2];
-	int y = (in)arg[3];
-	int w = (in)arg[4];
-	int h = (in)arg[5];
+	double x = (in)arg[2];
+	double y = (in)arg[3];
+	double w = (in)arg[4];
+	double h = (in)arg[5];
 	if (wptr != nullptr && cname != nullptr)
 	{
 		wptr->setControlBounds(cname, x, y, w, h);
