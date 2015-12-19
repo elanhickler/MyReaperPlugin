@@ -374,24 +374,24 @@ function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "w
 "Add a button to window"
 );
 
-function_entry MRP_WindowGetClickedButton("const char*", "MRP_Window*", "window", [](params)
+function_entry MRP_WindowGetDirtyControl("const char*", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w != nullptr)
 	{
-		return (void*)w->m_clicked_button_name.c_str();
+		return (void*)w->m_last_used_control.c_str();
 	}
 	return_null();
 },
-"Get last clicked button name. Nil/null if none was clicked."
+"Get name of control that was last manipulated"
 );
 
-function_entry MRP_WindowClearClickedButton("", "MRP_Window*", "window", [](params)
+function_entry MRP_WindowClearDirtyControl("", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w != nullptr)
 	{
-		w->m_clicked_button_name = "";
+		w->m_last_used_control = "";
 	}
 	return_null();
 },

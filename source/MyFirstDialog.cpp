@@ -467,15 +467,21 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 			for (auto& e : wptr->m_controls)
 				if (e.m_control_id == LOWORD(wparam))
 				{
-					wptr->m_clicked_button_name = e.m_name;
+					wptr->m_last_used_control = e.m_name;
 					return TRUE;
 				}
 		}
 		wptr->m_window_dirty = true;
 		return TRUE;
 	}
-	if (msg == WM_HSCROLL)
+	if (msg == WM_HSCROLL || msg == WM_VSCROLL)
 	{
+		for (auto& e : wptr->m_controls)
+			if (e.m_hwnd == (HWND)lparam)
+			{
+				wptr->m_last_used_control = e.m_name;
+				return TRUE;
+			}
 		wptr->m_window_dirty = true;
 		return TRUE;
 	}

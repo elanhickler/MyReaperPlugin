@@ -80,7 +80,7 @@ public:
 	bool m_was_closed = false;
 	bool m_window_dirty = false;
 	bool m_was_resized = false;
-	std::string m_clicked_button_name;
+	std::string m_last_used_control;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	HWND m_hwnd = NULL;
