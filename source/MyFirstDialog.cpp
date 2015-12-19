@@ -16,7 +16,9 @@
 #include <unordered_map>
 #include <memory>
 #include "utilfuncs.h"
+#ifdef WIN32
 #include "Commctrl.h"
+#endif
 extern HINSTANCE g_hInst;
 
 std::unordered_map<HWND, ReaperDialog*> g_dialogmap;
@@ -312,10 +314,10 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SCRIPTLINEEDIT1);
 	m_controls.push_back(c);
 	c.m_name = "Slider 1";
-	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SLIDER1);
+	c.m_hwnd = GetDlgItem(m_hwnd, IDC_REAFADER1);
 	m_controls.push_back(c);
 	c.m_name = "Slider 2";
-	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SLIDER2);
+	c.m_hwnd = GetDlgItem(m_hwnd, IDC_REAFADER2);
 	m_controls.push_back(c);
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
