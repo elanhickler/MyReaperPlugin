@@ -314,6 +314,9 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 	c.m_name = "Slider 1";
 	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SLIDER1);
 	m_controls.push_back(c);
+	c.m_name = "Slider 2";
+	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SLIDER2);
+	m_controls.push_back(c);
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 60, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);

@@ -8,7 +8,8 @@ function guitick()
   if reaper.MRP_GetWindowDirty(mywindow) then
     local text = reaper.MRP_GetControlText(mywindow,"Line edit 1")
     local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
-    reaper.ShowConsoleMsg(val.." ")
+    local val2 = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2")
+    reaper.ShowConsoleMsg(val.." "..val2.."\n")
     reaper.MRP_WindowSetTitle(mywindow,"Window "..text)
     reaper.MRP_SetWindowDirty(mywindow,false)
   end
