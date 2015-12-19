@@ -346,11 +346,27 @@ void ReaScriptWindow::add_slider(std::string name, int initialvalue)
 {
 	int ycor = 5 + m_controls.size() * 25;
 	control_t c;
-	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd, 0, g_hInst, 0);
+	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd, 
+		(HMENU)m_control_id_count, g_hInst, 0);
 	SendMessage(c.m_hwnd, TBM_SETPOS, 0, (LPARAM)initialvalue);
 	SendMessage(c.m_hwnd, TBM_SETTIC, 0, 500);
 	ShowWindow(c.m_hwnd, SW_SHOW);
 	c.m_name = name;
+	c.m_control_id = m_control_id_count;
+	++m_control_id_count;
+	m_controls.push_back(c);
+}
+
+void ReaScriptWindow::add_button(std::string name, std::string text)
+{
+	control_t c;
+	c.m_hwnd = CreateWindow("BUTTON", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
+		(HMENU)m_control_id_count, g_hInst, 0);
+	c.m_name = name;
+	c.m_control_id = m_control_id_count;
+	SetWindowText(c.m_hwnd, text.c_str());
+	ShowWindow(c.m_hwnd, SW_SHOW);
+	++m_control_id_count;
 	m_controls.push_back(c);
 }
 
@@ -444,7 +460,21 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 	ReaScriptWindow* wptr = get_from_map(g_reascriptwindowsmap, hwnd);
 	if (wptr == nullptr)
 		return FALSE;
-	if (msg == WM_COMMAND || msg == WM_HSCROLL)
+	if (msg == WM_COMMAND)
+	{
+		if (HIWORD(wparam) == BN_CLICKED)
+		{
+			for (auto& e : wptr->m_controls)
+				if (e.m_control_id == LOWORD(wparam))
+				{
+					wptr->m_clicked_button_name = e.m_name;
+					return TRUE;
+				}
+		}
+		wptr->m_window_dirty = true;
+		return TRUE;
+	}
+	if (msg == WM_HSCROLL)
 	{
 		wptr->m_window_dirty = true;
 		return TRUE;

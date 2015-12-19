@@ -55,6 +55,7 @@ public:
 	{
 		std::string m_name;
 		HWND m_hwnd = NULL;
+		int m_control_id = 0;
 		LiceControl* m_licecontrol = nullptr;
 		control_type_t m_type = Unknown;
 		bool m_dirty = false;
@@ -70,6 +71,7 @@ public:
 	const char* getControlText(std::string controlname);
 	double getControlValueDouble(std::string controlname);
 	
+	void add_button(std::string name, std::string text);
 	void add_slider(std::string name, int initialvalue);
 	
 	void setControlBounds(std::string name, int x, int y, int w, int h);
@@ -78,11 +80,12 @@ public:
 	bool m_was_closed = false;
 	bool m_window_dirty = false;
 	bool m_was_resized = false;
+	std::string m_clicked_button_name;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	HWND m_hwnd = NULL;
-	
 	std::vector<control_t> m_controls;
+	int m_control_id_count = 1;
 };
 
 ReaScriptWindow* open_reascript_test_gui(std::string title);

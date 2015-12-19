@@ -17,9 +17,15 @@ function guitick()
     local w = reaper.MRP_GetWindowPosSizeValue(mywindow,2)
     local h = reaper.MRP_GetWindowPosSizeValue(mywindow,3)
     reaper.MRP_SetControlBounds(mywindow,"Slider 1",w/2,5,w/2-10,20)
-    reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,h-30)
+    reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,h-60)
+    reaper.MRP_SetControlBounds(mywindow,"Button 1",w-45,h-20,35,19)
+    reaper.MRP_SetControlBounds(mywindow,"Button 2",w-95,h-20,50,19)
     --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
     reaper.MRP_SetWindowDirty(mywindow,false,1)
+  end
+  if reaper.MRP_WindowGetClickedButton(mywindow)=="Button 2" then
+    reaper.ShowConsoleMsg("Cancel clicked\n")
+    reaper.MRP_WindowClearClickedButton(mywindow)
   end
   reaper.defer(guitick)
 end
@@ -27,6 +33,8 @@ end
 mywindow=reaper.MRP_CreateWindow("My window")
 reaper.MRP_WindowAddSlider(mywindow,"Slider 1",100)
 reaper.MRP_WindowAddSlider(mywindow,"Slider 2",900)
+reaper.MRP_WindowAddButton(mywindow,"Button 1","OK")
+reaper.MRP_WindowAddButton(mywindow,"Button 2","Cancel")
 guitick()
 
 

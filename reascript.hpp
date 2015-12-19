@@ -358,6 +358,46 @@ function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,na
 "Add a Reaper slider control to window"
 );
 
+
+function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* butname = (const char*)arg[1];
+	const char* buttext = (const char*)arg[2];
+	if (w != nullptr && butname != nullptr && buttext!=nullptr)
+	{
+		w->add_button(butname, buttext);
+		return_null();
+	}
+	return_null();
+},
+"Add a button to window"
+);
+
+function_entry MRP_WindowGetClickedButton("const char*", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w != nullptr)
+	{
+		return (void*)w->m_clicked_button_name.c_str();
+	}
+	return_null();
+},
+"Get last clicked button name. Nil/null if none was clicked."
+);
+
+function_entry MRP_WindowClearClickedButton("", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w != nullptr)
+	{
+		w->m_clicked_button_name = "";
+	}
+	return_null();
+},
+"Clear the last clicked button name of the window"
+);
+
 function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
 {
 	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
