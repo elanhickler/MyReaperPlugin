@@ -52,7 +52,7 @@ void ReaperDialog::setVisible(bool b)
 
 void ReaperDialog::add_command_handler(WORD control, WORD id, std::function<void(void)> f)
 {
-	command_entry_t entry;
+	callback_entry_t entry;
 	entry.m_control_id = control;
 	entry.m_notification_id = id;
 	entry.m_func = f;
@@ -61,7 +61,7 @@ void ReaperDialog::add_command_handler(WORD control, WORD id, std::function<void
 
 void ReaperDialog::add_text_changed_handler(WORD control, WORD id, std::function<void(std::string)> f)
 {
-	command_entry_t entry;
+	callback_entry_t entry;
 	entry.m_control_id = control;
 	entry.m_notification_id = id;
 	entry.m_text_changed_func = f;
@@ -294,4 +294,91 @@ HWND open_lice_dialog(HWND parent)
 void clean_up_gui()
 {
 	g_test_timer.stop();
+}
+
+std::unordered_map<HWND, ReaScriptWindow*> g_reascriptwindowsmap;
+
+ReaScriptWindow::ReaScriptWindow(std::string title)
+{
+	HWND parent = GetMainHwnd();
+	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_REASCRIPTDIALOG1), parent, dlgproc, (LPARAM)this);
+	if (m_hwnd == NULL)
+	{
+		readbg() << "failed to create reascript dialog\n";
+		return;
+	}
+	control_t c;
+	c.m_name = "Line edit 1";
+	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SCRIPTLINEEDIT1);
+	m_controls.push_back(c);
+	SetWindowText(m_hwnd, title.c_str());
+	ShowWindow(m_hwnd, SW_SHOW);
+	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+}
+
+ReaScriptWindow::~ReaScriptWindow()
+{
+	if (m_hwnd != NULL)
+	{
+		DestroyWindow(m_hwnd);
+		g_reascriptwindowsmap.erase(m_hwnd);
+	}
+}
+
+void ReaScriptWindow::setWindowTitle(std::string title)
+{
+	if (m_hwnd != NULL)
+	{
+		SetWindowText(m_hwnd, title.c_str());
+	}
+}
+
+bool ReaScriptWindow::isControlDirty(std::string name)
+{
+	control_t* c = controlFromName(name);
+	if (c != nullptr)
+		return c->m_dirty;
+	return false;
+}
+
+void ReaScriptWindow::cleanControl(std::string name)
+{
+	control_t* c = controlFromName(name);
+	if (c != nullptr)
+		c->m_dirty = false;
+}
+
+ReaScriptWindow::control_t* ReaScriptWindow::controlFromName(std::string name)
+{
+	for (auto& e : m_controls)
+		if (e.m_name == name)
+			return &e;
+	return nullptr;
+}
+
+INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_INITDIALOG)
+	{
+		ReaScriptWindow* wptr = (ReaScriptWindow*)lparam;
+		g_reascriptwindowsmap[hwnd] = wptr;
+		return TRUE;
+	}
+	ReaScriptWindow* wptr = get_from_map(g_reascriptwindowsmap, hwnd);
+	if (wptr == nullptr)
+		return FALSE;
+	if (msg == WM_CLOSE)
+	{
+		wptr->m_wants_close = true;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+HWND g_reascript_gui = NULL;
+
+ReaScriptWindow* open_reascript_test_gui(std::string title)
+{
+	ReaScriptWindow* result = new ReaScriptWindow(title);
+	return result;
 }

@@ -226,6 +226,48 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](para
 "architectures."
 );
 
+function_entry MRP_CreateWindow("MRP_Window*", "const char*", "title", [](params)
+{
+	const char* wtitle = (const char*)arg[0];
+	ReaScriptWindow* w = new ReaScriptWindow(wtitle);
+	return_obj(w);
+},
+"Create test window"
+);
+
+function_entry MRP_DestroyWindow("", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	delete w;
+	return_null();
+},
+"Destroy test window"
+);
+
+function_entry MRP_WindowWantsClose("bool", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w == nullptr)
+		return_int(0);
+	if (w->m_wants_close == true)
+		return_int(1);
+	return_int(0);
+},
+"Destroy test window"
+);
+
+function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* wtitle = (const char*)arg[1];
+	if (wtitle != nullptr)
+		w->setWindowTitle(wtitle);
+	return_null();
+},
+"Create test window"
+);
+
+
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_obj(GetSelectedMediaItem(0, 0));
 },

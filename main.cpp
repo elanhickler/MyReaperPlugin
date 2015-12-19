@@ -116,6 +116,10 @@ extern "C"
 			func(MRP_CastDoubleToInt);
 			func(MRP_ReturnMediaItem);
 			func(MRP_DoNothing);
+			func(MRP_CreateWindow);
+			func(MRP_DestroyWindow);
+			func(MRP_WindowSetTitle);
+			func(MRP_WindowWantsClose);
 			func(MRP_CreateArray);
 			func(MRP_DestroyArray);
 			func(MRP_GenerateSine);

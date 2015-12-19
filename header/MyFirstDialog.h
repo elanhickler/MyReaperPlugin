@@ -24,17 +24,42 @@ public:
 private:
 	HWND m_hwnd = NULL;
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
-	struct command_entry_t
+	struct callback_entry_t
 	{
 		WORD m_control_id = 0;
 		WORD m_notification_id = 0;
 		std::function<void(void)> m_func;
 		std::function<void(std::string)> m_text_changed_func;
 	};
-	std::vector<command_entry_t> m_simple_command_handlers;
+	std::vector<callback_entry_t> m_simple_command_handlers;
 };
 
 HWND open_my_first_modeless_dialog(HWND parent);
 HWND open_lice_dialog(HWND parent);
+
+class ReaScriptWindow
+{
+public:
+	struct control_t
+	{
+		std::string m_name;
+		HWND m_hwnd = NULL;
+		bool m_dirty = false;
+	};
+	ReaScriptWindow(std::string title);
+	~ReaScriptWindow();
+	void setWindowTitle(std::string title);
+	bool isControlDirty(std::string name);
+	void cleanControl(std::string name);
+	control_t* controlFromName(std::string name);
+	bool m_wants_close = false;
+private:
+	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
+	HWND m_hwnd = NULL;
+	
+	std::vector<control_t> m_controls;
+};
+
+ReaScriptWindow* open_reascript_test_gui(std::string title);
 
 void clean_up_gui();
