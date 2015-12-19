@@ -267,28 +267,37 @@ function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title",
 "Set window title"
 );
 
-function_entry MRP_GetWindowDirty("bool", "MRP_Window*", "window", [](params)
+function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	int which = in(arg[1]);
 	if (w != nullptr)
 	{
-		if (w->m_window_dirty == true)
+		if (which == 0 && w->m_window_dirty == true)
+			return_int(1);
+		if (which == 1 && w->m_was_resized == true)
 			return_int(1);
 	}
 	return_int(0);
 },
-"Get window dirty state (ie, if something was changed in the controls)"
+"Get window dirty state (ie, if something was changed in the window). which : 0 child controls, 1 window size"
 );
 
-function_entry MRP_SetWindowDirty("", "MRP_Window*,bool", "window,isdirty", [](params)
+function_entry MRP_SetWindowDirty("", "MRP_Window*,bool,int", "window,isdirty,which", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	int state = in(arg[1]);
+	int which = in(arg[2]);
 	if (w != nullptr)
 	{
-		if (state == 0)
+		if (state == 0 && which == 0)
 			w->m_window_dirty = false;
-		else w->m_window_dirty = true;
+		if (state == 1 && which == 0)
+			w->m_window_dirty = true;
+		if (state == 0 && which == 1)
+			w->m_was_resized = false;
+		if (state == 1 && which == 1)
+			w->m_was_resized = true;
 	}
 	return_null();
 },
@@ -306,6 +315,19 @@ function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "win
 	return_null();
 },
 "Get main text associated with control"
+);
+
+function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	int which = in(arg[1]);
+	if (w != nullptr)
+	{
+		return_int(w->getBoundsValue(which));
+	}
+	return_int(0);
+},
+"Get window geometry values. which : 0 x, 1 y, 2 w, 3 h"
 );
 
 function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*", "window,controlname", [](params)
@@ -333,8 +355,27 @@ function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,na
 	}
 	return_null();
 },
-"Get the main number associated with control"
+"Add a Reaper slider control to window"
 );
+
+function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,int,int,int,int", "window,name,x,y,w,h", [](params)
+{
+	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int x = (in)arg[2];
+	int y = (in)arg[3];
+	int w = (in)arg[4];
+	int h = (in)arg[5];
+	if (wptr != nullptr && cname != nullptr)
+	{
+		wptr->setControlBounds(cname, x, y, w, h);
+		return_null();
+	}
+	return_null();
+},
+"Set MRP control position and size"
+);
+
 
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_obj(GetSelectedMediaItem(0, 0));

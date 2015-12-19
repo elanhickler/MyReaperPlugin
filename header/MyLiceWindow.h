@@ -34,6 +34,7 @@ public:
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::function<void(int, double, double)> PointMovedCallback;
 	fx_param_t* getFXParamTarget(int index, int which);
+	std::string getType() const override { return "MultiXYControl"; }
 private:
 	
 	std::vector<point> m_points;

@@ -178,6 +178,8 @@ public:
 
 	virtual bool keyPressed(const ModifierKeys& modkeys, int keycode) { return false; }
 
+	virtual std::string getType() const = 0;
+
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:

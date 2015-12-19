@@ -407,6 +407,32 @@ ReaScriptWindow::control_t* ReaScriptWindow::controlFromName(std::string name)
 	return nullptr;
 }
 
+void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, int h)
+{
+	control_t* c = controlFromName(name);
+	if (c != nullptr)
+	{
+		if (c->m_licecontrol==nullptr)
+			SetWindowPos(c->m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
+		else c->m_licecontrol->setBounds(x, y, w, h);
+	}
+}
+
+int ReaScriptWindow::getBoundsValue(int which)
+{
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	if (which == 0)
+		return r.left;
+	if (which == 1)
+		return r.top;
+	if (which == 2)
+		return r.right - r.left;
+	if (which == 3)
+		return r.bottom - r.top;
+	return 0;
+}
+
 INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (msg == WM_INITDIALOG)
@@ -421,7 +447,12 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 	if (msg == WM_COMMAND || msg == WM_HSCROLL)
 	{
 		wptr->m_window_dirty = true;
-		return FALSE;
+		return TRUE;
+	}
+	if (msg == WM_SIZE)
+	{
+		wptr->m_was_resized = true;
+		return TRUE;
 	}
 	if (msg == WM_CLOSE)
 	{

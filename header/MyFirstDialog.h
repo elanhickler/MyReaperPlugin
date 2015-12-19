@@ -37,11 +37,14 @@ private:
 HWND open_my_first_modeless_dialog(HWND parent);
 HWND open_lice_dialog(HWND parent);
 
+class LiceControl;
+
 class ReaScriptWindow
 {
 public:
 	enum control_type_t
 	{
+		Unknown,
 		Button,
 		LineEdit,
 		Label,
@@ -52,6 +55,8 @@ public:
 	{
 		std::string m_name;
 		HWND m_hwnd = NULL;
+		LiceControl* m_licecontrol = nullptr;
+		control_type_t m_type = Unknown;
 		bool m_dirty = false;
 		double m_val = 0.0;
 	};
@@ -67,8 +72,12 @@ public:
 	
 	void add_slider(std::string name, int initialvalue);
 	
+	void setControlBounds(std::string name, int x, int y, int w, int h);
+	int getBoundsValue(int which);
+
 	bool m_was_closed = false;
 	bool m_window_dirty = false;
+	bool m_was_resized = false;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	HWND m_hwnd = NULL;
