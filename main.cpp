@@ -119,7 +119,7 @@ extern "C"
 			func(MRP_CreateWindow);
 			func(MRP_DestroyWindow);
 			func(MRP_WindowSetTitle);
-			func(MRP_WindowWantsClose);
+			func(MRP_WindowIsClosed);
 			func(MRP_GetControlText);
 			func(MRP_GetControlFloatNumber);
 			func(MRP_SetWindowDirty);

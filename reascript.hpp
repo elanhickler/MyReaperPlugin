@@ -244,12 +244,12 @@ function_entry MRP_DestroyWindow("", "MRP_Window*", "window", [](params)
 "Destroy test window"
 );
 
-function_entry MRP_WindowWantsClose("bool", "MRP_Window*", "window", [](params)
+function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w == nullptr)
 		return_int(0);
-	if (w->m_wants_close == true)
+	if (w->m_was_closed == true)
 		return_int(1);
 	return_int(0);
 },

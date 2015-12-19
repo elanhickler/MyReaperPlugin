@@ -1,8 +1,7 @@
 mywindow=nil
 
 function guitick()
-  if reaper.MRP_WindowWantsClose(mywindow) then
-    reaper.MRP_DestroyWindow(mywindow)
+  if reaper.MRP_WindowIsClosed(mywindow) then
     return
   end
   if reaper.MRP_GetWindowDirty(mywindow) then

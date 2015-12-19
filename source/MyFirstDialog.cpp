@@ -402,7 +402,10 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 	}
 	if (msg == WM_CLOSE)
 	{
-		wptr->m_wants_close = true;
+		g_reascriptwindowsmap.erase(hwnd);
+		wptr->m_hwnd = NULL;
+		DestroyWindow(hwnd);
+		wptr->m_was_closed = true;
 		return TRUE;
 	}
 	return FALSE;

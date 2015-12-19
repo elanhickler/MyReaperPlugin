@@ -64,7 +64,7 @@ public:
 	control_t* controlFromName(std::string name);
 	const char* getControlText(std::string controlname);
 	double getControlValueDouble(std::string controlname);
-	bool m_wants_close = false;
+	bool m_was_closed = false;
 	bool m_window_dirty = false;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
