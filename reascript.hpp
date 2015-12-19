@@ -264,7 +264,20 @@ function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title",
 		w->setWindowTitle(wtitle);
 	return_null();
 },
-"Create test window"
+"Set window title"
+);
+
+function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "window,controlname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_obj(w->getControlText(cname));
+	}
+	return_null();
+},
+"Get main text associated with control"
 );
 
 

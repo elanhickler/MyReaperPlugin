@@ -313,7 +313,7 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 	m_controls.push_back(c);
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
-	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 30, SWP_NOACTIVATE | SWP_NOZORDER);
+	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 60, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
 }
 
 ReaScriptWindow::~ReaScriptWindow()
@@ -331,6 +331,18 @@ void ReaScriptWindow::setWindowTitle(std::string title)
 	{
 		SetWindowText(m_hwnd, title.c_str());
 	}
+}
+
+const char* ReaScriptWindow::getControlText(std::string cname)
+{
+	control_t* c = controlFromName(cname);
+	if (c != nullptr)
+	{
+		char buf[1024];
+		GetWindowText(c->m_hwnd, buf, 1024);
+		return buf;
+	}
+	return "";
 }
 
 bool ReaScriptWindow::isControlDirty(std::string name)

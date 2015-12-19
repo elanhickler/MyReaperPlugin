@@ -120,6 +120,7 @@ extern "C"
 			func(MRP_DestroyWindow);
 			func(MRP_WindowSetTitle);
 			func(MRP_WindowWantsClose);
+			func(MRP_GetControlText);
 			func(MRP_CreateArray);
 			func(MRP_DestroyArray);
 			func(MRP_GenerateSine);

@@ -40,6 +40,14 @@ HWND open_lice_dialog(HWND parent);
 class ReaScriptWindow
 {
 public:
+	enum control_type_t
+	{
+		Button,
+		LineEdit,
+		Label,
+		Slider,
+		Custom
+	};
 	struct control_t
 	{
 		std::string m_name;
@@ -52,6 +60,7 @@ public:
 	bool isControlDirty(std::string name);
 	void cleanControl(std::string name);
 	control_t* controlFromName(std::string name);
+	const char* getControlText(std::string controlname);
 	bool m_wants_close = false;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
