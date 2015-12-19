@@ -310,18 +310,27 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 		return;
 	}
 	control_t c;
+	/*
 	c.m_name = "Line edit 1";
-	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SCRIPTLINEEDIT1);
+	c.m_hwnd = CreateWindow("EDIT", c.m_name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd, 0, g_hInst, 0);
+	ShowWindow(c.m_hwnd, SW_SHOW);
 	m_controls.push_back(c);
-	c.m_name = "Slider 1";
-	c.m_hwnd = GetDlgItem(m_hwnd, IDC_REAFADER1);
-	m_controls.push_back(c);
-	c.m_name = "Slider 2";
-	c.m_hwnd = GetDlgItem(m_hwnd, IDC_REAFADER2);
-	m_controls.push_back(c);
+	*/
+	/*
+	for (int i = 0; i < 4; ++i)
+	{
+		std::string cname = "Slider " + std::to_string(i+1);
+		int ycor = 40 + i * 25;
+		c.m_hwnd = CreateWindow("REAPERhfader", cname.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd, 0, g_hInst, 0);
+		ShowWindow(c.m_hwnd, SW_SHOW);
+		c.m_name = cname;
+		m_controls.push_back(c);
+	}
+	*/
+	
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
-	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 60, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
+	SetWindowPos(m_hwnd, NULL, 20, 60, 300, 160, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 ReaScriptWindow::~ReaScriptWindow()
@@ -331,6 +340,18 @@ ReaScriptWindow::~ReaScriptWindow()
 		DestroyWindow(m_hwnd);
 		g_reascriptwindowsmap.erase(m_hwnd);
 	}
+}
+
+void ReaScriptWindow::add_slider(std::string name, int initialvalue)
+{
+	int ycor = 5 + m_controls.size() * 25;
+	control_t c;
+	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd, 0, g_hInst, 0);
+	SendMessage(c.m_hwnd, TBM_SETPOS, 0, (LPARAM)initialvalue);
+	SendMessage(c.m_hwnd, TBM_SETTIC, 0, 500);
+	ShowWindow(c.m_hwnd, SW_SHOW);
+	c.m_name = name;
+	m_controls.push_back(c);
 }
 
 void ReaScriptWindow::setWindowTitle(std::string title)

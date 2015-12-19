@@ -64,6 +64,9 @@ public:
 	control_t* controlFromName(std::string name);
 	const char* getControlText(std::string controlname);
 	double getControlValueDouble(std::string controlname);
+	
+	void add_slider(std::string name, int initialvalue);
+	
 	bool m_was_closed = false;
 	bool m_window_dirty = false;
 private:

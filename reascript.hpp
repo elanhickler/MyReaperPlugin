@@ -321,6 +321,21 @@ function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*", "w
 "Get the main number associated with control"
 );
 
+function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,name,initialvalue", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* slidname = (const char*)arg[1];
+	int initval = (in)arg[2];
+	if (w != nullptr && slidname!=nullptr)
+	{
+		w->add_slider(slidname, initval);
+		return_null();
+	}
+	return_null();
+},
+"Get the main number associated with control"
+);
+
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_obj(GetSelectedMediaItem(0, 0));
 },

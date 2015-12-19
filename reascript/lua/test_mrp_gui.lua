@@ -2,6 +2,7 @@ mywindow=nil
 
 function guitick()
   if reaper.MRP_WindowIsClosed(mywindow) then
+    --reaper.ShowConsoleMsg("closed\n")
     return
   end
   if reaper.MRP_GetWindowDirty(mywindow) then
@@ -15,7 +16,9 @@ function guitick()
   reaper.defer(guitick)
 end
 
-mywindow=reaper.MRP_CreateWindow("my window")
+mywindow=reaper.MRP_CreateWindow("My window")
+reaper.MRP_WindowAddSlider(mywindow,"Slider 1",100)
+reaper.MRP_WindowAddSlider(mywindow,"Slider 2",900)
 guitick()
 
 
