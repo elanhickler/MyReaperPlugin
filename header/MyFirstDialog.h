@@ -53,15 +53,19 @@ public:
 		std::string m_name;
 		HWND m_hwnd = NULL;
 		bool m_dirty = false;
+		double m_val = 0.0;
 	};
 	ReaScriptWindow(std::string title);
 	~ReaScriptWindow();
 	void setWindowTitle(std::string title);
 	bool isControlDirty(std::string name);
 	void cleanControl(std::string name);
+	
 	control_t* controlFromName(std::string name);
 	const char* getControlText(std::string controlname);
+	double getControlValueDouble(std::string controlname);
 	bool m_wants_close = false;
+	bool m_window_dirty = false;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	HWND m_hwnd = NULL;

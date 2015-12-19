@@ -5,8 +5,13 @@ function guitick()
     reaper.MRP_DestroyWindow(mywindow)
     return
   end
-  local text = reaper.MRP_GetControlText(mywindow,"Line edit 1")
-  reaper.MRP_WindowSetTitle(mywindow,"Window "..text)
+  if reaper.MRP_GetWindowDirty(mywindow) then
+    local text = reaper.MRP_GetControlText(mywindow,"Line edit 1")
+    local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
+    reaper.ShowConsoleMsg(val.." ")
+    reaper.MRP_WindowSetTitle(mywindow,"Window "..text)
+    reaper.MRP_SetWindowDirty(mywindow,false)
+  end
   reaper.defer(guitick)
 end
 

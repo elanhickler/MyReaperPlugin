@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <memory>
 #include "utilfuncs.h"
-
+#include "Commctrl.h"
 extern HINSTANCE g_hInst;
 
 std::unordered_map<HWND, ReaperDialog*> g_dialogmap;
@@ -311,6 +311,9 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 	c.m_name = "Line edit 1";
 	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SCRIPTLINEEDIT1);
 	m_controls.push_back(c);
+	c.m_name = "Slider 1";
+	c.m_hwnd = GetDlgItem(m_hwnd, IDC_SLIDER1);
+	m_controls.push_back(c);
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 	SetWindowPos(m_hwnd, NULL, 20, 60, 200, 60, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
@@ -343,6 +346,16 @@ const char* ReaScriptWindow::getControlText(std::string cname)
 		return buf;
 	}
 	return "";
+}
+
+double ReaScriptWindow::getControlValueDouble(std::string cname)
+{
+	control_t* c = controlFromName(cname);
+	if (c != nullptr)
+	{
+		return SendMessage(c->m_hwnd, TBM_GETPOS, 0, 0);
+	}
+	return 0.0;
 }
 
 bool ReaScriptWindow::isControlDirty(std::string name)
@@ -379,6 +392,11 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 	ReaScriptWindow* wptr = get_from_map(g_reascriptwindowsmap, hwnd);
 	if (wptr == nullptr)
 		return FALSE;
+	if (msg == WM_COMMAND || msg == WM_HSCROLL)
+	{
+		wptr->m_window_dirty = true;
+		return FALSE;
+	}
 	if (msg == WM_CLOSE)
 	{
 		wptr->m_wants_close = true;

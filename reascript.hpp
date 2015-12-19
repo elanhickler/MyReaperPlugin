@@ -267,6 +267,34 @@ function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title",
 "Set window title"
 );
 
+function_entry MRP_GetWindowDirty("bool", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w != nullptr)
+	{
+		if (w->m_window_dirty == true)
+			return_int(1);
+	}
+	return_int(0);
+},
+"Get window dirty state (ie, if something was changed in the controls)"
+);
+
+function_entry MRP_SetWindowDirty("", "MRP_Window*,bool", "window,isdirty", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	int state = in(arg[1]);
+	if (w != nullptr)
+	{
+		if (state == 0)
+			w->m_window_dirty = false;
+		else w->m_window_dirty = true;
+	}
+	return_null();
+},
+"Set window dirty state (ie, if something was changed in the controls)"
+);
+
 function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "window,controlname", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -280,6 +308,18 @@ function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "win
 "Get main text associated with control"
 );
 
+function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*", "window,controlname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_double(w->getControlValueDouble(cname));
+	}
+	return_double(0.0);
+},
+"Get the main number associated with control"
+);
 
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_obj(GetSelectedMediaItem(0, 0));
