@@ -335,6 +335,10 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 
 ReaScriptWindow::~ReaScriptWindow()
 {
+	// These should of course be deleted, but there might be some subtleties involved,
+	// postpone figuring out all that...
+	//for (auto& e : m_controls)
+	//	delete e.m_licecontrol;
 	if (m_hwnd != NULL)
 	{
 		DestroyWindow(m_hwnd);
@@ -425,8 +429,6 @@ void ReaScriptWindow::add_custom_control(std::string name,std::string controltyp
 	if (controltype=="MultiXYControl")
 	{
 		c.m_licecontrol=new TestControl(m_hwnd);
-		if (c.m_licecontrol!=nullptr)
-			readbg() << "licecontrol ok ";
 		c.m_hwnd=c.m_licecontrol->getWindowHandle();
 		ShowWindow(c.m_hwnd, SW_SHOW);
 	}
