@@ -3,6 +3,9 @@
 // for another operating system (namely, OS-X)
 #ifdef _WIN32
 #include <windows.h>
+#pragma warning ( disable : 4267 ) // size_t to int
+#pragma warning ( disable : 4244 ) // double to int
+#pragma warning ( disable : 4800 ) // 'unsigned __int64': forcing value to bool 'true' or 'false' (performance warning)
 #else
 #include "WDL/WDL/swell/swell.h"
 #endif

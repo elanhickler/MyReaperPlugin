@@ -1,5 +1,4 @@
-#ifndef utilfuncs_h
-#define utilfuncs_h
+#pragma once
 
 #include <algorithm>
 #include <ostream>
@@ -73,5 +72,3 @@ public:
 	NoCopyNoMove(NoCopyNoMove&&) = delete;
 	NoCopyNoMove& operator=(NoCopyNoMove&&) = delete;
 };
-
-#endif /* utilfuncs_h */
