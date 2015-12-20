@@ -323,20 +323,44 @@ void WaveformControl::mouseMoved(const MouseEvent & ev)
 {
 	if (m_mouse_down == true)
 	{
-		double t0 = map_value((double)ev.m_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
-		double t1 = map_value((double)m_drag_start_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
-		if (t1 < t0)
-			std::swap(t0, t1);
-		m_sel_start = t0;
-		m_sel_end = t1;
+		if (m_hot_sel_edge == 0)
+		{
+			double t0 = map_value((double)ev.m_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+			double t1 = map_value((double)m_drag_start_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+			m_sel_start = t0;
+			m_sel_end = t1;
+		}
+		if (m_hot_sel_edge == -1)
+		{
+			double t0 = map_value((double)ev.m_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+			m_sel_start = t0;
+		}
+		if (m_hot_sel_edge == 1)
+		{
+			double t0 = map_value((double)ev.m_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+			m_sel_end = t0;
+		}
+		if (m_sel_end < m_sel_start)
+		{
+			std::swap(m_sel_start, m_sel_end);
+			if (m_hot_sel_edge == -1)
+				m_hot_sel_edge = 1;
+			else if (m_hot_sel_edge == 1)
+				m_hot_sel_edge = -1;
+		}
 		repaint();
 		//readbg() << "sel is " << t0 << " " << t1 << "\n";
+	}
+	else
+	{
+		m_hot_sel_edge = get_hot_time_sel_edge(ev.m_x, ev.m_y);
 	}
 }
 
 void WaveformControl::mouseReleased(const MouseEvent & ev)
 {
 	m_mouse_down = false;
+	m_hot_sel_edge = 0;
 }
 
 void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)
@@ -412,6 +436,17 @@ void WaveformControl::setFloatingPointProperty(int which, double val)
 			m_view_end = bound_value(m_view_start + 0.01, val, m_src->GetLength());
 	}
 	repaint();
+}
+
+int WaveformControl::get_hot_time_sel_edge(int x, int y)
+{
+	int sel_x0 = map_value(m_sel_start, m_view_start, m_view_end, 0.0, (double)getWidth());
+	int sel_x1 = map_value(m_sel_end, m_view_start, m_view_end, 0.0, (double)getWidth());
+	if (is_point_in_rect(x, y, sel_x0 - 10, 0, 20, getHeight()) == true)
+		return -1;
+	if (is_point_in_rect(x, y, sel_x1 - 10, 0, 20, getHeight()) == true)
+		return 1;
+	return 0;
 }
 
 double WaveformControl::getFloatingPointProperty(int which)
