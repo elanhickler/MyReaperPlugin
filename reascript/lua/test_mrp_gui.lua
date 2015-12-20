@@ -8,10 +8,27 @@ function benchmark(bench_t0,bench_t1)
   tickcount=tickcount+1
   if tickcount>=100 then
      local avg_bench = tickselapsed/tickcount
-     reaper.ShowConsoleMsg((avg_bench*1000.0).." ms\n")
+     --reaper.ShowConsoleMsg((avg_bench*1000.0).." ms\n")
      tickcount=0
      tickselapsed=0.0
   end
+end
+
+function handle_window_resize()
+  local w = reaper.MRP_GetWindowPosSizeValue(mywindow,2)
+  local h = reaper.MRP_GetWindowPosSizeValue(mywindow,3)
+  reaper.MRP_SetControlBounds(mywindow,"Slider 1",w/2,5,w/2-10,20)
+  reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,20)
+  reaper.MRP_SetControlBounds(mywindow,"Slider 3",5,60,w-10,20)
+  reaper.MRP_SetControlBounds(mywindow,"Button 1",w-65,h-20,50,19)
+  reaper.MRP_SetControlBounds(mywindow,"Button 2",w-115,h-20,50,19)
+  reaper.MRP_SetControlBounds(mywindow,"Line edit 1",5,h-20,w-130,19)
+  reaper.MRP_SetControlBounds(mywindow,"Label 1",5,5,w/2-5,19)
+  --reaper.MRP_SetControlBounds(mywindow,"XY",0,55,w,h-80)
+  reaper.MRP_SetControlBounds(mywindow,"Wave 1",0,85,w,(h-105)/2-5)
+  reaper.MRP_SetControlBounds(mywindow,"Wave 2",0,85+((h-105)/2),w,(h-105)/2-5)
+  --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
+  reaper.MRP_SetWindowDirty(mywindow,false,1)
 end
 
 function guitick()
@@ -40,20 +57,7 @@ function guitick()
     reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,t1*srclen)
   end
   if reaper.MRP_GetWindowDirty(mywindow,1) then
-    local w = reaper.MRP_GetWindowPosSizeValue(mywindow,2)
-    local h = reaper.MRP_GetWindowPosSizeValue(mywindow,3)
-    reaper.MRP_SetControlBounds(mywindow,"Slider 1",w/2,5,w/2-10,20)
-    reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,20)
-    reaper.MRP_SetControlBounds(mywindow,"Slider 3",5,60,w-10,20)
-    reaper.MRP_SetControlBounds(mywindow,"Button 1",w-65,h-20,50,19)
-    reaper.MRP_SetControlBounds(mywindow,"Button 2",w-115,h-20,50,19)
-    reaper.MRP_SetControlBounds(mywindow,"Line edit 1",5,h-20,w-130,19)
-    reaper.MRP_SetControlBounds(mywindow,"Label 1",5,5,w/2-5,19)
-    --reaper.MRP_SetControlBounds(mywindow,"XY",0,55,w,h-80)
-    reaper.MRP_SetControlBounds(mywindow,"Wave 1",0,85,w,(h-105)/2-5)
-    reaper.MRP_SetControlBounds(mywindow,"Wave 2",0,85+((h-105)/2),w,(h-105)/2-5)
-    --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
-    reaper.MRP_SetWindowDirty(mywindow,false,1)
+    handle_window_resize()
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Button 1") then
       reaper.MRP_SetControlText(mywindow,"Button 1",math.random())

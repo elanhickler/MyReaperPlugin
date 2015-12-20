@@ -355,7 +355,7 @@ function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int"
 	}
 	return_double(0.0);
 },
-"Get a floating point number associated with control"
+"Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
 function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
@@ -371,7 +371,7 @@ function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,do
 	}
 	return_null;
 },
-"Get the main number associated with control"
+"Set a floating point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
 function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,name,initialvalue", [](params)
