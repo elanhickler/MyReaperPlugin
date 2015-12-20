@@ -121,6 +121,7 @@ extern "C"
 			func(MRP_WindowSetTitle);
 			func(MRP_WindowIsClosed);
 			func(MRP_GetControlText);
+			func(MRP_SetControlText);
 			func(MRP_GetControlFloatNumber);
 			func(MRP_SetWindowDirty);
 			func(MRP_GetWindowDirty);
@@ -129,6 +130,7 @@ extern "C"
 			func(MRP_WindowAddSlider);
 			func(MRP_WindowAddButton);
 			func(MRP_WindowAddLineEdit);
+			func(MRP_WindowAddLabel);
 			func(MRP_WindowIsDirtyControl);
 			func(MRP_WindowClearDirtyControls);
 			func(MRP_CreateArray);

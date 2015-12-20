@@ -70,11 +70,13 @@ public:
 	
 	control_t* controlFromName(std::string name);
 	const char* getControlText(std::string controlname);
+	void setControlText(std::string cname, std::string text);
 	double getControlValueDouble(std::string controlname);
 	
 	void add_button(std::string name, std::string text);
 	void add_slider(std::string name, int initialvalue);
 	void add_line_edit(std::string name, std::string initialtext);
+	void add_label(std::string name, std::string inittext);
 
 	void setControlBounds(std::string name, int x, int y, int w, int h);
 	int getBoundsValue(int which);

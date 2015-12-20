@@ -317,6 +317,20 @@ function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "win
 "Get main text associated with control"
 );
 
+function_entry MRP_SetControlText("void", "MRP_Window*,const char*,const char*", "window,controlname,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (in)arg[1];
+	const char* txt = (in)arg[2];
+	if (w != nullptr && cname != nullptr && txt!=nullptr)
+	{
+		w->setControlText(cname, txt);
+	}
+	return_null;
+},
+"Set main text associated with control"
+);
+
 function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -388,6 +402,22 @@ function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", 
 },
 "Add a (single line) text edit to window"
 );
+
+function_entry MRP_WindowAddLabel("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* butname = (const char*)arg[1];
+	const char* buttext = (const char*)arg[2];
+	if (w != nullptr && butname != nullptr && buttext != nullptr)
+	{
+		w->add_label(butname, buttext);
+		return_null;
+	}
+	return_null;
+},
+									 "Add a (single line) text edit to window"
+									 );
+
 
 function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
 {

@@ -10,7 +10,8 @@ function guitick()
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 1") then
     local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
-    reaper.ShowConsoleMsg(val.." ")
+    reaper.MRP_SetControlText(mywindow,"Label 1",val)
+    --reaper.ShowConsoleMsg(val.." ")
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") then
     local playrate = 0.25+0.75/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2")
@@ -24,6 +25,7 @@ function guitick()
     reaper.MRP_SetControlBounds(mywindow,"Button 1",w-45,h-20,35,19)
     reaper.MRP_SetControlBounds(mywindow,"Button 2",w-95,h-20,50,19)
     reaper.MRP_SetControlBounds(mywindow,"Line edit 1",5,h-20,w-110,19)
+    reaper.MRP_SetControlBounds(mywindow,"Label 1",5,5,w/2-5,19)
     --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
     reaper.MRP_SetWindowDirty(mywindow,false,1)
   end
@@ -41,6 +43,7 @@ reaper.MRP_WindowAddSlider(mywindow,"Slider 2",900)
 reaper.MRP_WindowAddButton(mywindow,"Button 1","OK")
 reaper.MRP_WindowAddButton(mywindow,"Button 2","Cancel")
 reaper.MRP_WindowAddLineEdit(mywindow,"Line edit 1","Foofoo text")
+reaper.MRP_WindowAddLabel(mywindow,"Label 1", "This is a label")
 guitick()
 
 

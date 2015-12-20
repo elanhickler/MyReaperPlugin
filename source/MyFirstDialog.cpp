@@ -401,6 +401,24 @@ void ReaScriptWindow::add_line_edit(std::string name, std::string text)
 	m_controls.push_back(c);
 }
 
+void ReaScriptWindow::add_label(std::string name, std::string inittext)
+{
+ 	control_t c;
+#ifdef WIN32
+	c.m_hwnd = CreateWindow("STATIC", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
+							(HMENU)m_control_id_count, g_hInst, 0);
+#else
+	c.m_hwnd = SWELL_MakeLabel(-1, inittext.c_str(), m_control_id_count, 0, 0, 20, 20, 0);
+	SetParent(c.m_hwnd, m_hwnd);
+#endif
+	c.m_name = name;
+	c.m_control_id = m_control_id_count;
+	SetWindowText(c.m_hwnd, inittext.c_str());
+	ShowWindow(c.m_hwnd, SW_SHOW);
+	++m_control_id_count;
+	m_controls.push_back(c);
+}
+
 void ReaScriptWindow::setWindowTitle(std::string title)
 {
 	if (m_hwnd != NULL)
@@ -414,12 +432,23 @@ const char* ReaScriptWindow::getControlText(std::string cname)
 	control_t* c = controlFromName(cname);
 	if (c != nullptr)
 	{
-		char buf[1024];
+		static char buf[1024];
 		GetWindowText(c->m_hwnd, buf, 1024);
 		return buf;
 	}
 	return "";
 }
+
+void ReaScriptWindow::setControlText(std::string cname, std::string txt)
+{
+	control_t* c = controlFromName(cname);
+	if (c != nullptr)
+	{
+		SetWindowText(c->m_hwnd, txt.c_str());
+	}
+	
+}
+
 
 double ReaScriptWindow::getControlValueDouble(std::string cname)
 {
