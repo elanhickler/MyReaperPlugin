@@ -40,11 +40,12 @@ function guitick()
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Line edit 1") then
     reaper.MRP_WindowSetTitle(mywindow,reaper.MRP_GetControlText(mywindow,"Line edit 1"))
   end
-  if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 1") then
-    local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1",0)
-    reaper.MRP_SetControlText(mywindow,"Label 1",val)
+  --if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 1") then
+    local wtsel0 = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 1",3)
+    local wtsel1 = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 1",4)
+    reaper.MRP_SetControlText(mywindow,"Label 1",wtsel0.." : "..wtsel1)
     --reaper.ShowConsoleMsg(val.." ")
-  end
+  --end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") or
      reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 3") then
     local t0 = 1.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
