@@ -308,18 +308,25 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		}
 		else
 		{
-			if (m_src->GetNumChannels() == 1)
+			if (m_src->GetNumChannels() > 0)
 			{
 				LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-				double halfhei = (double)getHeight() / 2;
-				for (int i = 0; i < peaktrans.numpeak_points; ++i)
+				int nch = m_src->GetNumChannels();
+				double peakshei = (double)getHeight() / nch;
+				double peakshalfhei = peakshei / 2;
+				double yoffs = peakshalfhei;
+				for (int j = 0; j < nch; ++j)
 				{
-					double ycor0 = halfhei - halfhei*m_maxpeaks[i];
-					double ycor1 = halfhei - halfhei*m_minpeaks[i];
-					if (m_maxpeaks[i]>0.5 || m_minpeaks[i]<-0.5)
-						LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(255, 0, 0, 255), 1.0f, 0, true);
-					else
-						LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(0, 255, 0, 255), 1.0f, 0, true);
+					for (int i = 0; i < peaktrans.numpeak_points; ++i)
+					{
+						double ycor0 = peakshalfhei * m_maxpeaks[i*nch+j];
+						double ycor1 = peakshalfhei * m_minpeaks[i*nch+j];
+						if (m_maxpeaks[i] > 0.5 || m_minpeaks[i] < -0.5)
+							LICE_Line(bm, i, yoffs-ycor0, i, yoffs-ycor1, LICE_RGBA(255, 0, 0, 255), 1.0f, 0, true);
+						else
+							LICE_Line(bm, i, yoffs-ycor0, i, yoffs-ycor1, LICE_RGBA(0, 255, 0, 255), 1.0f, 0, true);
+					}
+					yoffs += peakshei;
 				}
 			}
 		}
