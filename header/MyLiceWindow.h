@@ -75,6 +75,7 @@ private:
 	bool m_mouse_down = false;
 	int get_hot_time_sel_edge(int x, int y);
 	int m_hot_sel_edge = 0;
+	bool m_use_reaper_peaks_drawing = true;
 };
 
 

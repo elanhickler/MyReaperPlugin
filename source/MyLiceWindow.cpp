@@ -302,7 +302,24 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		peaktrans.numpeak_points=bm->getWidth();
 		peaktrans.peakrate=(double)bm->getWidth()/(m_view_end-m_view_start);
 		m_src->GetPeakInfo(&peaktrans);
-		GetPeaksBitmap(&peaktrans, m_peaks_gain,bm->getWidth(),bm->getHeight(),bm);
+		if (m_use_reaper_peaks_drawing == true)
+		{
+			GetPeaksBitmap(&peaktrans, m_peaks_gain, bm->getWidth(), bm->getHeight(), bm);
+		}
+		else
+		{
+			if (m_src->GetNumChannels() == 1)
+			{
+				LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+				double halfhei = (double)getHeight() / 2;
+				for (int i = 0; i < peaktrans.numpeak_points; ++i)
+				{
+					double ycor0 = halfhei - halfhei*m_maxpeaks[i];
+					double ycor1 = halfhei - halfhei*m_minpeaks[i];
+					LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(0, 255, 0, 255), 1.0f, 0, true);
+				}
+			}
+		}
 		double sel_x0 = map_value(m_sel_start, m_view_start, m_view_end, 0.0, (double)getWidth());
 		double sel_x1 = map_value(m_sel_end, m_view_start, m_view_end, 0.0, (double)getWidth());
 		LICE_FillRect(bm, sel_x0, 0, sel_x1 - sel_x0, getHeight(), LICE_RGBA(255, 255, 255, 255), 0.5f, 0);
