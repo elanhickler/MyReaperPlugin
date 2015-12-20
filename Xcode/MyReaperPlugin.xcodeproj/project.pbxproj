@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */ = {isa = PBXBuildFile; fileRef = C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */; };
+		C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */; };
 		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
 		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
 		C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6851C1BAD49005C6CCC /* swell-dlg.mm */; };
@@ -40,6 +42,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reascriptgui.h; path = ../header/reascriptgui.h; sourceTree = "<group>"; };
+		C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reascriptgui.cpp; path = ../source/reascriptgui.cpp; sourceTree = "<group>"; };
 		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
 		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
 		C484E6851C1BAD49005C6CCC /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../library/WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
@@ -120,6 +124,7 @@
 			children = (
 				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
+				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
 				C484E69D1C1BAFCC005C6CCC /* MyLiceWindow.h */,
 				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
@@ -133,6 +138,7 @@
 			children = (
 				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
 				C4C574221C1F87EA00A1CE31 /* lice_control.cpp */,
+				C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
 				C484E6951C1BAE54005C6CCC /* MyLiceWindow.cpp */,
 				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
@@ -201,6 +207,7 @@
 			files = (
 				C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */,
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
+				C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */,
 				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
 				C484E69E1C1BAFCC005C6CCC /* MyLiceWindow.h in Headers */,
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
@@ -265,6 +272,7 @@
 				C484E6931C1BAD49005C6CCC /* swell-wnd.mm in Sources */,
 				C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */,
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
+				C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */,
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,

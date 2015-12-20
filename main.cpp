@@ -72,8 +72,11 @@ extern "C"
 
 			// load all Reaper API functions in one go, byebye ugly IMPAPI macro!
 			if (REAPERAPI_LoadAPI(rec->GetFunc) > 0) { return 0; /*todo: proper error*/ }
-			// Should call this on OS-X
-			// SWELL_RegisterCustomControlCreator(getAPI("Mac_CustomControlCreator"))
+			
+#ifndef WIN32
+			// Perhaps to get Reaper faders on OSX...
+			SWELL_RegisterCustomControlCreator((SWELL_ControlCreatorProc)rec->GetFunc("Mac_CustomControlCreator"));
+#endif
 			// Use C++11 lambda to call the doAction1() function that doesn't have the action_entry& as input parameter
 			add_action("Simple extension test action", "EXAMPLE_ACTION_01", CannotToggle, [](action_entry&) { doAction1(); });
 
