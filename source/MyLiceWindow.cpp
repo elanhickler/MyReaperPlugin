@@ -289,6 +289,7 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 			LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255,255,255,255), 1.0f, 0);
 			return;
 		}
+		// Somewhat inefficient to do all this here on each paint, but will suffice for now
 		m_minpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
 		m_maxpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
 		PCM_source_peaktransfer_t peaktrans = {0};
