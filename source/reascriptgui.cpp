@@ -149,13 +149,21 @@ void ReaScriptWindow::add_label(std::string name, std::string inittext)
 void ReaScriptWindow::add_custom_control(std::string name, std::string controltype)
 {
 	control_t c;
+	// This is a stupid way to do this. Will really need a proper factory pattern
+	// for the LiceControls
 	if (controltype == "MultiXYControl")
 	{
 		c.m_licecontrol = new TestControl(m_hwnd);
+	}
+	if (controltype == "WaveformControl")
+	{
+		c.m_licecontrol = new WaveformControl(m_hwnd);
+	}
+	if (c.m_licecontrol != nullptr)
+	{
 		c.m_hwnd = c.m_licecontrol->getWindowHandle();
 		ShowWindow(c.m_hwnd, SW_SHOW);
 	}
-
 	c.m_name = name;
 	c.m_control_id = m_control_id_count;
 	++m_control_id_count;
