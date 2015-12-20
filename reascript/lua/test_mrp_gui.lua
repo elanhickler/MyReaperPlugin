@@ -5,14 +5,14 @@ function guitick()
     --reaper.ShowConsoleMsg("closed\n")
     return
   end
-  if reaper.MRP_WindowGetDirtyControl(mywindow)=="Line edit 1" then
+  if reaper.MRP_WindowIsDirtyControl(mywindow,"Line edit 1") then
     reaper.MRP_WindowSetTitle(mywindow,reaper.MRP_GetControlText(mywindow,"Line edit 1"))
   end
-  if reaper.MRP_WindowGetDirtyControl(mywindow)=="Slider 1" then
+  if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 1") then
     local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
     reaper.ShowConsoleMsg(val.." ")
   end
-  if reaper.MRP_WindowGetDirtyControl(mywindow)=="Slider 2" then
+  if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") then
     local playrate = 0.25+0.75/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2")
     reaper.CSurf_OnPlayRateChange(playrate)
   end
@@ -27,11 +27,11 @@ function guitick()
     --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
     reaper.MRP_SetWindowDirty(mywindow,false,1)
   end
-  if reaper.MRP_WindowGetDirtyControl(mywindow)=="Button 2" then
+  if reaper.MRP_WindowIsDirtyControl(mywindow,"Button 2") then
     reaper.ShowConsoleMsg("Cancel clicked\n")
   end
   -- REMEMBER to call this if you are not sure you don't need to
-  reaper.MRP_WindowClearDirtyControl(mywindow)
+  reaper.MRP_WindowClearDirtyControls(mywindow)
   reaper.defer(guitick)
 end
 

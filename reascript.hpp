@@ -389,24 +389,27 @@ function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", 
 "Add a (single line) text edit to window"
 );
 
-function_entry MRP_WindowGetDirtyControl("const char*", "MRP_Window*", "window", [](params)
+function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (in)arg[1];
 	if (w != nullptr)
 	{
-		return (void*)w->m_last_used_control.c_str();
+		bool isdirty=w->m_last_used_controls.count(cname);
+		if (isdirty==true)
+			return_int(1);
 	}
-	return_null;
+	return_int(0);
 },
-"Get name of control that was last manipulated"
+"Returns true if control was manipulated"
 );
 
-function_entry MRP_WindowClearDirtyControl("", "MRP_Window*", "window", [](params)
+function_entry MRP_WindowClearDirtyControls("", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w != nullptr)
 	{
-		w->m_last_used_control = "";
+		w->m_last_used_controls.clear();
 	}
 	return_null;
 },

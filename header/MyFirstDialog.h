@@ -9,6 +9,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <unordered_set>
 
 class ReaperDialog : public NoCopyNoMove
 {
@@ -81,7 +82,7 @@ public:
 	bool m_was_closed = false;
 	bool m_window_dirty = false;
 	bool m_was_resized = false;
-	std::string m_last_used_control;
+	std::unordered_set<std::string> m_last_used_controls;
 private:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	HWND m_hwnd = NULL;
