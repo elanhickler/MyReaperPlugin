@@ -158,6 +158,11 @@ void ReaScriptWindow::add_custom_control(std::string name, std::string controlty
 	if (controltype == "WaveformControl")
 	{
 		c.m_licecontrol = new WaveformControl(m_hwnd);
+		c.m_licecontrol->ChangeNotifyCallback = [this, name](std::string reason)
+		{
+			//readbg() << name << " : " << reason << "\n";
+			m_last_used_controls.insert(name);
+		};
 	}
 	if (c.m_licecontrol != nullptr)
 	{

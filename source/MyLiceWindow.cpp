@@ -348,6 +348,7 @@ void WaveformControl::mouseMoved(const MouseEvent & ev)
 			else if (m_hot_sel_edge == 1)
 				m_hot_sel_edge = -1;
 		}
+		if (ChangeNotifyCallback) ChangeNotifyCallback("Changed time selection");
 		repaint();
 		//readbg() << "sel is " << t0 << " " << t1 << "\n";
 	}
@@ -372,6 +373,7 @@ void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)
 		if (take!=nullptr)
 		{
 			setSource(GetMediaItemTake_Source(take));
+			if (ChangeNotifyCallback) ChangeNotifyCallback("Changed source");
 		}
 	}
 }
@@ -391,6 +393,7 @@ bool WaveformControl::keyPressed(const ModifierKeys& mods, int code)
 			if (take!=nullptr)
 			{
 				setSource(GetMediaItemTake_Source(take));
+				if (ChangeNotifyCallback) ChangeNotifyCallback("Changed source");
 			}
 		}
 	}
