@@ -346,8 +346,11 @@ void ReaScriptWindow::add_slider(std::string name, int initialvalue)
 {
 	int ycor = 5 + m_controls.size() * 25;
 	control_t c;
-	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd, 
+#ifdef WIN32
+	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
+#else
+#endif
 	SendMessage(c.m_hwnd, TBM_SETPOS, 0, (LPARAM)initialvalue);
 	SendMessage(c.m_hwnd, TBM_SETTIC, 0, 500);
 	ShowWindow(c.m_hwnd, SW_SHOW);
@@ -360,8 +363,11 @@ void ReaScriptWindow::add_slider(std::string name, int initialvalue)
 void ReaScriptWindow::add_button(std::string name, std::string text)
 {
 	control_t c;
+#ifdef WIN32
 	c.m_hwnd = CreateWindow("BUTTON", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
+#else
+#endif
 	c.m_name = name;
 	c.m_control_id = m_control_id_count;
 	SetWindowText(c.m_hwnd, text.c_str());
@@ -373,8 +379,11 @@ void ReaScriptWindow::add_button(std::string name, std::string text)
 void ReaScriptWindow::add_line_edit(std::string name, std::string text)
 {
 	control_t c;
+#ifdef WIN32
 	c.m_hwnd = CreateWindow("EDIT", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
+#else
+#endif
 	c.m_name = name;
 	c.m_control_id = m_control_id_count;
 	SetWindowText(c.m_hwnd, text.c_str());

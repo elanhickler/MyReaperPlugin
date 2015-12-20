@@ -239,7 +239,7 @@ function_entry MRP_DestroyWindow("", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	delete w;
-	return_null();
+	return_null;
 },
 "Destroy test window"
 );
@@ -262,7 +262,7 @@ function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title",
 	const char* wtitle = (const char*)arg[1];
 	if (wtitle != nullptr)
 		w->setWindowTitle(wtitle);
-	return_null();
+	return_null;
 },
 "Set window title"
 );
@@ -299,7 +299,7 @@ function_entry MRP_SetWindowDirty("", "MRP_Window*,bool,int", "window,isdirty,wh
 		if (state == 1 && which == 1)
 			w->m_was_resized = true;
 	}
-	return_null();
+	return_null;
 },
 "Set window dirty state (ie, if something was changed in the controls)"
 );
@@ -312,7 +312,7 @@ function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "win
 	{
 		return_obj(w->getControlText(cname));
 	}
-	return_null();
+	return_null;
 },
 "Get main text associated with control"
 );
@@ -351,9 +351,9 @@ function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,na
 	if (w != nullptr && slidname!=nullptr)
 	{
 		w->add_slider(slidname, initval);
-		return_null();
+		return_null;
 	}
-	return_null();
+	return_null;
 },
 "Add a Reaper slider control to window"
 );
@@ -367,9 +367,9 @@ function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "w
 	if (w != nullptr && butname != nullptr && buttext!=nullptr)
 	{
 		w->add_button(butname, buttext);
-		return_null();
+		return_null;
 	}
-	return_null();
+	return_null;
 },
 "Add a button to window"
 );
@@ -382,9 +382,9 @@ function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", 
 	if (w != nullptr && butname != nullptr && buttext != nullptr)
 	{
 		w->add_line_edit(butname, buttext);
-		return_null();
+		return_null;
 	}
-	return_null();
+	return_null;
 },
 "Add a (single line) text edit to window"
 );
@@ -396,7 +396,7 @@ function_entry MRP_WindowGetDirtyControl("const char*", "MRP_Window*", "window",
 	{
 		return (void*)w->m_last_used_control.c_str();
 	}
-	return_null();
+	return_null;
 },
 "Get name of control that was last manipulated"
 );
@@ -408,7 +408,7 @@ function_entry MRP_WindowClearDirtyControl("", "MRP_Window*", "window", [](param
 	{
 		w->m_last_used_control = "";
 	}
-	return_null();
+	return_null;
 },
 "Clear the last clicked button name of the window"
 );
@@ -424,9 +424,8 @@ function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,double,double,d
 	if (wptr != nullptr && cname != nullptr)
 	{
 		wptr->setControlBounds(cname, x, y, w, h);
-		return_null();
 	}
-	return_null();
+	return_null;
 },
 "Set MRP control position and size"
 );
