@@ -9,13 +9,14 @@ function guitick()
     reaper.MRP_WindowSetTitle(mywindow,reaper.MRP_GetControlText(mywindow,"Line edit 1"))
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 1") then
-    local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
+    local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1",0)
     reaper.MRP_SetControlText(mywindow,"Label 1",val)
     --reaper.ShowConsoleMsg(val.." ")
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") then
-    local playrate = 0.25+0.75/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2")
-    reaper.CSurf_OnPlayRateChange(playrate)
+    local tv = 2.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",0,tv)
+    --reaper.CSurf_OnPlayRateChange(playrate)
   end
   if reaper.MRP_GetWindowDirty(mywindow,1) then
     local w = reaper.MRP_GetWindowPosSizeValue(mywindow,2)

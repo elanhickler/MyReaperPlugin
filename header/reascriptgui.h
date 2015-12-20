@@ -44,7 +44,8 @@ public:
 	control_t* controlFromName(std::string name);
 	const char* getControlText(std::string controlname);
 	void setControlText(std::string cname, std::string text);
-	double getControlValueDouble(std::string controlname);
+	double getControlValueDouble(std::string controlname, int which);
+	void setControlValueDouble(std::string controlname, int which, double val);
 
 	void add_button(std::string name, std::string text);
 	void add_slider(std::string name, int initialvalue);

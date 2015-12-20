@@ -180,6 +180,9 @@ public:
 
 	virtual std::string getType() const = 0;
 
+	virtual double getFloatingPointProperty(int which) { return 0.0; }
+	virtual void setFloatingPointProperty(int which, double v) {}
+	 
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:

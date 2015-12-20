@@ -56,10 +56,13 @@ public:
 	void mouseDoubleClicked(const MouseEvent& ev) override;
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::string getType() const override { return "WaveformControl"; }
+	double getFloatingPointProperty(int which) override;
+	void setFloatingPointProperty(int which, double v) override;
 private:
 	std::shared_ptr<PCM_source> m_src;
 	std::vector<double> m_minpeaks;
 	std::vector<double> m_maxpeaks;
+	double m_peaks_gain = 1.0;
 };
 
 

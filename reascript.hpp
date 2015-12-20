@@ -344,15 +344,32 @@ function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which
 "Get window geometry values. which : 0 x, 1 y, 2 w, 3 h"
 );
 
-function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*", "window,controlname", [](params)
+function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
 	if (w != nullptr && cname != nullptr)
 	{
-		return_double(w->getControlValueDouble(cname));
+		return_double(w->getControlValueDouble(cname,which));
 	}
 	return_double(0.0);
+},
+"Get a floating point number associated with control"
+);
+
+function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	double val = (in)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueDouble(cname, which, val);
+		return_null;
+	}
+	return_null;
 },
 "Get the main number associated with control"
 );

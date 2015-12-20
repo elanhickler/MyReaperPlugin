@@ -200,14 +200,27 @@ void ReaScriptWindow::setControlText(std::string cname, std::string txt)
 
 }
 
-double ReaScriptWindow::getControlValueDouble(std::string cname)
+double ReaScriptWindow::getControlValueDouble(std::string cname, int which)
 {
 	control_t* c = controlFromName(cname);
 	if (c != nullptr)
 	{
-		return SendMessage(c->m_hwnd, TBM_GETPOS, 0, 0);
+		if (c->m_licecontrol==nullptr)
+			return SendMessage(c->m_hwnd, TBM_GETPOS, 0, 0);
+		else 
+			return c->m_licecontrol->getFloatingPointProperty(which);
 	}
 	return 0.0;
+}
+
+void ReaScriptWindow::setControlValueDouble(std::string cname, int which, double v)
+{
+	control_t* c = controlFromName(cname);
+	if (c != nullptr)
+	{
+		if (c->m_licecontrol != nullptr)
+			c->m_licecontrol->setFloatingPointProperty(which, v);
+	}
 }
 
 bool ReaScriptWindow::isControlDirty(std::string name)

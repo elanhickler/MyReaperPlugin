@@ -126,6 +126,7 @@ extern "C"
 			func(MRP_GetControlText);
 			func(MRP_SetControlText);
 			func(MRP_GetControlFloatNumber);
+			func(MRP_SetControlFloatNumber);
 			func(MRP_SetWindowDirty);
 			func(MRP_GetWindowDirty);
 			func(MRP_SetControlBounds);

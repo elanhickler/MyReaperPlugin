@@ -302,7 +302,7 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		peaktrans.numpeak_points=bm->getWidth();
 		peaktrans.peakrate=(double)bm->getWidth()/m_src->GetLength();
 		m_src->GetPeakInfo(&peaktrans);
-		GetPeaksBitmap(&peaktrans,1.0,bm->getWidth(),bm->getHeight(),bm);
+		GetPeaksBitmap(&peaktrans, m_peaks_gain,bm->getWidth(),bm->getHeight(),bm);
 	} else
 	{
 		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
@@ -363,4 +363,20 @@ void WaveformControl::setSource(PCM_source* src)
 	}
 	
 	repaint();
+}
+
+void WaveformControl::setFloatingPointProperty(int which, double val)
+{
+	if (which == 0)
+	{
+		m_peaks_gain = bound_value(0.01, val, 8.0);
+	}
+	repaint();
+}
+
+double WaveformControl::getFloatingPointProperty(int which)
+{
+	if (which == 0)
+		return m_peaks_gain;
+	return 0.0;
 }
