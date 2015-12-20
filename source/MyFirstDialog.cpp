@@ -350,6 +350,11 @@ void ReaScriptWindow::add_slider(std::string name, int initialvalue)
 	c.m_hwnd = CreateWindow("REAPERhfader", name.c_str(), WS_CHILD | WS_TABSTOP, 5, ycor, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
 #else
+	c.m_hwnd = SWELL_MakeControl("REAPERhfader", m_control_id_count, "REAPERhfader", WS_CHILD | WS_TABSTOP, 0, 0, 10,10, 0);
+	if (c.m_hwnd==NULL)
+		readbg() << "could not create reaper fader";
+	
+	SetParent(c.m_hwnd, m_hwnd);
 #endif
 	SendMessage(c.m_hwnd, TBM_SETPOS, 0, (LPARAM)initialvalue);
 	SendMessage(c.m_hwnd, TBM_SETTIC, 0, 500);
@@ -367,6 +372,8 @@ void ReaScriptWindow::add_button(std::string name, std::string text)
 	c.m_hwnd = CreateWindow("BUTTON", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
 #else
+	c.m_hwnd = SWELL_MakeButton(0, text.c_str(), m_control_id_count, 0, 0, 20, 20, WS_CHILD|WS_TABSTOP);
+	SetParent(c.m_hwnd, m_hwnd);
 #endif
 	c.m_name = name;
 	c.m_control_id = m_control_id_count;
@@ -383,6 +390,8 @@ void ReaScriptWindow::add_line_edit(std::string name, std::string text)
 	c.m_hwnd = CreateWindow("EDIT", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
 		(HMENU)m_control_id_count, g_hInst, 0);
 #else
+	c.m_hwnd = SWELL_MakeEditField(m_control_id_count, 0, 0, 50, 20, WS_CHILD|WS_TABSTOP);
+	SetParent(c.m_hwnd, m_hwnd);
 #endif
 	c.m_name = name;
 	c.m_control_id = m_control_id_count;
