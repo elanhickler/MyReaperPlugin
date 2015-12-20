@@ -375,9 +375,9 @@ void WaveformControl::setFloatingPointProperty(int which, double val)
 	if (m_src != nullptr)
 	{
 		if (which == 1)
-			m_view_start = bound_value(0.0, val*m_src->GetLength(), m_view_end - 0.01);
+			m_view_start = bound_value(0.0, val, m_view_end - 0.01);
 		if (which == 2)
-			m_view_end = bound_value(m_view_start + 0.01, val*m_src->GetLength(), m_src->GetLength());
+			m_view_end = bound_value(m_view_start + 0.01, val, m_src->GetLength());
 	}
 	repaint();
 }
@@ -386,5 +386,11 @@ double WaveformControl::getFloatingPointProperty(int which)
 {
 	if (which == 0)
 		return m_peaks_gain;
+	if (which == 1)
+		return m_view_start;
+	if (which == 2)
+		return m_view_end;
+	if (which == 100 && m_src != nullptr)
+		return m_src->GetLength();
 	return 0.0;
 }

@@ -13,13 +13,16 @@ function guitick()
     reaper.MRP_SetControlText(mywindow,"Label 1",val)
     --reaper.ShowConsoleMsg(val.." ")
   end
-  if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") then
-    local tv = 1.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
-    -- Scroll Wave 1
-    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",1,tv*0.5)
-    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",2,tv*0.5+0.5)
+  if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") or
+     reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 3") then
+    local t0 = 1.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
+    local t1 = 1.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 3",0)
+    local srclen = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 1",100)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",1,t0*srclen)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",2,t1*srclen)
     -- Zoom Wave 2
-    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,0.01+0.99*tv)
+    --srclen = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 2",100)
+    --reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,(0.01+0.99*tv)*srclen)
     --reaper.CSurf_OnPlayRateChange(playrate)
   end
   if reaper.MRP_GetWindowDirty(mywindow,1) then
@@ -27,13 +30,14 @@ function guitick()
     local h = reaper.MRP_GetWindowPosSizeValue(mywindow,3)
     reaper.MRP_SetControlBounds(mywindow,"Slider 1",w/2,5,w/2-10,20)
     reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,20)
+    reaper.MRP_SetControlBounds(mywindow,"Slider 3",5,60,w-10,20)
     reaper.MRP_SetControlBounds(mywindow,"Button 1",w-65,h-20,50,19)
     reaper.MRP_SetControlBounds(mywindow,"Button 2",w-115,h-20,50,19)
     reaper.MRP_SetControlBounds(mywindow,"Line edit 1",5,h-20,w-130,19)
     reaper.MRP_SetControlBounds(mywindow,"Label 1",5,5,w/2-5,19)
     --reaper.MRP_SetControlBounds(mywindow,"XY",0,55,w,h-80)
-    reaper.MRP_SetControlBounds(mywindow,"Wave 1",0,55,w,(h-80)/2-5)
-    reaper.MRP_SetControlBounds(mywindow,"Wave 2",0,55+((h-80)/2),w,(h-80)/2-5)
+    reaper.MRP_SetControlBounds(mywindow,"Wave 1",0,85,w,(h-105)/2-5)
+    reaper.MRP_SetControlBounds(mywindow,"Wave 2",0,85+((h-105)/2),w,(h-105)/2-5)
     --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
     reaper.MRP_SetWindowDirty(mywindow,false,1)
   end
@@ -50,7 +54,8 @@ end
 
 mywindow=reaper.MRP_CreateWindow("My window")
 reaper.MRP_WindowAddSlider(mywindow,"Slider 1",100)
-reaper.MRP_WindowAddSlider(mywindow,"Slider 2",900)
+reaper.MRP_WindowAddSlider(mywindow,"Slider 2",0)
+reaper.MRP_WindowAddSlider(mywindow,"Slider 3",1000)
 reaper.MRP_WindowAddButton(mywindow,"Button 1","OK")
 reaper.MRP_WindowAddButton(mywindow,"Button 2","Cancel")
 reaper.MRP_WindowAddLineEdit(mywindow,"Line edit 1","Foofoo text")
