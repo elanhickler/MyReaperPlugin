@@ -316,7 +316,10 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 				{
 					double ycor0 = halfhei - halfhei*m_maxpeaks[i];
 					double ycor1 = halfhei - halfhei*m_minpeaks[i];
-					LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(0, 255, 0, 255), 1.0f, 0, true);
+					if (m_maxpeaks[i]>0.5 || m_minpeaks[i]<-0.5)
+						LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(255, 0, 0, 255), 1.0f, 0, true);
+					else
+						LICE_Line(bm, i, ycor0, i, ycor1, LICE_RGBA(0, 255, 0, 255), 1.0f, 0, true);
 				}
 			}
 		}
