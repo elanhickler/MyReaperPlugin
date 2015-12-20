@@ -14,8 +14,12 @@ function guitick()
     --reaper.ShowConsoleMsg(val.." ")
   end
   if reaper.MRP_WindowIsDirtyControl(mywindow,"Slider 2") then
-    local tv = 2.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
-    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",0,tv)
+    local tv = 1.0/1000.0*reaper.MRP_GetControlFloatNumber(mywindow,"Slider 2",0)
+    -- Scroll Wave 1
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",1,tv*0.5)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",2,tv*0.5+0.5)
+    -- Zoom Wave 2
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,0.01+0.99*tv)
     --reaper.CSurf_OnPlayRateChange(playrate)
   end
   if reaper.MRP_GetWindowDirty(mywindow,1) then

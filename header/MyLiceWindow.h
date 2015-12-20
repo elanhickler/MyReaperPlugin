@@ -63,6 +63,8 @@ private:
 	std::vector<double> m_minpeaks;
 	std::vector<double> m_maxpeaks;
 	double m_peaks_gain = 1.0;
+	double m_view_start = 0.0;
+	double m_view_end = 1.0;
 };
 
 

@@ -295,12 +295,12 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		PCM_source_peaktransfer_t peaktrans = {0};
 		peaktrans.nchpeaks=m_src->GetNumChannels();
 		peaktrans.samplerate=m_src->GetSampleRate();
-		peaktrans.start_time=0.0;
+		peaktrans.start_time=m_view_start;
 		peaktrans.peaks=m_maxpeaks.data();
 		peaktrans.peaks_minvals=m_minpeaks.data();
 		peaktrans.peaks_minvals_used=1;
 		peaktrans.numpeak_points=bm->getWidth();
-		peaktrans.peakrate=(double)bm->getWidth()/m_src->GetLength();
+		peaktrans.peakrate=(double)bm->getWidth()/(m_view_end-m_view_start);
 		m_src->GetPeakInfo(&peaktrans);
 		GetPeaksBitmap(&peaktrans, m_peaks_gain,bm->getWidth(),bm->getHeight(),bm);
 	} else
@@ -361,7 +361,8 @@ void WaveformControl::setSource(PCM_source* src)
 		}
 		m_src->PeaksBuild_Finish();
 	}
-	
+	m_view_start = 0.0;
+	m_view_end = m_src->GetLength();
 	repaint();
 }
 
@@ -370,6 +371,13 @@ void WaveformControl::setFloatingPointProperty(int which, double val)
 	if (which == 0)
 	{
 		m_peaks_gain = bound_value(0.01, val, 8.0);
+	}
+	if (m_src != nullptr)
+	{
+		if (which == 1)
+			m_view_start = bound_value(0.0, val*m_src->GetLength(), m_view_end - 0.01);
+		if (which == 2)
+			m_view_end = bound_value(m_view_start + 0.01, val*m_src->GetLength(), m_src->GetLength());
 	}
 	repaint();
 }
