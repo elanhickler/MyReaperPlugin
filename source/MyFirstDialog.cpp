@@ -223,9 +223,9 @@ INT_PTR CALLBACK mylicedialogproc(
 	{
 		SetWindowText(hwndDlg, "Lice Test");
 		g_wavecontrol=std::make_unique<WaveformControl>(hwndDlg);
-		PCM_source* src=PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_8ch.wav");
-		if (src==nullptr)
-			readbg() << "failed to create source\n";
+		PCM_source* src=PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_9ch.wav");
+		//if (src->IsAvailable()==false)
+		//	readbg() << "failed to create source\n";
 		g_wavecontrol->setSource(src);
 		delete src;
 		g_testcontrols.clear();

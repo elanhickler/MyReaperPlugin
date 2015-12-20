@@ -53,6 +53,7 @@ public:
 	WaveformControl(HWND parent);
 	void setSource(PCM_source* src);
 	void paint(LICE_IBitmap* bm) override;
+	void mouseDoubleClicked(const MouseEvent& ev) override;
 	std::string getType() const override { return "WaveformControl"; }
 private:
 	std::shared_ptr<PCM_source> m_src;

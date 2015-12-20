@@ -281,6 +281,12 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 {
 	if (m_src!=nullptr)
 	{
+		if (m_src->IsAvailable()==false)
+		{
+			LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+			LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255,255,255,255), 1.0f, 0);
+			return;
+		}
 		m_minpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
 		m_maxpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
 		PCM_source_peaktransfer_t peaktrans = {0};
@@ -294,11 +300,34 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		peaktrans.peakrate=(double)bm->getWidth()/m_src->GetLength();
 		m_src->GetPeakInfo(&peaktrans);
 		GetPeaksBitmap(&peaktrans,1.0,bm->getWidth(),bm->getHeight(),bm);
+	} else
+	{
+		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+		LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255,255,255,255), 1.0f, 0);
+	}
+}
+
+void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)
+{
+	if (CountSelectedMediaItems(nullptr)>0)
+	{
+		MediaItem* item = GetSelectedMediaItem(nullptr,0);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (take!=nullptr)
+		{
+			setSource(GetMediaItemTake_Source(take));
+		}
 	}
 }
 
 void WaveformControl::setSource(PCM_source* src)
 {
+	if (src==nullptr)
+	{
+		m_src=nullptr;
+		repaint();
+		return;
+	}
 	m_src=std::shared_ptr<PCM_source>(src->Duplicate());
 	// Pretty bad to do it like this, blocking the GUI thread...
 	// OTOH these days with SSDs and fast processors, maybe it usually doesn't take a long time
