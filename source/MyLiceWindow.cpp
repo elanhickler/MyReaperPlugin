@@ -475,6 +475,12 @@ void WaveformControl::setFloatingPointProperty(int which, double val)
 			m_sel_end = bound_value(0.0, val, m_src->GetLength());
 		if (m_sel_start > m_sel_end)
 			std::swap(m_sel_start, m_sel_end);
+		if (which == 64)
+		{
+			if (val < 0.5)
+				m_use_reaper_peaks_drawing = true;
+			else m_use_reaper_peaks_drawing = false;
+		}
 	}
 	repaint();
 }
