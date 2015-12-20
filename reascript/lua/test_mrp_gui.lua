@@ -3,6 +3,17 @@ mywindow=nil
 tickcount=0
 tickselapsed=0.0
 
+function benchmark(bench_t0,bench_t1)
+  tickselapsed=tickselapsed+(bench_t1-bench_t0)
+  tickcount=tickcount+1
+  if tickcount>=100 then
+     local avg_bench = tickselapsed/tickcount
+     reaper.ShowConsoleMsg((avg_bench*1000.0).." ms\n")
+     tickcount=0
+     tickselapsed=0.0
+  end
+end
+
 function guitick()
   local bench_t0=reaper.time_precise()
   if reaper.MRP_WindowIsClosed(mywindow) then
@@ -52,15 +63,7 @@ function guitick()
   end
   -- REMEMBER to call this if you are not sure you don't need to
   reaper.MRP_WindowClearDirtyControls(mywindow)
-  local bench_t1=reaper.time_precise()
-  tickselapsed=tickselapsed+(bench_t1-bench_t0)
-  tickcount=tickcount+1
-  if tickcount>=100 then
-    local avg_bench = tickselapsed/tickcount
-    --reaper.ShowConsoleMsg((avg_bench*1000.0).." ms\n")
-    tickcount=0
-    tickselapsed=0.0
-  end
+  benchmark(bench_t0,reaper.time_precise())
   reaper.defer(guitick)
 end
 
