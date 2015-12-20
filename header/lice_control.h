@@ -194,6 +194,7 @@ private:
 	std::unique_ptr<LICE_SysBitmap> m_bitmap;
 	bool m_wants_focus = true;
 	accelerator_register_t m_acreg;
+	HCURSOR m_cursor = NULL;
 };
 
 class PopupMenu

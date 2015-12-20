@@ -355,6 +355,11 @@ void WaveformControl::mouseMoved(const MouseEvent & ev)
 	else
 	{
 		m_hot_sel_edge = get_hot_time_sel_edge(ev.m_x, ev.m_y);
+		if (m_hot_sel_edge != 0)
+		{
+			SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+		} else
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 	}
 }
 
