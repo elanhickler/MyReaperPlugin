@@ -2,5 +2,6 @@
 
 #include "MyFirstClass.hpp"
 #include "MyFirstDialog.h"
+#include "reascriptgui.h"
 #include "utilfuncs.h"
 #include "lice_control.h"

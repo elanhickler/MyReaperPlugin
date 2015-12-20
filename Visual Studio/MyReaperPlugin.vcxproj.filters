@@ -35,6 +35,9 @@
     <ClCompile Include="..\source\reaper_function_helper.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\reascriptgui.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -66,6 +69,9 @@
     </ClInclude>
     <ClInclude Include="..\library\reaper_plugin\reaper_plugin_functions.h">
       <Filter>library\reaper_plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\reascriptgui.h">
+      <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
