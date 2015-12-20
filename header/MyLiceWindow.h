@@ -54,6 +54,7 @@ public:
 	void setSource(PCM_source* src);
 	void paint(LICE_IBitmap* bm) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;
+	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::string getType() const override { return "WaveformControl"; }
 private:
 	std::shared_ptr<PCM_source> m_src;

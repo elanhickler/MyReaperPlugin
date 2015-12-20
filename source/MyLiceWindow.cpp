@@ -275,7 +275,9 @@ fx_param_t * TestControl::getFXParamTarget(int index, int which)
 }
 
 WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
-{}
+{
+	setWantsFocus(true);
+}
 
 void WaveformControl::paint(LICE_IBitmap* bm)
 {
@@ -318,6 +320,24 @@ void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)
 			setSource(GetMediaItemTake_Source(take));
 		}
 	}
+}
+
+bool WaveformControl::keyPressed(const ModifierKeys& mods, int code)
+{
+	if (code>='0' && code<='9')
+	{
+		int index = code-'0';
+		if (CountSelectedMediaItems(nullptr)>=index)
+		{
+			MediaItem* item = GetSelectedMediaItem(nullptr,index);
+			MediaItem_Take* take = GetActiveTake(item);
+			if (take!=nullptr)
+			{
+				setSource(GetMediaItemTake_Source(take));
+			}
+		}
+	}
+	return false;
 }
 
 void WaveformControl::setSource(PCM_source* src)
