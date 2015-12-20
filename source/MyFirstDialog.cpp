@@ -370,6 +370,19 @@ void ReaScriptWindow::add_button(std::string name, std::string text)
 	m_controls.push_back(c);
 }
 
+void ReaScriptWindow::add_line_edit(std::string name, std::string text)
+{
+	control_t c;
+	c.m_hwnd = CreateWindow("EDIT", name.c_str(), WS_CHILD | WS_TABSTOP, 5, 5, 290, 20, m_hwnd,
+		(HMENU)m_control_id_count, g_hInst, 0);
+	c.m_name = name;
+	c.m_control_id = m_control_id_count;
+	SetWindowText(c.m_hwnd, text.c_str());
+	ShowWindow(c.m_hwnd, SW_SHOW);
+	++m_control_id_count;
+	m_controls.push_back(c);
+}
+
 void ReaScriptWindow::setWindowTitle(std::string title)
 {
 	if (m_hwnd != NULL)
@@ -462,7 +475,7 @@ INT_PTR CALLBACK ReaScriptWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wparam, LP
 		return FALSE;
 	if (msg == WM_COMMAND)
 	{
-		if (HIWORD(wparam) == BN_CLICKED)
+		if (HIWORD(wparam) == BN_CLICKED || HIWORD(wparam) == EN_CHANGE)
 		{
 			for (auto& e : wptr->m_controls)
 				if (e.m_control_id == LOWORD(wparam))

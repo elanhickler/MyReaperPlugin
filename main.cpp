@@ -128,6 +128,7 @@ extern "C"
 			func(MRP_GetWindowPosSizeValue);
 			func(MRP_WindowAddSlider);
 			func(MRP_WindowAddButton);
+			func(MRP_WindowAddLineEdit);
 			func(MRP_WindowGetDirtyControl);
 			func(MRP_WindowClearDirtyControl);
 			func(MRP_CreateArray);

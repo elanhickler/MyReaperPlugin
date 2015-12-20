@@ -374,6 +374,21 @@ function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "w
 "Add a button to window"
 );
 
+function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* butname = (const char*)arg[1];
+	const char* buttext = (const char*)arg[2];
+	if (w != nullptr && butname != nullptr && buttext != nullptr)
+	{
+		w->add_line_edit(butname, buttext);
+		return_null();
+	}
+	return_null();
+},
+"Add a (single line) text edit to window"
+);
+
 function_entry MRP_WindowGetDirtyControl("const char*", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];

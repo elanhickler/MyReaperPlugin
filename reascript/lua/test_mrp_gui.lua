@@ -5,6 +5,9 @@ function guitick()
     --reaper.ShowConsoleMsg("closed\n")
     return
   end
+  if reaper.MRP_WindowGetDirtyControl(mywindow)=="Line edit 1" then
+    reaper.MRP_WindowSetTitle(mywindow,reaper.MRP_GetControlText(mywindow,"Line edit 1"))
+  end
   if reaper.MRP_WindowGetDirtyControl(mywindow)=="Slider 1" then
     local val = reaper.MRP_GetControlFloatNumber(mywindow,"Slider 1")
     reaper.ShowConsoleMsg(val.." ")
@@ -20,6 +23,7 @@ function guitick()
     reaper.MRP_SetControlBounds(mywindow,"Slider 2",5,30,w-10,h-60)
     reaper.MRP_SetControlBounds(mywindow,"Button 1",w-45,h-20,35,19)
     reaper.MRP_SetControlBounds(mywindow,"Button 2",w-95,h-20,50,19)
+    reaper.MRP_SetControlBounds(mywindow,"Line edit 1",5,h-20,w-110,19)
     --reaper.ShowConsoleMsg("resized to "..w.." "..h.."\n")
     reaper.MRP_SetWindowDirty(mywindow,false,1)
   end
@@ -36,6 +40,7 @@ reaper.MRP_WindowAddSlider(mywindow,"Slider 1",100)
 reaper.MRP_WindowAddSlider(mywindow,"Slider 2",900)
 reaper.MRP_WindowAddButton(mywindow,"Button 1","OK")
 reaper.MRP_WindowAddButton(mywindow,"Button 2","Cancel")
+reaper.MRP_WindowAddLineEdit(mywindow,"Line edit 1","Foofoo text")
 guitick()
 
 
