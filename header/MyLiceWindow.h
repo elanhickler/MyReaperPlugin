@@ -47,4 +47,17 @@ private:
 	void shift_points(double x, double y);
 };
 
+class WaveformControl : public LiceControl
+{
+public:
+	WaveformControl(HWND parent);
+	void setSource(PCM_source* src);
+	void paint(LICE_IBitmap* bm) override;
+	std::string getType() const override { return "WaveformControl"; }
+private:
+	std::shared_ptr<PCM_source> m_src;
+	std::vector<double> m_minpeaks;
+	std::vector<double> m_maxpeaks;
+};
+
 

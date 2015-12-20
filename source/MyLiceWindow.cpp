@@ -274,3 +274,43 @@ fx_param_t * TestControl::getFXParamTarget(int index, int which)
 	return nullptr;
 }
 
+WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
+{}
+
+void WaveformControl::paint(LICE_IBitmap* bm)
+{
+	if (m_src!=nullptr)
+	{
+		m_minpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
+		m_maxpeaks.resize(bm->getWidth()*m_src->GetNumChannels());
+		PCM_source_peaktransfer_t peaktrans = {0};
+		peaktrans.nchpeaks=m_src->GetNumChannels();
+		peaktrans.samplerate=m_src->GetSampleRate();
+		peaktrans.start_time=0.0;
+		peaktrans.peaks=m_maxpeaks.data();
+		peaktrans.peaks_minvals=m_minpeaks.data();
+		peaktrans.peaks_minvals_used=1;
+		peaktrans.numpeak_points=bm->getWidth();
+		peaktrans.peakrate=(double)bm->getWidth()/m_src->GetLength();
+		m_src->GetPeakInfo(&peaktrans);
+		GetPeaksBitmap(&peaktrans,1.0,bm->getWidth(),bm->getHeight(),bm);
+	}
+}
+
+void WaveformControl::setSource(PCM_source* src)
+{
+	m_src=std::shared_ptr<PCM_source>(src->Duplicate());
+	// Pretty bad to do it like this, blocking the GUI thread...
+	// OTOH these days with SSDs and fast processors, maybe it usually doesn't take a long time
+	if (m_src->PeaksBuild_Begin()!=0) // should build peaks
+	{
+		while (true)
+		{
+			if (m_src->PeaksBuild_Run()==0)
+				break;
+		}
+		m_src->PeaksBuild_Finish();
+	}
+	
+	repaint();
+}

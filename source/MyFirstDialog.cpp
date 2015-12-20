@@ -211,7 +211,7 @@ HWND open_my_first_modeless_dialog(HWND parent)
 }
 
 std::vector<std::unique_ptr<TestControl>> g_testcontrols;
-
+std::unique_ptr<WaveformControl> g_wavecontrol;
 INT_PTR CALLBACK mylicedialogproc(
 	HWND   hwndDlg,
 	UINT   uMsg,
@@ -222,9 +222,14 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		
+		g_wavecontrol=std::make_unique<WaveformControl>(hwndDlg);
+		PCM_source* src=PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_8ch.wav");
+		if (src==nullptr)
+			readbg() << "failed to create source\n";
+		g_wavecontrol->setSource(src);
+		delete src;
 		g_testcontrols.clear();
-		int num_controls = 4;
+		int num_controls = 0;
 		for (int i=0;i<num_controls;++i)
 		{
 			bool foo = i == 0;
@@ -260,6 +265,11 @@ INT_PTR CALLBACK mylicedialogproc(
 	}
 	if (uMsg == WM_SIZE)
 	{
+		RECT r;
+		GetClientRect(hwndDlg, &r);
+		int w = r.right-r.left;
+		int h = r.bottom-r.top;
+		g_wavecontrol->setBounds(0,0,w,h);
 		if (g_testcontrols.size()>0)
 		{
 			RECT r;
@@ -270,8 +280,9 @@ INT_PTR CALLBACK mylicedialogproc(
 			g_testcontrols[1]->setBounds(w/2+5, 0, w/2-5, h/2-5);
 			g_testcontrols[2]->setBounds(0, h/2+5, w/2-5, h/2-5);
 			g_testcontrols[3]->setBounds(w/2+5, h/2+5, w/2-5, h/2-5);
-			InvalidateRect(hwndDlg, NULL, TRUE);
+			
 		}
+		InvalidateRect(hwndDlg, NULL, TRUE);
 		return TRUE;
 	}
 	//if (uMsg == WM_KEYDOWN || uMsg == WM_CHAR || uMsg == WM_KEYUP)
