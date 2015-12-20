@@ -53,7 +53,7 @@ ReaScriptWindow::ReaScriptWindow(std::string title)
 
 	SetWindowText(m_hwnd, title.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
-	SetWindowPos(m_hwnd, NULL, 20, 60, 300, 160, SWP_NOACTIVATE | SWP_NOZORDER);
+	SetWindowPos(m_hwnd, NULL, 20, 60, 500, 300, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 ReaScriptWindow::~ReaScriptWindow()
