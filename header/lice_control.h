@@ -162,7 +162,7 @@ public:
 	virtual void mousePressed(const MouseEvent& ev) {}
 	virtual void mouseDoubleClicked(const MouseEvent& ev) {}
 	virtual void mouseMoved(const MouseEvent& ev) {}
-	virtual void mouseReleased(int x, int y) {}
+	virtual void mouseReleased(const MouseEvent& ev) {}
 	virtual void mouseWheel(int x, int y, int delta) {}
 
 	void setSize(int w, int h);

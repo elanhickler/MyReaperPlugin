@@ -29,7 +29,7 @@ public:
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
-	void mouseReleased(int x, int y) override;
+	void mouseReleased(const MouseEvent& ev) override;
 	void mouseWheel(int x, int y, int delta) override;
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::function<void(int, double, double)> PointMovedCallback;
@@ -53,6 +53,9 @@ public:
 	WaveformControl(HWND parent);
 	void setSource(PCM_source* src);
 	void paint(LICE_IBitmap* bm) override;
+	void mousePressed(const MouseEvent& ev) override;
+	void mouseMoved(const MouseEvent& ev) override;
+	void mouseReleased(const MouseEvent& ev) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::string getType() const override { return "WaveformControl"; }
@@ -65,6 +68,11 @@ private:
 	double m_peaks_gain = 1.0;
 	double m_view_start = 0.0;
 	double m_view_end = 1.0;
+	double m_sel_start = 0.0;
+	double m_sel_end = 0.0;
+	int m_drag_start_x = 0;
+	int m_drag_start_y = 0;
+	bool m_mouse_down = false;
 };
 
 

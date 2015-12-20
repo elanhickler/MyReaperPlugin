@@ -176,7 +176,7 @@ void TestControl::mouseMoved(const MouseEvent& ev)
 	}
 }
 
-void TestControl::mouseReleased(int x, int y)
+void TestControl::mouseReleased(const MouseEvent& ev)
 {
 	m_mousedown=false;
 }
@@ -303,11 +303,40 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		peaktrans.peakrate=(double)bm->getWidth()/(m_view_end-m_view_start);
 		m_src->GetPeakInfo(&peaktrans);
 		GetPeaksBitmap(&peaktrans, m_peaks_gain,bm->getWidth(),bm->getHeight(),bm);
+		double sel_x0 = map_value(m_sel_start, m_view_start, m_view_end, 0.0, (double)getWidth());
+		double sel_x1 = map_value(m_sel_end, m_view_start, m_view_end, 0.0, (double)getWidth());
+		LICE_FillRect(bm, sel_x0, 0, sel_x1 - sel_x0, getHeight(), LICE_RGBA(255, 255, 255, 255), 0.5f, 0);
 	} else
 	{
 		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
 		LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255,255,255,255), 1.0f, 0);
 	}
+}
+
+void WaveformControl::mousePressed(const MouseEvent & ev)
+{
+	m_mouse_down = true;
+	m_drag_start_x = ev.m_x;
+}
+
+void WaveformControl::mouseMoved(const MouseEvent & ev)
+{
+	if (m_mouse_down == true)
+	{
+		double t0 = map_value((double)ev.m_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+		double t1 = map_value((double)m_drag_start_x, (double)0.0, (double)getWidth(), m_view_start, m_view_end);
+		if (t1 < t0)
+			std::swap(t0, t1);
+		m_sel_start = t0;
+		m_sel_end = t1;
+		repaint();
+		//readbg() << "sel is " << t0 << " " << t1 << "\n";
+	}
+}
+
+void WaveformControl::mouseReleased(const MouseEvent & ev)
+{
+	m_mouse_down = false;
 }
 
 void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)

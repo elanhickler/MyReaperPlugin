@@ -233,7 +233,8 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		if (msg == WM_LBUTTONUP || msg == WM_RBUTTONUP || msg == WM_MBUTTONUP)
 		{
 			ReleaseCapture();
-			c->mouseReleased(x, y);
+			MouseEvent me(x, y, MouseEvent::MBLeft);
+			c->mouseReleased(me);
 		}
 		return true;
 	}
