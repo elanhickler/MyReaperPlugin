@@ -419,6 +419,24 @@ void ReaScriptWindow::add_label(std::string name, std::string inittext)
 	m_controls.push_back(c);
 }
 
+void ReaScriptWindow::add_custom_control(std::string name,std::string controltype)
+{
+	control_t c;
+	if (controltype=="MultiXYControl")
+	{
+		c.m_licecontrol=new TestControl(m_hwnd);
+		if (c.m_licecontrol!=nullptr)
+			readbg() << "licecontrol ok ";
+		c.m_hwnd=c.m_licecontrol->getWindowHandle();
+		ShowWindow(c.m_hwnd, SW_SHOW);
+	}
+	
+	c.m_name=name;
+	c.m_control_id=m_control_id_count;
+	++m_control_id_count;
+	m_controls.push_back(c);
+}
+
 void ReaScriptWindow::setWindowTitle(std::string title)
 {
 	if (m_hwnd != NULL)

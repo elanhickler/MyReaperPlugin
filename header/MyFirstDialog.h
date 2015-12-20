@@ -77,7 +77,8 @@ public:
 	void add_slider(std::string name, int initialvalue);
 	void add_line_edit(std::string name, std::string initialtext);
 	void add_label(std::string name, std::string inittext);
-
+	void add_custom_control(std::string name,std::string controlclassname);
+	
 	void setControlBounds(std::string name, int x, int y, int w, int h);
 	int getBoundsValue(int which);
 

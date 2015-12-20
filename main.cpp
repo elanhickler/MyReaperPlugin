@@ -131,6 +131,7 @@ extern "C"
 			func(MRP_WindowAddButton);
 			func(MRP_WindowAddLineEdit);
 			func(MRP_WindowAddLabel);
+			func(MRP_WindowAddLiceControl);
 			func(MRP_WindowIsDirtyControl);
 			func(MRP_WindowClearDirtyControls);
 			func(MRP_CreateArray);

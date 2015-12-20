@@ -415,8 +415,23 @@ function_entry MRP_WindowAddLabel("", "MRP_Window*,const char*,const char*", "wi
 	}
 	return_null;
 },
-									 "Add a (single line) text edit to window"
-									 );
+"Add a (single line) text edit to window"
+);
+
+function_entry MRP_WindowAddLiceControl("void", "MRP_Window*,const char*,const char*", "window,classname,name", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* classname = (const char*)arg[1];
+	const char* controlname = (const char*)arg[2];
+	if (w != nullptr)
+	{
+		w->add_custom_control(controlname,classname);
+		return_null;
+	}
+	return_null;
+},
+								  "Add a custom (LiceControl) control to window"
+								  );
 
 
 function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
