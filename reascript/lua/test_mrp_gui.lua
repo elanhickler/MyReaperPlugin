@@ -1,6 +1,10 @@
 mywindow=nil
 
+tickcount=0
+tickselapsed=0.0
+
 function guitick()
+  local bench_t0=reaper.time_precise()
   if reaper.MRP_WindowIsClosed(mywindow) then
     --reaper.ShowConsoleMsg("closed\n")
     return
@@ -20,10 +24,9 @@ function guitick()
     local srclen = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 1",100)
     reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",1,t0*srclen)
     reaper.MRP_SetControlFloatNumber(mywindow,"Wave 1",2,t1*srclen)
-    -- Zoom Wave 2
-    --srclen = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 2",100)
-    --reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,(0.01+0.99*tv)*srclen)
-    --reaper.CSurf_OnPlayRateChange(playrate)
+    srclen = reaper.MRP_GetControlFloatNumber(mywindow,"Wave 2",100)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",1,t0*srclen)
+    reaper.MRP_SetControlFloatNumber(mywindow,"Wave 2",2,t1*srclen)
   end
   if reaper.MRP_GetWindowDirty(mywindow,1) then
     local w = reaper.MRP_GetWindowPosSizeValue(mywindow,2)
@@ -49,6 +52,15 @@ function guitick()
   end
   -- REMEMBER to call this if you are not sure you don't need to
   reaper.MRP_WindowClearDirtyControls(mywindow)
+  local bench_t1=reaper.time_precise()
+  tickselapsed=tickselapsed+(bench_t1-bench_t0)
+  tickcount=tickcount+1
+  if tickcount>=100 then
+    local avg_bench = tickselapsed/tickcount
+    --reaper.ShowConsoleMsg((avg_bench*1000.0).." ms\n")
+    tickcount=0
+    tickselapsed=0.0
+  end
   reaper.defer(guitick)
 end
 

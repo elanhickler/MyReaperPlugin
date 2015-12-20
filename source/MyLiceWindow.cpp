@@ -328,7 +328,10 @@ bool WaveformControl::keyPressed(const ModifierKeys& mods, int code)
 	if (code>='0' && code<='9')
 	{
 		int index = code-'0';
-		if (CountSelectedMediaItems(nullptr)>=index)
+		if (index == 0)
+			index = 9;
+		else --index;
+		if (CountSelectedMediaItems(nullptr)>index)
 		{
 			MediaItem* item = GetSelectedMediaItem(nullptr,index);
 			MediaItem_Take* take = GetActiveTake(item);
