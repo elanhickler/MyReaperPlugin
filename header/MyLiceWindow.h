@@ -104,6 +104,7 @@ private:
 	double m_view_end_time = 1.0;
 	double m_view_start_value = 0.0;
 	double m_view_end_value = 1.0;
+	std::string m_text;
 };
 
-void pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env);
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env);

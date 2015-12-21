@@ -597,6 +597,10 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 		return;
 	}
 	*/
+	if (m_text.empty() == false)
+	{
+		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), bm->getHeight());
+	}
 	const float linethickness = 0.75f;
 	for (int i = 0; i < m_env->get_num_points(); ++i)
 	{
@@ -721,24 +725,29 @@ bool EnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
 	if (keycode == 'R' && m_env!=nullptr)
 	{
-		readbg() << "pitch bending...\n";
-		pitch_bend_selected_item(m_env);
+		std::string err = pitch_bend_selected_item(m_env);
+		if (err.empty() == false)
+		{
+			m_text = err;
+		}
+		else m_text = "Pitch bend OK!";
+		repaint();
 		return true;
 	}
 	return false;
 }
 
-void pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
 {
 	if (CountSelectedMediaItems(nullptr) == 0)
-		return;
+		return "No item selected";
 	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
 	MediaItem_Take* take = GetActiveTake(item);
 	if (take == nullptr)
-		return;
+		return "Item has no active take";
 	PCM_source* src = GetMediaItemTake_Source(take);
 	if (src == nullptr)
-		return;
+		return "Take has no media source";
 	REAPER_Resample_Interface* m_resampler = m_resampler = Resampler_Create();
 	m_resampler->Reset();
 	int bufsize = 128;
@@ -786,8 +795,9 @@ void pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
 		counter += (double)wanted / outsamplerate;
 	}
 	delete sink;
+	delete m_resampler;
 	InsertMedia(outfn.c_str(), 3);
 	//if (m_adjust_item_length == true)
 		Main_OnCommand(40612, 0);
-	readbg() << "pitch bending done!\n";
+	return std::string();
 }
