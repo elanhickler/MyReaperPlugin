@@ -663,9 +663,15 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
 			m_mouse_down = false;
 			repaint();
+			return;
 		}
 	}
-
+	if (m_node_to_drag.first>=0 && m_node_to_drag.second >= 0 && ev.m_modkeys.isModifierKeyDown(MKAlt) == true)
+	{
+		m_envs[m_node_to_drag.first]->remove_point(m_node_to_drag.second);
+		m_node_to_drag = { -1,-1 };
+		repaint();
+	}
 }
 
 void EnvelopeControl::mouseMoved(const MouseEvent& ev)
