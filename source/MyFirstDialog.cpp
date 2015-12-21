@@ -225,14 +225,22 @@ INT_PTR CALLBACK mylicedialogproc(
 	{
 		SetWindowText(hwndDlg, "Lice Test");
 		g_envelopecontrol = std::make_unique<PitchBenderEnvelopeControl>(hwndDlg);
-		auto env = std::make_shared<breakpoint_envelope>();
-		env->add_point({ 0.0, 0.0 } , false);
-		env->add_point({ 0.1, 0.9 }, false);
-		env->add_point({ 0.8, 0.9 }, false);
-		env->add_point({ 0.9, 1.0 }, false);
-		env->add_point({ 1.0, 0.0 }, false);
-		env->sort_points();
-		g_envelopecontrol->set_envelope(env);
+		auto pchenv = std::make_shared<breakpoint_envelope>("Bend amount (semitones)",
+			LICE_RGBA(255,255,255,255));
+		pchenv->add_point({ 0.0, 0.0 } , false);
+		pchenv->add_point({ 0.1, 0.9 }, false);
+		pchenv->add_point({ 0.8, 0.9 }, false);
+		pchenv->add_point({ 0.9, 1.0 }, false);
+		pchenv->add_point({ 1.0, 0.0 }, false);
+		pchenv->sort_points();
+		g_envelopecontrol->add_envelope(pchenv);
+		auto volenv = std::make_shared<breakpoint_envelope>("Volume",
+			LICE_RGBA(255, 0, 255, 255));
+		volenv->add_point({ 0.0, 1.0 }, false);
+		volenv->add_point({ 0.5, 0.0 }, false);
+		volenv->add_point({ 1.0, 1.0 }, false);
+		volenv->sort_points();
+		g_envelopecontrol->add_envelope(volenv);
 		if (false)
 		{
 			g_wavecontrol = std::make_unique<WaveformControl>(hwndDlg);

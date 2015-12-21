@@ -154,20 +154,21 @@ public:
 	void mouseReleased(const MouseEvent& ev) override;
 
 	std::string getType() const override { return "BreakpointEnvelope"; }
-	void set_envelope(std::shared_ptr<breakpoint_envelope> env);
+	void add_envelope(std::shared_ptr<breakpoint_envelope> env);
 	void set_waveformpainter(std::shared_ptr<WaveformPainter> painter);
 protected:
-	std::shared_ptr<breakpoint_envelope> m_env;
+	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;
 	LICE_CachedFont m_font;
 	bool m_mouse_down = false;
-	int m_node_to_drag = -1;
-	int find_hot_envelope_point(double xcor, double ycor);
+	std::pair<int, int> m_node_to_drag{ -1,-1 };
+	std::pair<int, int> find_hot_envelope_point(double xcor, double ycor);
 	double m_view_start_time = 0.0;
 	double m_view_end_time = 1.0;
 	double m_view_start_value = 0.0;
 	double m_view_end_value = 1.0;
 	std::string m_text;
+	int m_active_envelope = -1;
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl
@@ -184,4 +185,5 @@ private:
 	int m_resampler_mode = -1;
 };
 
-std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env,int mode);
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> pchenv,
+	std::shared_ptr<breakpoint_envelope> volenv,int mode);

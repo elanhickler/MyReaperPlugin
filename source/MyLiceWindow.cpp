@@ -585,7 +585,7 @@ void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt
 void EnvelopeControl::paint(LICE_IBitmap* bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-	if (m_env == nullptr)
+	if (m_envs.empty() == true)
 	{
 		MRP_DrawTextHelper(bm, &m_font, "No envelope", 5, 5, bm->getWidth(), bm->getHeight());
 		return;
@@ -612,75 +612,82 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), bm->getHeight());
 	}
 	const float linethickness = 0.75f;
-	for (int i = 0; i < m_env->get_num_points(); ++i)
+	for (int j = 0; j < m_envs.size(); ++j)
 	{
-		const envbreakpoint& pt = m_env->get_point(i);
-		double xcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
-		double ycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-		//if (pt.get_status() == 0)
-		//	g.drawRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f, 1.0f);
-		//else g.fillRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f);
-		if (i==m_node_to_drag)
-			LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(255, 0, 0, 255));
-		else LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(0, 255, 0, 255));
-		envbreakpoint pt1;
-		if (i + 1 < m_env->get_num_points())
+		breakpoint_envelope* m_env = m_envs[j].get();
+		int envlinecolor = LICE_RGBA(255, 255, 255, 255);
+		if (j != m_active_envelope)
+			envlinecolor = LICE_RGBA(128, 128, 128, 255);
+		for (int i = 0; i < m_env->get_num_points(); ++i)
 		{
-			pt1 = m_env->get_point(i + 1);
-			double xcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
-			double ycor1 = (double)getHeight() - map_value(pt1.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-			LICE_Line(bm, xcor, ycor, xcor1, ycor1, LICE_RGBA(255, 255, 255, 255), 1.0f);
-		}
-		if (i == 0 && pt.get_x() >= 0.0)
-		{
-			LICE_Line(bm, 0.0, ycor, xcor, ycor, LICE_RGBA(255, 255, 255, 255), 1.0f);
-		}
-		if (i == m_env->get_num_points() - 1 && pt.get_x() < 1.0)
-		{
-			LICE_Line(bm, xcor, ycor, getWidth(), ycor, LICE_RGBA(255, 255, 255, 255),1.0f);
+			const envbreakpoint& pt = m_env->get_point(i);
+			double xcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			double ycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+			if (i == m_node_to_drag.second && j == m_node_to_drag.first)
+				LICE_FillRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, m_env->getColor());
+			else LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, m_env->getColor());
+			envbreakpoint pt1;
+			if (i + 1 < m_env->get_num_points())
+			{
+				pt1 = m_env->get_point(i + 1);
+				double xcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+				double ycor1 = (double)getHeight() - map_value(pt1.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+				LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
+			}
+			if (i == 0 && pt.get_x() >= 0.0)
+			{
+				LICE_Line(bm, 0.0, ycor, xcor, ycor, envlinecolor, 1.0f);
+			}
+			if (i == m_env->get_num_points() - 1 && pt.get_x() < 1.0)
+			{
+				LICE_Line(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
+			}
 		}
 	}
-
 }
 
 void EnvelopeControl::mousePressed(const MouseEvent& ev)
 {
-	if (m_env == nullptr)
+	if (m_envs.empty() == true)
 		return;
 	if (ev.m_mb == MouseEvent::MBRight)
 		return;
 	m_mouse_down = true;
 	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
-	if (m_node_to_drag == -1)
+	if (m_node_to_drag.second == -1)
 	{
 		double normx = map_value((double)ev.m_x, 0.0, (double)getWidth(), m_view_start_time, m_view_end_time);
 		double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
-		m_env->add_point({ normx,normy }, true);
-		m_mouse_down = false;
-		repaint();
+		if (m_active_envelope >= 0)
+		{
+			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
+			m_mouse_down = false;
+			repaint();
+		}
 	}
 
 }
 
 void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 {
-	if (m_env == nullptr)
+	if (m_envs.empty() == true)
 		return;
 	
 	if (m_mouse_down == true)
 	{
-		if (m_node_to_drag >= 0)
+		if (m_node_to_drag.second >= 0)
 		{
-			envbreakpoint& pt = m_env->get_point(m_node_to_drag);
+			breakpoint_envelope* m_env = m_envs[m_node_to_drag.first].get();
+			envbreakpoint& pt = m_env->get_point(m_node_to_drag.second);
 			double left_bound = m_view_start_time;
 			double right_bound = m_view_end_time;
-			if (m_node_to_drag > 0)
+			if (m_node_to_drag.second > 0)
 			{
-				left_bound = m_env->get_point(m_node_to_drag - 1).get_x();
+				left_bound = m_env->get_point(m_node_to_drag.second - 1).get_x();
 			}
-			if (m_node_to_drag < m_env->get_num_points() - 1)
+			if (m_node_to_drag.second < m_env->get_num_points() - 1)
 			{
-				right_bound = m_env->get_point(m_node_to_drag + 1).get_x();
+				right_bound = m_env->get_point(m_node_to_drag.second + 1).get_x();
 			}
 			double normx = map_value((double)ev.m_x, 0.0, (double)getWidth(), m_view_start_time, m_view_end_time);
 			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
@@ -694,7 +701,7 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	}
 	else
 	{
-		int oldindex = m_node_to_drag;
+		auto oldindex = m_node_to_drag;
 		m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 		if (oldindex != m_node_to_drag)
 			repaint();
@@ -703,33 +710,38 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 
 void EnvelopeControl::mouseReleased(const MouseEvent& ev)
 {
-	if (m_env == nullptr)
+	if (m_envs.empty() == true)
 		return;
 	m_mouse_down = false;
-	m_node_to_drag = -1;
+	m_node_to_drag = { -1,-1 };
 }
 
-int EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
+std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
 {
-	if (m_env == nullptr)
-		return -1;
-	for (int i = 0; i < m_env->get_num_points(); ++i)
+	if (m_envs.empty() == true)
+		return{ -1,-1 };
+	for (int j = 0; j < m_envs.size(); ++j)
 	{
-		const envbreakpoint& pt = m_env->get_point(i);
-		double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
-		double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-		if (is_point_in_rect(xcor, ycor, ptxcor - 4, ptycor - 4, 8, 8) == true)
+		breakpoint_envelope* m_env = m_envs[j].get();
+		for (int i = 0; i < m_env->get_num_points(); ++i)
 		{
-			return i;
+			const envbreakpoint& pt = m_env->get_point(i);
+			double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+			if (is_point_in_rect(xcor, ycor, ptxcor - 4, ptycor - 4, 8, 8) == true)
+			{
+				return{ j,i };
+			}
 		}
 	}
-	return -1;
+	return{ -1,-1 };
 }
 
 
-void EnvelopeControl::set_envelope(std::shared_ptr<breakpoint_envelope> env)
+void EnvelopeControl::add_envelope(std::shared_ptr<breakpoint_envelope> env)
 {
-	m_env = env;
+	m_envs.push_back(env);
+	m_active_envelope = m_envs.size() - 1;
 	repaint();
 }
 
@@ -758,9 +770,16 @@ std::string is_source_audio(PCM_source* src)
 
 bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
-	if (keycode == 'R' && m_env!=nullptr)
+	if (keycode == 'N' && m_envs.empty() == false)
 	{
-		std::string err = pitch_bend_selected_item(m_env,m_resampler_mode);
+		++m_active_envelope;
+		if (m_active_envelope == m_envs.size())
+			m_active_envelope = 0;
+		repaint();
+	}
+	if (keycode == 'R' && m_envs.empty()==false)
+	{
+		std::string err = pitch_bend_selected_item(m_envs[0],m_envs[1], m_resampler_mode);
 		if (err.empty() == false)
 		{
 			m_text = std::string("Render error : ")+err;
@@ -826,7 +845,8 @@ void PitchBenderEnvelopeControl::mousePressed(const MouseEvent & ev)
 	}
 }
 
-std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env, int rsmode)
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> pchenv, 
+	std::shared_ptr<breakpoint_envelope> volenv,int rsmode)
 {
 	if (CountSelectedMediaItems(nullptr) == 0)
 		return "No item selected";
@@ -861,7 +881,7 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env, i
 	while (counter < src->GetLength())
 	{
 		double normpos = 1.0 / src->GetLength()*counter;
-		double semitones = -12.0 + 24.0*env->interpolate(normpos);
+		double semitones = -12.0 + 24.0*pchenv->interpolate(normpos);
 		double ratio = 1.0 / pow(1.05946309436, semitones);
 		m_resampler->SetRates(src->GetSampleRate(), src->GetSampleRate()*ratio);
 		double* resbuf = nullptr;
@@ -874,11 +894,14 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env, i
 		transfer.samples = resbuf;
 		src->GetSamples(&transfer);
 		int resampled_out = m_resampler->ResampleOut(procbuf.data(), wanted, bufsize, numoutchans);
-		for (int i = 0; i < numoutchans; ++i)
-		{
-			for (int j = 0; j < resampled_out; ++j)
+		for (int j = 0; j < resampled_out; ++j)
+		{ 
+			// Interpolating per sample here seems to make things pretty slow on debug builds, 
+			// but release builds seem ok...
+			double gain = volenv->interpolate(normpos);
+			for (int i = 0; i < numoutchans; ++i)
 			{
-				diskoutbufptrs[i][j] = procbuf[j*numoutchans + i];
+				diskoutbufptrs[i][j] = procbuf[j*numoutchans + i]*gain;
 			}
 		}
 		sink->WriteDoubles(diskoutbufptrs.data(), resampled_out, numoutchans, 0, 1);

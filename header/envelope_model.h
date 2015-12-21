@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <string>
 
 class envbreakpoint
 {
@@ -26,6 +27,7 @@ class breakpoint_envelope
 {
 public:
 	breakpoint_envelope() {}
+	breakpoint_envelope(std::string name, int color = 0) : m_name(name), m_color(color) {}
 	int get_num_points() const noexcept { return (int)m_points.size(); }
 	const envbreakpoint& get_point(int index) const noexcept { return m_points[index]; }
 	envbreakpoint& get_point(int index) noexcept { return m_points[index]; }
@@ -92,9 +94,14 @@ public:
 	}
 	auto begin() { return m_points.begin(); }
 	auto end() { return m_points.end(); }
+	void setName(std::string name) { m_name = name; }
+	std::string getName() const { return m_name; }
+	void setColor(int c) { m_color = c; }
+	int getColor() const { return m_color; }
 private:
 	std::vector<envbreakpoint> m_points;
-	
+	std::string m_name;
+	int m_color = 0;
 };
 
 //using breakpoint_envelope = basic_breakpoint_envelope<simple_aux_data>;
