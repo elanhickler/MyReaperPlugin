@@ -5,6 +5,8 @@
 #include <functional>
 #include <memory>
 
+class PCM_source;
+
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
 {
@@ -48,6 +50,8 @@ inline auto get_from_map(Cont& c, const Key& k)
 		return c[k];
 	return typename Cont::mapped_type();
 }
+
+std::string is_source_audio(PCM_source* src);
 
 class readbgbuf : public std::streambuf
 {

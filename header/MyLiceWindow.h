@@ -79,6 +79,7 @@ public:
 		peaktrans.peakrate = (double)bm->getWidth() / (endtime - starttime);
 		m_src->GetPeakInfo(&peaktrans);
 		GetPeaksBitmap(&peaktrans, 1.0, w, h, bm);
+		return true;
 	}
 	void set_source(PCM_source* src)
 	{

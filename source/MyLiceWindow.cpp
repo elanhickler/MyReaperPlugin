@@ -757,23 +757,6 @@ void EnvelopeControl::set_waveformpainter(std::shared_ptr<WaveformPainter> paint
 	repaint();
 }
 
-std::string is_source_audio(PCM_source* src)
-{
-	if (src == nullptr)
-		return "Source null";
-	if (src->IsAvailable() == false)
-		return "Source offline";
-	if (strcmp(src->GetType(), "MIDI") == 0)
-		return "Source is MIDI";
-	if (src->GetSampleRate() < 1.0)
-		return "Source sample rate less than 1 Hz";
-	if (src->GetNumChannels() < 1)
-		return "Source has no audio channels";
-	if (src->GetLength() <= 0.0)
-		return "Source length equal or less than zero seconds";
-	return std::string();
-}
-
 bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
 	if (keycode >= '1' && keycode <= '4')
