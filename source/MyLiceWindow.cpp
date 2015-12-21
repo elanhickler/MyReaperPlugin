@@ -598,10 +598,6 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 	}
 	*/
 	const float linethickness = 0.75f;
-	double m_view_start_time = 0.0;
-	double m_view_end_time = 1.0;
-	double m_view_start_value = 0.0;
-	double m_view_end_value = 1.0;
 	for (int i = 0; i < m_env->get_num_points(); ++i)
 	{
 		const envbreakpoint& pt = m_env->get_point(i);
@@ -630,6 +626,85 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 	}
 
 }
+
+void EnvelopeControl::mousePressed(const MouseEvent& ev)
+{
+	if (m_env == nullptr)
+		return;
+	m_mouse_down = true;
+	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
+	if (m_node_to_drag == -1)
+	{
+		double normx = map_value((double)ev.m_x, 0.0, (double)getWidth(), m_view_start_time, m_view_end_time);
+		double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
+		m_env->add_point({ normx,normy }, true);
+		m_mouse_down = false;
+		repaint();
+	}
+
+}
+
+void EnvelopeControl::mouseMoved(const MouseEvent& ev)
+{
+	if (m_env == nullptr)
+		return;
+	
+	if (m_mouse_down == true)
+	{
+		if (m_node_to_drag >= 0)
+		{
+			envbreakpoint& pt = m_env->get_point(m_node_to_drag);
+			double left_bound = m_view_start_time;
+			double right_bound = m_view_end_time;
+			if (m_node_to_drag > 0)
+			{
+				left_bound = m_env->get_point(m_node_to_drag - 1).get_x();
+			}
+			if (m_node_to_drag < m_env->get_num_points() - 1)
+			{
+				right_bound = m_env->get_point(m_node_to_drag + 1).get_x();
+			}
+			double normx = map_value((double)ev.m_x, 0.0, (double)getWidth(), m_view_start_time, m_view_end_time);
+			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
+			pt.set_x(bound_value(left_bound + 0.001, normx, right_bound - 0.001));
+			pt.set_y(bound_value(0.0, normy, 1.0));
+			//m_node_that_was_dragged = m_node_to_drag;
+			repaint();
+			return;
+
+		}
+	}
+	else
+	{
+		m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
+	}
+}
+
+void EnvelopeControl::mouseReleased(const MouseEvent& ev)
+{
+	if (m_env == nullptr)
+		return;
+	m_mouse_down = false;
+	m_node_to_drag = -1;
+}
+
+int EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
+{
+	if (m_env == nullptr)
+		return -1;
+	for (int i = 0; i < m_env->get_num_points(); ++i)
+	{
+		const envbreakpoint& pt = m_env->get_point(i);
+		double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+		double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+		if (is_point_in_rect(xcor, ycor, ptxcor - 4, ptycor - 4, 8, 8) == true)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 
 void EnvelopeControl::set_envelope(std::shared_ptr<breakpoint_envelope> env)
 {

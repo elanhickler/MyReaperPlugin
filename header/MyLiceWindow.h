@@ -85,11 +85,23 @@ class EnvelopeControl : public LiceControl
 public:
 	EnvelopeControl(HWND parent);
 	void paint(LICE_IBitmap* bm) override;
+	
+	void mousePressed(const MouseEvent& ev) override;
+	void mouseMoved (const MouseEvent& ev) override;
+	void mouseReleased(const MouseEvent& ev) override;
+
 	std::string getType() const override { return "BreakpointEnvelope"; }
 	void set_envelope(std::shared_ptr<breakpoint_envelope> env);
 private:
 	std::shared_ptr<breakpoint_envelope> m_env;
 	LICE_CachedFont m_font;
+	bool m_mouse_down = false;
+	int m_node_to_drag = -1;
+	int find_hot_envelope_point(double xcor, double ycor);
+	double m_view_start_time = 0.0;
+	double m_view_end_time = 1.0;
+	double m_view_start_value = 0.0;
+	double m_view_end_value = 1.0;
 };
 
 
