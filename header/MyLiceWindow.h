@@ -178,7 +178,10 @@ public:
 
 	}
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
+	void mousePressed(const MouseEvent& ev) override;
 	std::string getType() const override { return "PitchBenderEnvelopeControl"; }
+private:
+	int m_resampler_mode = -1;
 };
 
-std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env);
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env,int mode);

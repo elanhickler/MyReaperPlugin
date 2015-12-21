@@ -563,7 +563,7 @@ double WaveformControl::getFloatingPointProperty(int which)
 
 EnvelopeControl::EnvelopeControl(HWND parent) : LiceControl(parent) 
 {
-	m_font.SetFromHFont(CreateFont(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+	m_font.SetFromHFont(CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
 		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
@@ -646,6 +646,8 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 void EnvelopeControl::mousePressed(const MouseEvent& ev)
 {
 	if (m_env == nullptr)
+		return;
+	if (ev.m_mb == MouseEvent::MBRight)
 		return;
 	m_mouse_down = true;
 	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
@@ -737,14 +739,31 @@ void EnvelopeControl::set_waveformpainter(std::shared_ptr<WaveformPainter> paint
 	repaint();
 }
 
+std::string is_source_audio(PCM_source* src)
+{
+	if (src == nullptr)
+		return "Source null";
+	if (src->IsAvailable() == false)
+		return "Source offline";
+	if (strcmp(src->GetType(), "MIDI") == 0)
+		return "Source is MIDI";
+	if (src->GetSampleRate() < 1.0)
+		return "Source sample rate less than 1 Hz";
+	if (src->GetNumChannels() < 1)
+		return "Source has no audio channels";
+	if (src->GetLength() <= 0.0)
+		return "Source length equal or less than zero seconds";
+	return std::string();
+}
+
 bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
 	if (keycode == 'R' && m_env!=nullptr)
 	{
-		std::string err = pitch_bend_selected_item(m_env);
+		std::string err = pitch_bend_selected_item(m_env,m_resampler_mode);
 		if (err.empty() == false)
 		{
-			m_text = err;
+			m_text = std::string("Render error : ")+err;
 		}
 		else m_text = "Pitch bend OK!";
 		repaint();
@@ -759,13 +778,27 @@ bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int key
 			if (take == nullptr)
 				return true;
 			PCM_source* src = GetMediaItemTake_Source(take);
-			if (src == nullptr)
-				return true;
-			if (m_wave_painter == nullptr)
+			std::string explanation = is_source_audio(src);
+			if (explanation.empty() == true)
 			{
-				m_wave_painter = std::make_shared<WaveformPainter>(getWidth());
+				if (m_wave_painter == nullptr)
+				{
+					m_wave_painter = std::make_shared<WaveformPainter>(getWidth());
+				}
+				m_wave_painter->set_source(src);
+				m_text = std::string("Imported media OK (")+src->GetType()+")";
+				repaint();
 			}
-			m_wave_painter->set_source(src);
+			else
+			{
+				m_text = std::string("Import error : ") + explanation;
+				repaint();
+			}
+			
+		}
+		else
+		{
+			m_text = "No item selected";
 			repaint();
 		}
 		
@@ -773,7 +806,27 @@ bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int key
 	return false;
 }
 
-std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
+void PitchBenderEnvelopeControl::mousePressed(const MouseEvent & ev)
+{
+	EnvelopeControl::mousePressed(ev);
+	if (ev.m_mb == MouseEvent::MBRight)
+	{
+		PopupMenu popmenu(getWindowHandle());
+		popmenu.add_menu_item("Project default", [this]() { m_resampler_mode = -1; });
+		int i = 0;
+		while (true)
+		{
+			const char* modetext = Resample_EnumModes(i);
+			if (modetext == nullptr)
+				break;
+			popmenu.add_menu_item(modetext, [i, this]() { m_resampler_mode = i; });
+			++i;
+		}
+		popmenu.execute(ev.m_x, ev.m_y);
+	}
+}
+
+std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env, int rsmode)
 {
 	if (CountSelectedMediaItems(nullptr) == 0)
 		return "No item selected";
@@ -782,8 +835,9 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
 	if (take == nullptr)
 		return "Item has no active take";
 	PCM_source* src = GetMediaItemTake_Source(take);
-	if (src == nullptr)
-		return "Take has no media source";
+	std::string explanation = is_source_audio(src);
+	if (explanation.empty() == false)
+		return explanation;
 	REAPER_Resample_Interface* m_resampler = m_resampler = Resampler_Create();
 	m_resampler->Reset();
 	int bufsize = 128;
@@ -801,8 +855,8 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
 	std::string outfn = std::string(pathbuf)+ "/bendout_" + std::to_string(fncounter) + ".wav";
 	++fncounter;
 	PCM_sink* sink = PCM_Sink_Create(outfn.c_str(), cfg, sizeof(cfg), numoutchans, outsamplerate, true);
-	//int mode = m_resampler_mode;
-	//m_resampler->Extended(RESAMPLE_EXT_SETRSMODE, (void*)mode, 0, 0);
+	int mode = rsmode;
+	m_resampler->Extended(RESAMPLE_EXT_SETRSMODE, (void*)mode, 0, 0);
 	double counter = 0.0;
 	while (counter < src->GetLength())
 	{

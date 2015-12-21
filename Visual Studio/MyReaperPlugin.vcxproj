@@ -210,7 +210,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib64-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(OutDir)$(TargetFileName)" "$(SolutionDir)..\binary\$(Configuration)\"
+      <Command>xcopy /y "$(OutDir)$(TargetFileName)" "$(SolutionDir)..\binary\$(Configuration)\";
 xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
     </PostBuildEvent>
     <CustomBuildStep>
