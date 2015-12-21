@@ -182,7 +182,11 @@ public:
 
 	virtual double getFloatingPointProperty(int which) { return 0.0; }
 	virtual void setFloatingPointProperty(int which, double v) {}
-	 
+	virtual int getIntegerProperty(int which) { return 0; }
+	virtual void setIntegerProperty(int which, int v) {}
+	virtual std::string getStringProperty(int which) { return ""; }
+	virtual void setStringProperty(int which, std::string v) {}
+
 	std::function<void(std::string)> ChangeNotifyCallback;
 
 	// Use this responsibly.
