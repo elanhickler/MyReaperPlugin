@@ -24,7 +24,11 @@ void TestControl::paint(LICE_IBitmap * bm)
 		r.right = bm->getWidth();
 		r.top = 0;
 		r.bottom = 25;
+#ifdef WIN32
 		m_font.DrawTextA(bm, m_test_text.c_str(), m_test_text.size(), &r, 0);
+#else
+		m_font.DrawText(bm, m_test_text.c_str(), m_test_text.size(), &r, 0);
+#endif
 	}
 }
 
@@ -300,7 +304,11 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 				r.right = bm->getWidth()-10;
 				r.top = 0;
 				r.bottom = bm->getHeight();
+#ifdef WIN32
 				m_font.DrawTextA(bm, "Source OFFLINE", -1, &r, DT_CENTER| DT_NOCLIP);
+#else
+				m_font.DrawText(bm, "Source OFFLINE", -1, &r, DT_CENTER| DT_NOCLIP);
+#endif
 				//LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
 			}
 			
@@ -359,7 +367,11 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 			r.right = bm->getWidth();
 			r.top = 20;
 			r.bottom = 45;
+#ifdef WIN32
 			m_font.DrawTextA(bm, "Source NULL", -1, &r, DT_TOP|DT_LEFT);
+#else
+			m_font.DrawText(bm, "Source NULL", -1, &r, DT_TOP|DT_LEFT);
+#endif
 			//LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
 		}
 		

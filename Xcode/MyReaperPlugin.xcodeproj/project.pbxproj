@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */ = {isa = PBXBuildFile; fileRef = C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */; };
 		C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */; };
+		C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */; };
 		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
 		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
 		C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6851C1BAD49005C6CCC /* swell-dlg.mm */; };
@@ -33,7 +34,6 @@
 		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
 		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
 		C4DED3B71C20E16B00275B4A /* utilfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */; };
-		C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3B81C20E23700275B4A /* lice_text.cpp */; };
 		C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */; };
 		E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3248BDE1C17C8BA00308A5F /* main.cpp */; };
 		E3E1DB111C18C67100D648F5 /* main.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E3248BDB1C17C8AF00308A5F /* main.hpp */; };
@@ -44,6 +44,7 @@
 /* Begin PBXFileReference section */
 		C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reascriptgui.h; path = ../header/reascriptgui.h; sourceTree = "<group>"; };
 		C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reascriptgui.cpp; path = ../source/reascriptgui.cpp; sourceTree = "<group>"; };
+		C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_textnew.cpp; path = ../library/WDL/WDL/lice/lice_textnew.cpp; sourceTree = "<group>"; };
 		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
 		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
 		C484E6851C1BAD49005C6CCC /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../library/WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
@@ -69,7 +70,6 @@
 		C4D434B81C1A41E3005DFFD3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utilfuncs.cpp; path = ../source/utilfuncs.cpp; sourceTree = "<group>"; };
-		C4DED3B81C20E23700275B4A /* lice_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_text.cpp; path = ../../WDL/WDL/lice/lice_text.cpp; sourceTree = "<group>"; };
 		C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = reaper_action_helper.h; path = ../header/reaper_action_helper.h; sourceTree = "<group>"; };
 		C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_action_helper.cpp; path = ../source/reaper_action_helper.cpp; sourceTree = "<group>"; };
 		E3248BDB1C17C8AF00308A5F /* main.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = main.hpp; path = ../main.hpp; sourceTree = "<group>"; };
@@ -184,8 +184,8 @@
 			isa = PBXGroup;
 			children = (
 				C484E6971C1BAE94005C6CCC /* lice_arc.cpp */,
+				C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */,
 				C484E6981C1BAE94005C6CCC /* lice_line.cpp */,
-				C4DED3B81C20E23700275B4A /* lice_text.cpp */,
 				C484E6991C1BAE94005C6CCC /* lice.cpp */,
 			);
 			name = Lice;
@@ -274,12 +274,12 @@
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
 				C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */,
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
-				C4DED3B91C20E23700275B4A /* lice_text.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
 				C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */,
 				C484E6901C1BAD49005C6CCC /* swell-menu.mm in Sources */,
+				C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */,
 				C484E68F1C1BAD49005C6CCC /* swell-kb.mm in Sources */,
 				C484E6911C1BAD49005C6CCC /* swell-misc.mm in Sources */,
 				C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */,
