@@ -560,3 +560,79 @@ double WaveformControl::getFloatingPointProperty(int which)
 		return m_src->GetLength();
 	return 0.0;
 }
+
+EnvelopeControl::EnvelopeControl(HWND parent) : LiceControl(parent) 
+{
+	m_font.SetFromHFont(CreateFont(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
+	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
+}
+
+void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt, int x, int y, int w, int h)
+{
+	RECT r;
+	r.left = x;
+	r.right = x+w;
+	r.top = y;
+	r.bottom = y+h;
+#ifdef WIN32
+	font->DrawTextA(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+#else
+	font->DrawText(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+#endif
+}
+
+void EnvelopeControl::paint(LICE_IBitmap* bm)
+{
+	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+	if (m_env == nullptr)
+	{
+		MRP_DrawTextHelper(bm, &m_font, "No envelope", 5, 5, bm->getWidth(), bm->getHeight());
+		return;
+	}
+	/*
+	if (m_env.unique()==true)
+	{
+		MRP_DrawTextHelper(bm, &m_font, "Envelope is orphaned (may be a bug)", 5, 5, bm->getWidth(), bm->getHeight());
+		return;
+	}
+	*/
+	const float linethickness = 0.75f;
+	double m_view_start_time = 0.0;
+	double m_view_end_time = 1.0;
+	double m_view_start_value = 0.0;
+	double m_view_end_value = 1.0;
+	for (int i = 0; i < m_env->get_num_points(); ++i)
+	{
+		const envbreakpoint& pt = m_env->get_point(i);
+		double xcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+		double ycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+		//if (pt.get_status() == 0)
+		//	g.drawRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f, 1.0f);
+		//else g.fillRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f);
+		LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(0, 255, 0, 255));
+		envbreakpoint pt1;
+		if (i + 1 < m_env->get_num_points())
+		{
+			pt1 = m_env->get_point(i + 1);
+			double xcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			double ycor1 = (double)getHeight() - map_value(pt1.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
+			LICE_Line(bm, xcor, ycor, xcor1, ycor1, LICE_RGBA(255, 255, 255, 255), 1.0f);
+		}
+		if (i == 0 && pt.get_x() >= 0.0)
+		{
+			LICE_Line(bm, 0.0, ycor, xcor, ycor, LICE_RGBA(255, 255, 255, 255), 1.0f);
+		}
+		if (i == m_env->get_num_points() - 1 && pt.get_x() < 1.0)
+		{
+			LICE_Line(bm, xcor, ycor, getWidth(), ycor, LICE_RGBA(255, 255, 255, 255),1.0f);
+		}
+	}
+
+}
+
+void EnvelopeControl::set_envelope(std::shared_ptr<breakpoint_envelope> env)
+{
+	m_env = env;
+	repaint();
+}

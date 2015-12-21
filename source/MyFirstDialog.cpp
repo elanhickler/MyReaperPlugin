@@ -212,6 +212,8 @@ HWND open_my_first_modeless_dialog(HWND parent)
 
 std::vector<std::unique_ptr<TestControl>> g_testcontrols;
 std::unique_ptr<WaveformControl> g_wavecontrol;
+std::unique_ptr<EnvelopeControl> g_envelopecontrol;
+
 INT_PTR CALLBACK mylicedialogproc(
 	HWND   hwndDlg,
 	UINT   uMsg,
@@ -222,12 +224,24 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		g_wavecontrol=std::make_unique<WaveformControl>(hwndDlg);
-		PCM_source* src=PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_9ch.wav");
-		//if (src->IsAvailable()==false)
-		//	readbg() << "failed to create source\n";
-		g_wavecontrol->setSource(src);
-		delete src;
+		g_envelopecontrol = std::make_unique<EnvelopeControl>(hwndDlg);
+		auto env = std::make_shared<breakpoint_envelope>();
+		env->add_point({ 0.0, 0.0 } , false);
+		env->add_point({ 0.1, 0.9 }, false);
+		env->add_point({ 0.8, 0.9 }, false);
+		env->add_point({ 0.9, 1.0 }, false);
+		env->add_point({ 1.0, 0.0 }, false);
+		env->sort_points();
+		g_envelopecontrol->set_envelope(env);
+		if (false)
+		{
+			g_wavecontrol = std::make_unique<WaveformControl>(hwndDlg);
+			PCM_source* src = PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_9ch.wav");
+			//if (src->IsAvailable()==false)
+			//	readbg() << "failed to create source\n";
+			g_wavecontrol->setSource(src);
+			delete src;
+		}
 		g_testcontrols.clear();
 		int num_controls = 0;
 		for (int i=0;i<num_controls;++i)
@@ -269,7 +283,8 @@ INT_PTR CALLBACK mylicedialogproc(
 		GetClientRect(hwndDlg, &r);
 		int w = r.right-r.left;
 		int h = r.bottom-r.top;
-		g_wavecontrol->setBounds(0,0,w,h);
+		g_envelopecontrol->setBounds(0, 0, w, h);
+		//g_wavecontrol->setBounds(0,0,w,h);
 		if (g_testcontrols.size()>0)
 		{
 			RECT r;

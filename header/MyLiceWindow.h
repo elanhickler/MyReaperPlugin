@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lice_control.h"
+#include "envelope_model.h"
 
 struct fx_param_t
 {
@@ -76,6 +77,18 @@ private:
 	int get_hot_time_sel_edge(int x, int y);
 	int m_hot_sel_edge = 0;
 	bool m_use_reaper_peaks_drawing = false;
+	LICE_CachedFont m_font;
+};
+
+class EnvelopeControl : public LiceControl
+{
+public:
+	EnvelopeControl(HWND parent);
+	void paint(LICE_IBitmap* bm) override;
+	std::string getType() const override { return "BreakpointEnvelope"; }
+	void set_envelope(std::shared_ptr<breakpoint_envelope> env);
+private:
+	std::shared_ptr<breakpoint_envelope> m_env;
 	LICE_CachedFont m_font;
 };
 
