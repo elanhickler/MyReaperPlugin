@@ -609,7 +609,12 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 	}
 	if (m_text.empty() == false)
 	{
-		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), bm->getHeight());
+		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), 25);
+	}
+	if (m_active_envelope >= 0)
+	{
+		std::string envname = m_envs[m_active_envelope]->getName();
+		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, 30, bm->getWidth(), 25);
 	}
 	const float linethickness = 0.75f;
 	for (int j = 0; j < m_envs.size(); ++j)
@@ -726,7 +731,7 @@ std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double
 {
 	if (m_envs.empty() == true)
 		return{ -1,-1 };
-	for (int j = 0; j < m_envs.size(); ++j)
+	for (int j = m_envs.size()-1; j >= 0 ; --j)
 	{
 		breakpoint_envelope* m_env = m_envs[j].get();
 		for (int i = 0; i < m_env->get_num_points(); ++i)
@@ -734,7 +739,7 @@ std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double
 			const envbreakpoint& pt = m_env->get_point(i);
 			double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
 			double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-			if (is_point_in_rect(xcor, ycor, ptxcor - 4, ptycor - 4, 8, 8) == true)
+			if (is_point_in_rect(xcor, ycor, ptxcor - 6, ptycor - 6, 12, 12) == true)
 			{
 				return{ j,i };
 			}
@@ -918,4 +923,35 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> pchenv
 	//if (m_adjust_item_length == true)
 		Main_OnCommand(40612, 0);
 	return std::string();
+}
+
+bool WaveformPainter::paint(LICE_IBitmap * bm, double starttime, double endtime, int x, int y, int w, int h)
+{
+	if (m_src == nullptr)
+		return false;
+	if (m_src->GetNumChannels() < 1)
+		return false;
+	int nch = m_src->GetNumChannels();
+	if (m_minpeaks.size() < w * nch)
+	{
+		m_minpeaks.resize(w*nch);
+		m_maxpeaks.resize(w*nch);
+	}
+	if (w != m_last_w || starttime != m_last_start || endtime != m_last_end)
+	{
+		//readbg() << "WaveformPainter " << w << " " << starttime << " " << endtime << "\n";
+		m_peaks_transfer.nchpeaks = m_src->GetNumChannels();
+		m_peaks_transfer.samplerate = m_src->GetSampleRate();
+		m_peaks_transfer.start_time = starttime;
+		m_peaks_transfer.peaks = m_maxpeaks.data();
+		m_peaks_transfer.peaks_minvals = m_minpeaks.data();
+		m_peaks_transfer.peaks_minvals_used = 1;
+		m_peaks_transfer.numpeak_points = w;
+		m_peaks_transfer.peakrate = (double)w / (endtime - starttime);
+		m_src->GetPeakInfo(&m_peaks_transfer);
+		m_last_w = w; m_last_start = starttime; m_last_end = endtime;
+	}
+
+	GetPeaksBitmap(&m_peaks_transfer, 1.0, w, h, bm);
+	return true;
 }

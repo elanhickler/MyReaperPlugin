@@ -56,31 +56,7 @@ public:
 		m_minpeaks.resize(initialnumpeaks);
 		m_maxpeaks.resize(initialnumpeaks);
 	}
-	bool paint(LICE_IBitmap* bm, double starttime, double endtime, int x, int y, int w, int h)
-	{
-		if (m_src == nullptr)
-			return false;
-		if (m_src->GetNumChannels() < 1)
-			return false;
-		int nch = m_src->GetNumChannels();
-		if (m_minpeaks.size() < w * nch)
-		{
-			m_minpeaks.resize(w*nch);
-			m_maxpeaks.resize(w*nch);
-		}
-		PCM_source_peaktransfer_t peaktrans = { 0 };
-		peaktrans.nchpeaks = m_src->GetNumChannels();
-		peaktrans.samplerate = m_src->GetSampleRate();
-		peaktrans.start_time = starttime;
-		peaktrans.peaks = m_maxpeaks.data();
-		peaktrans.peaks_minvals = m_minpeaks.data();
-		peaktrans.peaks_minvals_used = 1;
-		peaktrans.numpeak_points = bm->getWidth();
-		peaktrans.peakrate = (double)bm->getWidth() / (endtime - starttime);
-		m_src->GetPeakInfo(&peaktrans);
-		GetPeaksBitmap(&peaktrans, 1.0, w, h, bm);
-		return true;
-	}
+	bool paint(LICE_IBitmap* bm, double starttime, double endtime, int x, int y, int w, int h);
 	void set_source(PCM_source* src)
 	{
 		if (src == nullptr)
@@ -101,6 +77,9 @@ public:
 				m_src->PeaksBuild_Finish();
 			}
 		}
+		m_last_w = 0;
+		m_last_start = 0.0;
+		m_last_end = 0.0;
 	}
 	PCM_source* getSource()
 	{
@@ -110,6 +89,10 @@ private:
 	std::shared_ptr<PCM_source> m_src;
 	std::vector<double> m_minpeaks;
 	std::vector<double> m_maxpeaks;
+	int m_last_w = 0;
+	double m_last_start = 0.0;
+	double m_last_end = 0.0;
+	PCM_source_peaktransfer_t m_peaks_transfer = { 0 };
 };
 
 class WaveformControl : public LiceControl

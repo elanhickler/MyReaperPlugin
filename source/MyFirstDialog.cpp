@@ -236,9 +236,10 @@ INT_PTR CALLBACK mylicedialogproc(
 		g_envelopecontrol->add_envelope(pchenv);
 		auto volenv = std::make_shared<breakpoint_envelope>("Volume",
 			LICE_RGBA(255, 0, 255, 255));
-		volenv->add_point({ 0.0, 1.0 }, false);
-		volenv->add_point({ 0.5, 0.0 }, false);
-		volenv->add_point({ 1.0, 1.0 }, false);
+		volenv->add_point({ 0.0, 0.0 }, false);
+		volenv->add_point({ 0.05, 0.95 }, false);
+		volenv->add_point({ 0.95, 0.95 }, false);
+		volenv->add_point({ 1.00, 0.00 }, false);
 		volenv->sort_points();
 		g_envelopecontrol->add_envelope(volenv);
 		if (false)
