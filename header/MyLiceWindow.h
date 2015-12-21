@@ -23,8 +23,7 @@ struct point
 class TestControl : public LiceControl
 {
 public:
-	TestControl(HWND parent, bool delwhendraggedoutside=false) : 
-		LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) {}
+	TestControl(HWND parent, bool delwhendraggedoutside = false);
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;

@@ -6,6 +6,14 @@
 
 bool g_popupmenushowing = false;
 
+TestControl::TestControl(HWND parent, bool delwhendraggedoutside) :
+	LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) 
+{
+	m_font.SetFromHFont(CreateFont(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
+	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
+}
+
 void TestControl::paint(LICE_IBitmap * bm)
 {
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
@@ -288,6 +296,8 @@ fx_param_t * TestControl::getFXParamTarget(int index, int which)
 WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
 {
 	setWantsFocus(true);
+	m_font.SetFromHFont(CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
 
