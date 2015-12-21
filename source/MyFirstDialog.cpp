@@ -212,7 +212,7 @@ HWND open_my_first_modeless_dialog(HWND parent)
 
 std::vector<std::unique_ptr<TestControl>> g_testcontrols;
 std::unique_ptr<WaveformControl> g_wavecontrol;
-std::unique_ptr<EnvelopeControl> g_envelopecontrol;
+std::unique_ptr<PitchBenderEnvelopeControl> g_envelopecontrol;
 
 INT_PTR CALLBACK mylicedialogproc(
 	HWND   hwndDlg,
@@ -224,7 +224,7 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		g_envelopecontrol = std::make_unique<EnvelopeControl>(hwndDlg);
+		g_envelopecontrol = std::make_unique<PitchBenderEnvelopeControl>(hwndDlg);
 		auto env = std::make_shared<breakpoint_envelope>();
 		env->add_point({ 0.0, 0.0 } , false);
 		env->add_point({ 0.1, 0.9 }, false);

@@ -737,7 +737,7 @@ void EnvelopeControl::set_waveformpainter(std::shared_ptr<WaveformPainter> paint
 	repaint();
 }
 
-bool EnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
+bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
 	if (keycode == 'R' && m_env!=nullptr)
 	{
