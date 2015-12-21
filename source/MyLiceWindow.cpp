@@ -606,7 +606,9 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 		//if (pt.get_status() == 0)
 		//	g.drawRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f, 1.0f);
 		//else g.fillRect((float)xcor - 4.0, (float)ycor - 4.0, 8.0f, 8.0f);
-		LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(0, 255, 0, 255));
+		if (i==m_node_to_drag)
+			LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(255, 0, 0, 255));
+		else LICE_DrawRect(bm, xcor - 4.0, ycor - 4.0, 8, 8, LICE_RGBA(0, 255, 0, 255));
 		envbreakpoint pt1;
 		if (i + 1 < m_env->get_num_points())
 		{
@@ -676,7 +678,10 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	}
 	else
 	{
+		int oldindex = m_node_to_drag;
 		m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
+		if (oldindex != m_node_to_drag)
+			repaint();
 	}
 }
 
@@ -710,4 +715,79 @@ void EnvelopeControl::set_envelope(std::shared_ptr<breakpoint_envelope> env)
 {
 	m_env = env;
 	repaint();
+}
+
+bool EnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
+{
+	if (keycode == 'R' && m_env!=nullptr)
+	{
+		readbg() << "pitch bending...\n";
+		pitch_bend_selected_item(m_env);
+		return true;
+	}
+	return false;
+}
+
+void pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env)
+{
+	if (CountSelectedMediaItems(nullptr) == 0)
+		return;
+	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+	MediaItem_Take* take = GetActiveTake(item);
+	if (take == nullptr)
+		return;
+	PCM_source* src = GetMediaItemTake_Source(take);
+	if (src == nullptr)
+		return;
+	REAPER_Resample_Interface* m_resampler = m_resampler = Resampler_Create();
+	m_resampler->Reset();
+	int bufsize = 128;
+	int numoutchans = src->GetNumChannels();
+	int outsamplerate = src->GetSampleRate();
+	std::vector<double> procbuf(bufsize * numoutchans);
+	std::vector<double> diskoutbuf(bufsize*numoutchans);
+	std::vector<double*> diskoutbufptrs(numoutchans);
+	for (int i = 0; i < numoutchans; ++i)
+		diskoutbufptrs[i] = &diskoutbuf[i*bufsize];
+	char cfg[] = { 'e','v','a','w', 32, 0 };
+	static int fncounter = 0;
+	char pathbuf[2048];
+	GetProjectPath(pathbuf, 2048);
+	std::string outfn = std::string(pathbuf)+ "/bendout_" + std::to_string(fncounter) + ".wav";
+	++fncounter;
+	PCM_sink* sink = PCM_Sink_Create(outfn.c_str(), cfg, sizeof(cfg), numoutchans, outsamplerate, true);
+	//int mode = m_resampler_mode;
+	//m_resampler->Extended(RESAMPLE_EXT_SETRSMODE, (void*)mode, 0, 0);
+	double counter = 0.0;
+	while (counter < src->GetLength())
+	{
+		double normpos = 1.0 / src->GetLength()*counter;
+		double semitones = -12.0 + 24.0*env->interpolate(normpos);
+		double ratio = 1.0 / pow(1.05946309436, semitones);
+		m_resampler->SetRates(src->GetSampleRate(), src->GetSampleRate()*ratio);
+		double* resbuf = nullptr;
+		int wanted = m_resampler->ResamplePrepare(bufsize, numoutchans, &resbuf);
+		PCM_source_transfer_t transfer = { 0 };
+		transfer.time_s = counter;
+		transfer.length = wanted;
+		transfer.nch = numoutchans;
+		transfer.samplerate = outsamplerate;
+		transfer.samples = resbuf;
+		src->GetSamples(&transfer);
+		int resampled_out = m_resampler->ResampleOut(procbuf.data(), wanted, bufsize, numoutchans);
+		for (int i = 0; i < numoutchans; ++i)
+		{
+			for (int j = 0; j < resampled_out; ++j)
+			{
+				diskoutbufptrs[i][j] = procbuf[j*numoutchans + i];
+			}
+		}
+		sink->WriteDoubles(diskoutbufptrs.data(), resampled_out, numoutchans, 0, 1);
+		counter += (double)wanted / outsamplerate;
+	}
+	delete sink;
+	InsertMedia(outfn.c_str(), 3);
+	//if (m_adjust_item_length == true)
+		Main_OnCommand(40612, 0);
+	readbg() << "pitch bending done!\n";
 }

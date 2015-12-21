@@ -90,6 +90,8 @@ public:
 	void mouseMoved (const MouseEvent& ev) override;
 	void mouseReleased(const MouseEvent& ev) override;
 
+	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
+
 	std::string getType() const override { return "BreakpointEnvelope"; }
 	void set_envelope(std::shared_ptr<breakpoint_envelope> env);
 private:
@@ -104,4 +106,4 @@ private:
 	double m_view_end_value = 1.0;
 };
 
-
+void pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> env);
