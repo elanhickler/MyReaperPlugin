@@ -48,6 +48,69 @@ private:
 	LICE_CachedFont m_font;
 };
 
+class WaveformPainter
+{
+public:
+	WaveformPainter(int initialnumpeaks = 500)
+	{
+		m_minpeaks.resize(initialnumpeaks);
+		m_maxpeaks.resize(initialnumpeaks);
+	}
+	bool paint(LICE_IBitmap* bm, double starttime, double endtime, int x, int y, int w, int h)
+	{
+		if (m_src == nullptr)
+			return false;
+		if (m_src->GetNumChannels() < 1)
+			return false;
+		int nch = m_src->GetNumChannels();
+		if (m_minpeaks.size() < w * nch)
+		{
+			m_minpeaks.resize(w*nch);
+			m_maxpeaks.resize(w*nch);
+		}
+		PCM_source_peaktransfer_t peaktrans = { 0 };
+		peaktrans.nchpeaks = m_src->GetNumChannels();
+		peaktrans.samplerate = m_src->GetSampleRate();
+		peaktrans.start_time = starttime;
+		peaktrans.peaks = m_maxpeaks.data();
+		peaktrans.peaks_minvals = m_minpeaks.data();
+		peaktrans.peaks_minvals_used = 1;
+		peaktrans.numpeak_points = bm->getWidth();
+		peaktrans.peakrate = (double)bm->getWidth() / (endtime - starttime);
+		m_src->GetPeakInfo(&peaktrans);
+		GetPeaksBitmap(&peaktrans, 1.0, w, h, bm);
+	}
+	void set_source(PCM_source* src)
+	{
+		if (src == nullptr)
+		{
+			m_src = nullptr;
+			return;
+		}
+		m_src = std::shared_ptr<PCM_source>(src->Duplicate());
+		if (m_src != nullptr)
+		{
+			if (m_src->PeaksBuild_Begin() != 0) // should build peaks
+			{
+				while (true)
+				{
+					if (m_src->PeaksBuild_Run() == 0)
+						break;
+				}
+				m_src->PeaksBuild_Finish();
+			}
+		}
+	}
+	PCM_source* getSource()
+	{
+		return m_src.get();
+	}
+private:
+	std::shared_ptr<PCM_source> m_src;
+	std::vector<double> m_minpeaks;
+	std::vector<double> m_maxpeaks;
+};
+
 class WaveformControl : public LiceControl
 {
 public:
@@ -94,8 +157,10 @@ public:
 
 	std::string getType() const override { return "BreakpointEnvelope"; }
 	void set_envelope(std::shared_ptr<breakpoint_envelope> env);
+	void set_waveformpainter(std::shared_ptr<WaveformPainter> painter);
 private:
 	std::shared_ptr<breakpoint_envelope> m_env;
+	std::shared_ptr<WaveformPainter> m_wave_painter;
 	LICE_CachedFont m_font;
 	bool m_mouse_down = false;
 	int m_node_to_drag = -1;

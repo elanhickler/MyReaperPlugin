@@ -597,6 +597,16 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 		return;
 	}
 	*/
+	if (m_wave_painter != nullptr)
+	{
+		if (m_wave_painter->getSource() != nullptr)
+		{
+			double srclen = m_wave_painter->getSource()->GetLength();
+			m_wave_painter->paint(bm, srclen*m_view_start_time, srclen*m_view_end_time,
+				0, 0, bm->getWidth(), bm->getHeight());
+		}
+		
+	}
 	if (m_text.empty() == false)
 	{
 		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), bm->getHeight());
@@ -721,6 +731,12 @@ void EnvelopeControl::set_envelope(std::shared_ptr<breakpoint_envelope> env)
 	repaint();
 }
 
+void EnvelopeControl::set_waveformpainter(std::shared_ptr<WaveformPainter> painter)
+{
+	m_wave_painter = painter;
+	repaint();
+}
+
 bool EnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
 	if (keycode == 'R' && m_env!=nullptr)
@@ -733,6 +749,26 @@ bool EnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 		else m_text = "Pitch bend OK!";
 		repaint();
 		return true;
+	}
+	if (keycode == 'I')
+	{
+		if (CountSelectedMediaItems(nullptr) > 0)
+		{
+			MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+			MediaItem_Take* take = GetActiveTake(item);
+			if (take == nullptr)
+				return true;
+			PCM_source* src = GetMediaItemTake_Source(take);
+			if (src == nullptr)
+				return true;
+			if (m_wave_painter == nullptr)
+			{
+				m_wave_painter = std::make_shared<WaveformPainter>(getWidth());
+			}
+			m_wave_painter->set_source(src);
+			repaint();
+		}
+		
 	}
 	return false;
 }
