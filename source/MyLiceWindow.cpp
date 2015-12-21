@@ -776,6 +776,22 @@ std::string is_source_audio(PCM_source* src)
 
 bool PitchBenderEnvelopeControl::keyPressed(const ModifierKeys& modkeys, int keycode)
 {
+	if (keycode >= '1' && keycode <= '4')
+	{
+		double startdelta = 0.0;
+		double enddelta = 0.0;
+		if (keycode == '1')
+			startdelta = -0.05;
+		if (keycode == '2')
+			startdelta = 0.05;
+		if (keycode == '3')
+			enddelta = -0.05;
+		if (keycode == '4')
+			enddelta = 0.05;
+		m_view_start_time = bound_value(0.0, m_view_start_time + startdelta, m_view_end_time - 0.001);
+		m_view_end_time = bound_value(m_view_start_time + 0.001, m_view_end_time + enddelta, 1.0);
+		repaint();
+	}
 	if (keycode == 'N' && m_envs.empty() == false)
 	{
 		++m_active_envelope;
