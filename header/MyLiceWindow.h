@@ -45,6 +45,7 @@ private:
 	bool m_delete_point_when_dragged_outside = false;
 	std::string m_test_text;
 	void shift_points(double x, double y);
+	LICE_CachedFont m_font;
 };
 
 class WaveformControl : public LiceControl
@@ -76,6 +77,7 @@ private:
 	int get_hot_time_sel_edge(int x, int y);
 	int m_hot_sel_edge = 0;
 	bool m_use_reaper_peaks_drawing = false;
+	LICE_CachedFont m_font;
 };
 
 

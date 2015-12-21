@@ -26,9 +26,6 @@
     <ClCompile Include="..\source\utilfuncs.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\library\WDL\WDL\lice\lice_text.cpp">
-      <Filter>library\WDL\Lice</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\reaper_action_helper.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
     </ClCompile>
     <ClCompile Include="..\source\reascriptgui.cpp">
       <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_textnew.cpp">
+      <Filter>library\WDL\Lice</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

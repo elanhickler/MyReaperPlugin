@@ -22,7 +22,7 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_arc.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp" />
-    <ClCompile Include="..\library\WDL\WDL\lice\lice_text.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\lice\lice_textnew.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\lice_control.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />

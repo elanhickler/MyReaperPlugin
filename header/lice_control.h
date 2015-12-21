@@ -7,6 +7,7 @@
 #endif
 
 #include "WDL/WDL/lice/lice.h"
+#include "WDL/WDL/lice/lice_text.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 #include <memory>
 #include <vector>

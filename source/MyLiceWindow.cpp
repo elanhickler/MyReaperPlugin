@@ -17,8 +17,15 @@ void TestControl::paint(LICE_IBitmap * bm)
 		auto& e = m_points[i];
 		LICE_FillCircle(bm, e.m_x, e.m_y, m_circlesize, color);
 	}
-	if (m_test_text.size()>0)
-		LICE_DrawText(bm, 5, 5, m_test_text.c_str(), LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
+	if (m_test_text.size() > 0)
+	{
+		RECT r;
+		r.left = 0;
+		r.right = bm->getWidth();
+		r.top = 0;
+		r.bottom = 25;
+		m_font.DrawTextA(bm, m_test_text.c_str(), m_test_text.size(), &r, 0);
+	}
 }
 
 int TestControl::find_hot_point(int x, int y)
@@ -277,6 +284,7 @@ fx_param_t * TestControl::getFXParamTarget(int index, int which)
 WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
 {
 	setWantsFocus(true);
+	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
 
 void WaveformControl::paint(LICE_IBitmap* bm)
@@ -286,7 +294,16 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		if (m_src->IsAvailable()==false)
 		{
 			LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-			LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255,255,255,255), 1.0f, 0);
+			{
+				RECT r;
+				r.left = 0;
+				r.right = bm->getWidth()-10;
+				r.top = 0;
+				r.bottom = bm->getHeight();
+				m_font.DrawTextA(bm, "Source OFFLINE", -1, &r, DT_CENTER| DT_NOCLIP);
+				//LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
+			}
+			
 			return;
 		}
 		// Somewhat inefficient to do all this here on each paint, but will suffice for now
@@ -336,7 +353,16 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 	} else
 	{
 		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-		LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255,255,255,255), 1.0f, 0);
+		{
+			RECT r;
+			r.left = 0;
+			r.right = bm->getWidth();
+			r.top = 20;
+			r.bottom = 45;
+			m_font.DrawTextA(bm, "Source NULL", -1, &r, DT_TOP|DT_LEFT);
+			//LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
+		}
+		
 	}
 }
 
