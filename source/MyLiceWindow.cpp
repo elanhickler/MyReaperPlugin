@@ -1002,3 +1002,36 @@ bool WaveformPainter::paint(LICE_IBitmap * bm, double starttime, double endtime,
 	GetPeaksBitmap(&m_peaks_transfer, 1.0, w, h, bm);
 	return true;
 }
+
+EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(HWND parent) :
+	EnvelopeControl(parent)
+{
+	auto env = std::make_shared<breakpoint_envelope>("LFO",LICE_RGBA(0,255,0,255));
+	env->add_point({ 0.0,1.0 }, false);
+	env->add_point({ 0.99,0.0 }, false);
+	env->sort_points();
+	add_envelope(env);
+	ChangeNotifyCallback = [this,env](std::string reason)
+	{
+		TrackEnvelope* reaenv = GetSelectedEnvelope(nullptr);
+		if (reaenv != nullptr)
+		{
+			DeleteEnvelopePointRange(reaenv, 0.0, 10.0);
+			double last_time = 0.0;
+			for (int i = 0; i < 10; ++i)
+			{
+				for (int j = 0; j < env->get_num_points(); ++j)
+				{
+					double pt_time = env->get_point(j).get_x();
+					double pt_value = env->get_point(j).get_y();
+					bool sort = false;
+					InsertEnvelopePoint(reaenv, i*1.0+pt_time, pt_value, 0, 0.0, false, &sort);
+				}
+				
+			}
+			Envelope_SortPoints(reaenv);
+			UpdateArrange();
+		}
+		
+	};
+}

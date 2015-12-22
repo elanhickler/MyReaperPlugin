@@ -191,3 +191,10 @@ private:
 
 std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> pchenv,
 	std::shared_ptr<breakpoint_envelope> volenv,int mode);
+
+class EnvelopeGeneratorEnvelopeControl : public EnvelopeControl
+{
+public:
+	EnvelopeGeneratorEnvelopeControl(HWND parent);
+	
+};
