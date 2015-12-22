@@ -40,4 +40,5 @@ HWND open_pitch_bender(HWND parent);
 HWND open_env_point_generator(HWND parent);
 HWND open_xy_control(HWND parent);
 HWND open_wave_controls(HWND parent);
+HWND open_gui_designer(HWND parent);
 void clean_up_gui();

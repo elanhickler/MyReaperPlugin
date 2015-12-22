@@ -145,7 +145,12 @@ extern "C"
 			{
 				open_wave_controls(g_parent);
 			});
-
+#ifdef WIN32
+			add_action("MRP : Show GUI designer", "MRP_SHOWGUIDESIGNER", ToggleOff, [](action_entry&)
+			{
+				open_gui_designer(g_parent);
+			});
+#endif
 			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
 			
 				// Add functions

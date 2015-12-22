@@ -436,6 +436,64 @@ INT_PTR CALLBACK wavecontrolsdialogproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 	}
 	return FALSE;
 }
+#ifdef WIN32
+INT_PTR CALLBACK guidesignerdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_INITDIALOG)
+	{
+		SetWindowText(hwndDlg, "GUI Designer");
+		ShowWindow(hwndDlg, SW_SHOW);
+		return TRUE;
+	}
+	if (uMsg == WM_CLOSE)
+	{
+		ShowWindow(hwndDlg, SW_HIDE);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		return TRUE;
+	}
+	if (uMsg == WM_RBUTTONDOWN)
+	{
+		int xcor = LOWORD(lParam);
+		int ycor = HIWORD(lParam);
+		static int control_id = 1;
+		PopupMenu menu(hwndDlg);
+		menu.add_menu_item("Label", [xcor,ycor,hwndDlg]() 
+		{ 
+			HWND lab = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, xcor, ycor, 100, 20, hwndDlg,
+				(HMENU)control_id, g_hInst, 0);
+			SetWindowText(lab, "Sample label");
+			ShowWindow(lab, SW_SHOW);
+			++control_id;
+		});
+		menu.add_menu_item("Button", [xcor,ycor,hwndDlg]() 
+		{ 
+			HWND but = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, xcor, ycor, 100, 20, hwndDlg,
+				(HMENU)control_id, g_hInst, 0);
+			SetWindowText(but, "Sample button");
+			ShowWindow(but, SW_SHOW);
+			++control_id;
+		});
+		menu.add_menu_item("Slider", [xcor,ycor,hwndDlg]() 
+		{ 
+			HWND slid = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 
+				xcor, ycor, 200, 20, hwndDlg,
+				(HMENU)control_id, g_hInst, 0);
+			ShowWindow(slid, SW_SHOW);
+			++control_id;
+		});
+		menu.execute(xcor, ycor);
+		return TRUE;
+	}
+	if (uMsg == WM_COMMAND)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+#endif
 
 HWND g_pitchbenderwindow = NULL;
 
@@ -492,6 +550,27 @@ HWND open_wave_controls(HWND parent)
 	ShowWindow(g_wave_controls_window, SW_SHOW);
 	return g_wave_controls_window;
 }
+
+#ifdef WIN32
+HWND g_designer_window = NULL;
+
+HWND open_gui_designer(HWND parent)
+{
+	if (g_designer_window == NULL)
+	{
+		g_designer_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+			parent, guidesignerdlgproc, NULL);
+		SetWindowPos(g_designer_window, NULL, 20, 60, 700, 400, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_designer_window, SW_SHOW);
+	return g_designer_window;
+}
+#else
+HWND open_gui_designer(HWND parent)
+{
+	return NULL;
+}
+#endif
 
 void clean_up_gui()
 {
