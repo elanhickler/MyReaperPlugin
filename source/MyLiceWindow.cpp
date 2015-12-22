@@ -666,6 +666,8 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		if (m_active_envelope >= 0)
 		{
 			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
+			if (ChangeNotifyCallback)
+				ChangeNotifyCallback("Point added");
 			m_mouse_down = false;
 			repaint();
 			return;
@@ -675,6 +677,8 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 	{
 		m_envs[m_node_to_drag.first]->remove_point(m_node_to_drag.second);
 		m_node_to_drag = { -1,-1 };
+		if (ChangeNotifyCallback)
+			ChangeNotifyCallback("Point removed");
 		repaint();
 	}
 }
@@ -704,6 +708,8 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 			pt.set_x(bound_value(left_bound + 0.001, normx, right_bound - 0.001));
 			pt.set_y(bound_value(0.0, normy, 1.0));
+			if (ChangeNotifyCallback)
+				ChangeNotifyCallback("Point moved");
 			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
 			return;
@@ -929,9 +935,9 @@ bool WaveformPainter::paint(LICE_IBitmap * bm, double starttime, double endtime,
 {
 	if (m_src == nullptr)
 		return false;
-	if (m_src->GetNumChannels() < 1)
-		return false;
 	int nch = m_src->GetNumChannels();
+	if (nch < 1)
+		return false;
 	if (m_minpeaks.size() < w * nch)
 	{
 		m_minpeaks.resize(w*nch);

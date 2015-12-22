@@ -140,6 +140,7 @@ public:
 	std::string getType() const override { return "BreakpointEnvelope"; }
 	void add_envelope(std::shared_ptr<breakpoint_envelope> env);
 	void set_waveformpainter(std::shared_ptr<WaveformPainter> painter);
+	
 protected:
 	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;
@@ -153,6 +154,7 @@ protected:
 	double m_view_end_value = 1.0;
 	std::string m_text;
 	int m_active_envelope = -1;
+	
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl

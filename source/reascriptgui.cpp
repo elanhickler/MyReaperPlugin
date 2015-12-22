@@ -164,6 +164,18 @@ void ReaScriptWindow::add_custom_control(std::string name, std::string controlty
 			m_last_used_controls.insert(name);
 		};
 	}
+	if (controltype == "BreakpointEnvelope")
+	{
+		auto env = std::make_shared<breakpoint_envelope>("",
+			LICE_RGBA(255, 255, 255, 255));
+		EnvelopeControl* envcont = new EnvelopeControl(m_hwnd);
+		envcont->add_envelope(env);
+		c.m_licecontrol = envcont;
+		c.m_licecontrol->ChangeNotifyCallback = [this, name](std::string)
+		{
+			m_last_used_controls.insert(name);
+		};
+	}
 	if (c.m_licecontrol != nullptr)
 	{
 		c.m_hwnd = c.m_licecontrol->getWindowHandle();
