@@ -139,6 +139,8 @@ public:
 
 	std::string getType() const override { return "BreakpointEnvelope"; }
 	void add_envelope(std::shared_ptr<breakpoint_envelope> env);
+	// Get envelope. -1 returns active envelope if exists. Returns null on failure
+	std::shared_ptr<breakpoint_envelope> getEnvelope(int index);
 	void set_waveformpainter(std::shared_ptr<WaveformPainter> painter);
 	
 protected:

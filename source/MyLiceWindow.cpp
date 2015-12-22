@@ -762,6 +762,15 @@ void EnvelopeControl::add_envelope(std::shared_ptr<breakpoint_envelope> env)
 	repaint();
 }
 
+std::shared_ptr<breakpoint_envelope> EnvelopeControl::getEnvelope(int index)
+{
+	if (index == -1 && m_active_envelope >= 0 && m_active_envelope<m_envs.size())
+		return m_envs[m_active_envelope];
+	if (index >= 0 && index < m_envs.size())
+		return m_envs[index];
+	return nullptr;
+}
+
 void EnvelopeControl::set_waveformpainter(std::shared_ptr<WaveformPainter> painter)
 {
 	m_wave_painter = painter;
