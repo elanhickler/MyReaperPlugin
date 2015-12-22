@@ -18,6 +18,7 @@ public:
 };
 
 bool hookCommandProc(int command, int flag);
+bool hookCommandProcEx(KbdSectionInfo *sec, int command, int val, int valhw, int relmode, HWND hwnd);
 int toggleActionCallback(int command_id);
 
 std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggle_state togst, std::function<void(action_entry&)> f);

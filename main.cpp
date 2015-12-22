@@ -169,7 +169,7 @@ extern "C"
 #endif
 #undef func
 
-			if (!rec->Register("hookcommand", (void*)hookCommandProc)) { /*todo: error*/ }
+			if (!rec->Register("hookcommand2", (void*)hookCommandProcEx)) { /*todo: error.*/ }
 			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
 			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
 
