@@ -15,6 +15,10 @@ public:
 	std::string m_id_string;
 	toggle_state m_togglestate = CannotToggle;
 	int m_cycle_state = 0;
+	int m_ex_val = 0;
+	int m_ex_valhw = 0;
+	int m_ex_relmode = 0;
+	double m_ex_valhw_parsed = 0.0;
 };
 
 bool hookCommandProc(int command, int flag);

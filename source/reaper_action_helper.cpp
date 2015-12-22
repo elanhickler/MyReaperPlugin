@@ -57,9 +57,12 @@ bool hookCommandProcEx(KbdSectionInfo *sec, int command, int val, int valhw, int
 	// registration has failed the plugin's command id would also be 0
 	// therefore, check the plugins command id is not 0 and then if it matches with
 	// what Reaper called with
-	// readbg() << "hookCommandProcEx : " << command << " " << val << " " << valhw << " " << relmode << "\n";
+	//readbg() << "hookCommandProcEx : " << command << " " << val << " " << valhw << " " << relmode << "\n";
 	for (auto& e : g_actions) {
 		if (e->m_command_id != 0 && e->m_command_id == command) {
+			e->m_ex_val = val;
+			e->m_ex_valhw = valhw;
+			e->m_ex_relmode = relmode;
 			e->m_func(*e);
 			return true;
 		}

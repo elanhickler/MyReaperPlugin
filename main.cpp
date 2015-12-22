@@ -129,6 +129,11 @@ extern "C"
 				open_wave_controls(g_parent);
 			});
 
+			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, [](action_entry& act)
+			{
+				readbg() << "action with extra info " << act.m_ex_val << "\n";
+			});
+
 			// Add functions
 #define func(f) add_function(f, #f)
 			func(MRP_DoublePointer);
