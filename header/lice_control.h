@@ -17,6 +17,44 @@
 
 int acProc(MSG *msg, accelerator_register_t *ctx);
 
+enum class GenericNotifications
+{
+	Unknown,
+	Something,
+	SomethingA,
+	SomethingB,
+	SomethingC,
+	SomethingD,
+	Time,
+	TimeRange,
+	ValueRange,
+	ViewTimeRange,
+	ViewValueRange,
+	ObjectMoved,
+	ObjectAdded,
+	ObjectRemoved,
+	ObjectSize,
+	ObjectLength,
+	ObjectCount,
+	PositionChanged,
+	Contents,
+	Text,
+	Number,
+	Rotation,
+	Scroll,
+	Color,
+	Image,
+	Audio,
+	PlaybackPosition,
+	PlaybackState,
+	BeforeManipulation,
+	DuringManipulation,
+	AfterManipulation,
+	BeforeTask,
+	DuringTask,
+	AfterTask
+};
+
 enum
 {
 	KEY_DOWN = 4096,
@@ -192,6 +230,7 @@ public:
 	virtual void setStringProperty(int which, std::string v) {}
 
 	std::function<void(std::string)> ChangeNotifyCallback;
+	std::function<void(GenericNotifications)> GenericNotifyCallback;
 
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }

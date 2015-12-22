@@ -417,6 +417,7 @@ void WaveformControl::mouseMoved(const MouseEvent & ev)
 				m_hot_sel_edge = -1;
 		}
 		if (ChangeNotifyCallback) ChangeNotifyCallback("Changed time selection");
+		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::TimeRange);
 		repaint();
 		//readbg() << "sel is " << t0 << " " << t1 << "\n";
 	}
@@ -449,6 +450,7 @@ void WaveformControl::mouseDoubleClicked(const MouseEvent& ev)
 		{
 			setSource(GetMediaItemTake_Source(take));
 			if (ChangeNotifyCallback) ChangeNotifyCallback("Changed source");
+			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::Contents);
 		}
 	}
 }
@@ -650,8 +652,8 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		if (m_active_envelope >= 0)
 		{
 			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
-			if (ChangeNotifyCallback)
-				ChangeNotifyCallback("Point added");
+			if (ChangeNotifyCallback) ChangeNotifyCallback("Point added");
+			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectAdded);
 			m_mouse_down = false;
 			repaint();
 			return;
@@ -661,8 +663,8 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 	{
 		m_envs[m_node_to_drag.first]->remove_point(m_node_to_drag.second);
 		m_node_to_drag = { -1,-1 };
-		if (ChangeNotifyCallback)
-			ChangeNotifyCallback("Point removed");
+		if (ChangeNotifyCallback) ChangeNotifyCallback("Point removed");
+		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectRemoved);
 		repaint();
 	}
 }
@@ -692,8 +694,8 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 			pt.set_x(bound_value(left_bound + 0.001, normx, right_bound - 0.001));
 			pt.set_y(bound_value(0.0, normy, 1.0));
-			if (ChangeNotifyCallback)
-				ChangeNotifyCallback("Point moved");
+			if (ChangeNotifyCallback) ChangeNotifyCallback("Point moved");
+			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			m_point_was_moved = true;
 			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
@@ -719,8 +721,8 @@ void EnvelopeControl::mouseReleased(const MouseEvent& ev)
 	if (m_point_was_moved == true)
 	{
 		m_point_was_moved = false;
-		if (ChangeNotifyCallback)
-			ChangeNotifyCallback("Point moved (MU)");
+		if (ChangeNotifyCallback) ChangeNotifyCallback("Point moved (MU)");
+		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::AfterManipulation);
 	}
 }
 
