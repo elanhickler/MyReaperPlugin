@@ -248,7 +248,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER64_DIR)\Plugins\"</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(OutDir)$(TargetFileName)" "$(SolutionDir)..\binary\$(Configuration)\"
-xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
+xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER64_DIR)\Plugins\"</Command>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>
