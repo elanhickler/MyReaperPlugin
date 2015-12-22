@@ -26,6 +26,7 @@ enum class GenericNotifications
 	SomethingC,
 	SomethingD,
 	Time,
+	Value,
 	TimeRange,
 	ValueRange,
 	ViewTimeRange,
@@ -35,6 +36,7 @@ enum class GenericNotifications
 	ObjectRemoved,
 	ObjectSize,
 	ObjectLength,
+	ObjectProperty,
 	ObjectCount,
 	PositionChanged,
 	Contents,
@@ -229,7 +231,6 @@ public:
 	virtual std::string getStringProperty(int which) { return ""; }
 	virtual void setStringProperty(int which, std::string v) {}
 
-	std::function<void(std::string)> ChangeNotifyCallback;
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
 
 	// Use this responsibly.

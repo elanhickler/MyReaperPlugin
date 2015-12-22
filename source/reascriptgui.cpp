@@ -158,7 +158,7 @@ void ReaScriptWindow::add_custom_control(std::string name, std::string controlty
 	if (controltype == "WaveformControl")
 	{
 		c.m_licecontrol = new WaveformControl(m_hwnd);
-		c.m_licecontrol->ChangeNotifyCallback = [this, name](std::string reason)
+		c.m_licecontrol->GenericNotifyCallback = [this, name](GenericNotifications reason)
 		{
 			//readbg() << name << " : " << reason << "\n";
 			m_last_used_controls.insert(name);
@@ -171,7 +171,7 @@ void ReaScriptWindow::add_custom_control(std::string name, std::string controlty
 		EnvelopeControl* envcont = new EnvelopeControl(m_hwnd);
 		envcont->add_envelope(env);
 		c.m_licecontrol = envcont;
-		c.m_licecontrol->ChangeNotifyCallback = [this, name](std::string)
+		c.m_licecontrol->GenericNotifyCallback = [this, name](GenericNotifications)
 		{
 			m_last_used_controls.insert(name);
 		};
