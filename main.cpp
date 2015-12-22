@@ -57,6 +57,23 @@ void doAction3(action_entry& act) {
 	act.m_cycle_state = (act.m_cycle_state + 1) % 3;
 }
 
+void doChangeItemPitchesAction(action_entry& act)
+{
+	int num_sel_items = CountSelectedMediaItems(nullptr);
+	for (int i = 0; i < num_sel_items; ++i)
+	{
+		MediaItem* item = GetSelectedMediaItem(nullptr, i);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (take != nullptr)
+		{
+			double pch = bound_value(-12.0,
+				map_value(act.m_ex_val, 0, 127, -12.0, 12.0),12.0);
+			SetMediaItemTakeInfo_Value(take, "D_PITCH", pch);
+		}
+	}
+	UpdateArrange();
+}
+
 extern "C"
 {
 	// this is the only function that needs to be exported by a Reaper extension plugin dll
@@ -129,12 +146,9 @@ extern "C"
 				open_wave_controls(g_parent);
 			});
 
-			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, [](action_entry& act)
-			{
-				readbg() << "action with extra info " << act.m_ex_val << "\n";
-			});
-
-			// Add functions
+			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
+			
+				// Add functions
 #define func(f) add_function(f, #f)
 			func(MRP_DoublePointer);
 			func(MRP_IntPointer);

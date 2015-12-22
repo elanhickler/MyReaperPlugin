@@ -6,6 +6,7 @@
 #include <memory>
 
 class PCM_source;
+class MediaItem;
 
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
@@ -13,10 +14,10 @@ inline T bound_value(T lower, T n, T upper)
 	return std::max(lower, std::min(n, upper));
 }
 
-template<typename T>
-inline T map_value(T valin, T inmin, T inmax, T outmin, T outmax)
+template<typename T,typename U>
+inline T map_value(U valin, U inmin, U inmax, T outmin, T outmax)
 {
-	return outmin + ((outmax - outmin) * (valin - inmin)) / (inmax - inmin);
+	return outmin + ((outmax - outmin) * ((T)valin - (T)inmin)) / ((T)inmax - (T)inmin);
 }
 
 inline bool is_point_in_rect(int px, int py, int rx, int ry, int rw, int rh)
