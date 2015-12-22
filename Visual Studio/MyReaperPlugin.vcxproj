@@ -27,7 +27,7 @@
     <ClCompile Include="..\source\lice_control.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
     <ClCompile Include="..\source\MyFirstDialog.cpp" />
-    <ClCompile Include="..\source\MyLiceWindow.cpp" />
+    <ClCompile Include="..\source\mylicecontrols.cpp" />
     <ClCompile Include="..\source\reaper_action_helper.cpp" />
     <ClCompile Include="..\source\reaper_function_helper.cpp" />
     <ClCompile Include="..\source\reascriptgui.cpp" />
@@ -37,7 +37,7 @@
     <ClInclude Include="..\header\lice_control.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\MyFirstDialog.h" />
-    <ClInclude Include="..\header\MyLiceWindow.h" />
+    <ClInclude Include="..\header\mylicecontrols.h" />
     <ClInclude Include="..\header\reaper_action_helper.h" />
     <ClInclude Include="..\header\reaper_function_helper.h" />
     <ClInclude Include="..\header\reascriptgui.h" />

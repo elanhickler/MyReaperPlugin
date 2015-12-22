@@ -8,9 +8,6 @@
     <ClCompile Include="..\source\MyFirstDialog.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\MyLiceWindow.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp">
       <Filter>library\WDL\Lice</Filter>
     </ClCompile>
@@ -38,6 +35,9 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice_textnew.cpp">
       <Filter>library\WDL\Lice</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\mylicecontrols.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -48,9 +48,6 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="..\header\MyLiceWindow.h">
-      <Filter>header</Filter>
-    </ClInclude>
     <ClInclude Include="..\reascript.hpp" />
     <ClInclude Include="..\header\lice_control.h">
       <Filter>header</Filter>
@@ -71,6 +68,9 @@
       <Filter>library\reaper_plugin</Filter>
     </ClInclude>
     <ClInclude Include="..\header\reascriptgui.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\mylicecontrols.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>
