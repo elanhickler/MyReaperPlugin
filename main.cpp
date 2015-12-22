@@ -109,17 +109,17 @@ extern "C"
 			});
 			
 			// Add actions to show lice control containing windows
-			add_action("Show pitch bender", "MRP_SHOWPITCHBENDER", ToggleOff, [](action_entry&)
+			add_action("MRP : Show pitch bender", "MRP_SHOWPITCHBENDER", ToggleOff, [](action_entry&)
 			{
 				open_pitch_bender(g_parent);
 			});
 
-			add_action("Show envelope point generator", "MRP_SHOWENVPTGEN", ToggleOff, [](action_entry&)
+			add_action("MRP : Show envelope point generator", "MRP_SHOWENVPTGEN", ToggleOff, [](action_entry&)
 			{
 				open_env_point_generator(g_parent);
 			});
 
-			add_action("Show effect parameters XY control", "MRP_SHOWFXXY", ToggleOff, [](action_entry&)
+			add_action("MRP : Show effect parameters XY control", "MRP_SHOWFXXY", ToggleOff, [](action_entry&)
 			{
 				open_xy_control(g_parent);
 			});
