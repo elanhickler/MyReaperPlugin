@@ -152,6 +152,8 @@ public:
 		repaint();
 	}
 	void fitEnvelopeTimeRangesIntoView();
+	double getFloatingPointProperty(int index) override;
+	void setFloatingPointProperty(int index, double value) override;
 protected:
 	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;

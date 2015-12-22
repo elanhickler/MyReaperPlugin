@@ -766,6 +766,44 @@ void EnvelopeControl::fitEnvelopeTimeRangesIntoView()
 	repaint();
 }
 
+double EnvelopeControl::getFloatingPointProperty(int index)
+{
+	if (m_envs.size()>0 && m_active_envelope>=0)
+	{
+		if (index >= 0 && index < 999)
+		{
+			if (index < m_envs[m_active_envelope]->get_num_points())
+				return m_envs[m_active_envelope]->get_point(index).get_x();
+		}
+		if (index >= 1000 && index < 1999)
+		{
+			int offsettedindex = index - 1000;
+			if (offsettedindex < m_envs[m_active_envelope]->get_num_points())
+				return m_envs[m_active_envelope]->get_point(offsettedindex).get_y();
+		}
+	}
+	return 0.0;
+}
+
+void EnvelopeControl::setFloatingPointProperty(int index, double val)
+{
+	if (m_envs.size()>0 && m_active_envelope >= 0)
+	{
+		if (index >= 0 && index < 999)
+		{
+			if (index < m_envs[m_active_envelope]->get_num_points())
+				m_envs[m_active_envelope]->get_point(index).set_x(val);
+		}
+		if (index >= 1000 && index < 1999)
+		{
+			int offsettedindex = index - 1000;
+			if (offsettedindex < m_envs[m_active_envelope]->get_num_points())
+				m_envs[m_active_envelope]->get_point(offsettedindex).set_y(val);
+		}
+		repaint();
+	}
+}
+
 std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
 {
 	if (m_envs.empty() == true)
