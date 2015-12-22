@@ -109,6 +109,7 @@ public:
 	std::string getType() const override { return "WaveformControl"; }
 	double getFloatingPointProperty(int which) override;
 	void setFloatingPointProperty(int which, double v) override;
+	
 private:
 	std::shared_ptr<PCM_source> m_src;
 	std::vector<double> m_minpeaks;
@@ -154,6 +155,8 @@ public:
 	void fitEnvelopeTimeRangesIntoView();
 	double getFloatingPointProperty(int index) override;
 	void setFloatingPointProperty(int index, double value) override;
+	int getIntegerProperty(int which) override;
+	void setIntegerProperty(int which, int v) override;
 protected:
 	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;

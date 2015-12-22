@@ -224,9 +224,9 @@ INT_PTR CALLBACK mylicedialogproc(
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "Lice Test");
-		g_env_lfo = std::make_unique<EnvelopeGeneratorEnvelopeControl>(hwndDlg);
+		//g_env_lfo = std::make_unique<EnvelopeGeneratorEnvelopeControl>(hwndDlg);
 		
-		/*
+		
 		g_envelopecontrol = std::make_unique<PitchBenderEnvelopeControl>(hwndDlg);
 		auto pchenv = std::make_shared<breakpoint_envelope>("Bend amount (semitones)",
 			LICE_RGBA(255,255,255,255));
@@ -246,7 +246,7 @@ INT_PTR CALLBACK mylicedialogproc(
 		volenv->sort_points();
 		g_envelopecontrol->add_envelope(volenv);
 		g_envelopecontrol->fitEnvelopeTimeRangesIntoView();
-		*/
+		
 		if (false)
 		{
 			g_wavecontrol = std::make_unique<WaveformControl>(hwndDlg);
@@ -297,8 +297,8 @@ INT_PTR CALLBACK mylicedialogproc(
 		GetClientRect(hwndDlg, &r);
 		int w = r.right-r.left;
 		int h = r.bottom-r.top;
-		//g_envelopecontrol->setBounds(0, 0, w, h);
-		g_env_lfo->setBounds(0, 0, w, h);
+		g_envelopecontrol->setBounds(0, 0, w, h);
+		//g_env_lfo->setBounds(0, 0, w, h);
 		//g_wavecontrol->setBounds(0,0,w,h);
 		if (g_testcontrols.size()>0)
 		{

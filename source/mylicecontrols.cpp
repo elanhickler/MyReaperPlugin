@@ -534,6 +534,8 @@ void WaveformControl::setFloatingPointProperty(int which, double val)
 	repaint();
 }
 
+
+
 int WaveformControl::get_hot_time_sel_edge(int x, int y)
 {
 	int sel_x0 = map_value(m_sel_start, m_view_start, m_view_end, 0.0, (double)getWidth());
@@ -802,6 +804,31 @@ void EnvelopeControl::setFloatingPointProperty(int index, double val)
 		}
 		repaint();
 	}
+}
+
+int EnvelopeControl::getIntegerProperty(int which)
+{
+	if (which == 0)
+		return m_envs.size();
+	if (which == 1)
+		return m_active_envelope;
+	if (which >= 100 && which < 199)
+	{
+		int offsetted = which - 100;
+		if (offsetted >= 0 && offsetted < m_envs.size())
+			return m_envs[offsetted]->get_num_points();
+	}
+	return 0;
+}
+
+void EnvelopeControl::setIntegerProperty(int which, int v)
+{
+	if (which == 1)
+	{
+		if (m_envs.size() > 0 && v >= 0 && v < m_envs.size())
+			m_active_envelope = v;
+	}
+	repaint();
 }
 
 std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)

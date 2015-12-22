@@ -181,6 +181,9 @@ public:
 
 	virtual std::string getType() const = 0;
 
+	// These are mainly for use with functions exported to be used with
+	// ReaScript. However, perhaps sometimes a nice hacky use case can be found 
+	// in C++ code too...
 	virtual double getFloatingPointProperty(int which) { return 0.0; }
 	virtual void setFloatingPointProperty(int which, double v) {}
 	virtual int getIntegerProperty(int which) { return 0; }
