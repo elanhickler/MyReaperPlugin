@@ -34,21 +34,6 @@ std::shared_ptr<action_entry> add_action(std::string name, std::string id, toggl
 }
 
 // Reaper calls back to this when it wants to execute an action registered by the extension plugin
-bool hookCommandProc(int command, int flag) {
-	// it might happen Reaper calls with 0 for the command and if the action
-	// registration has failed the plugin's command id would also be 0
-	// therefore, check the plugins command id is not 0 and then if it matches with
-	// what Reaper called with
-	for (auto& e : g_actions) {
-		if (e->m_command_id != 0 && e->m_command_id == command) {
-			e->m_func(*e);
-			return true;
-		}
-	}
-	return false; // failed to run relevant action
-}
-
-// Reaper calls back to this when it wants to execute an action registered by the extension plugin
 // This version of the callback provides more information such as mousewheel direction/amount and MIDI CC
 // value
 bool hookCommandProcEx(KbdSectionInfo *sec, int command, int val, int valhw, int relmode, HWND hwnd)

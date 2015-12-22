@@ -21,7 +21,6 @@ public:
 	double m_ex_valhw_parsed = 0.0;
 };
 
-bool hookCommandProc(int command, int flag);
 bool hookCommandProcEx(KbdSectionInfo *sec, int command, int val, int valhw, int relmode, HWND hwnd);
 int toggleActionCallback(int command_id);
 
