@@ -237,6 +237,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER64_DIR)\Plugins\"</Command>
       <DebugInformationFormat>None</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
