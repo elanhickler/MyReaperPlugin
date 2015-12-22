@@ -156,7 +156,7 @@ protected:
 	double m_view_end_value = 1.0;
 	std::string m_text;
 	int m_active_envelope = -1;
-	
+	bool m_point_was_moved = false;
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl

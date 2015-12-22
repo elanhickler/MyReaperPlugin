@@ -657,6 +657,7 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		return;
 	if (ev.m_mb == MouseEvent::MBRight)
 		return;
+	m_point_was_moved = false;
 	m_mouse_down = true;
 	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 	if (m_node_to_drag.second == -1)
@@ -710,6 +711,7 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			pt.set_y(bound_value(0.0, normy, 1.0));
 			if (ChangeNotifyCallback)
 				ChangeNotifyCallback("Point moved");
+			m_point_was_moved = true;
 			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
 			return;
@@ -731,6 +733,12 @@ void EnvelopeControl::mouseReleased(const MouseEvent& ev)
 		return;
 	m_mouse_down = false;
 	m_node_to_drag = { -1,-1 };
+	if (m_point_was_moved == true)
+	{
+		m_point_was_moved = false;
+		if (ChangeNotifyCallback)
+			ChangeNotifyCallback("Point moved (MU)");
+	}
 }
 
 std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
