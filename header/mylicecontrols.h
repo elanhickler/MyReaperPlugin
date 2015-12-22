@@ -100,6 +100,7 @@ class WaveformControl : public LiceControl
 public:
 	WaveformControl(HWND parent);
 	void setSource(PCM_source* src);
+	PCM_source* getSource() { return m_src.get(); }
 	void paint(LICE_IBitmap* bm) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;

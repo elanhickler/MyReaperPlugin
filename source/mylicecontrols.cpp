@@ -7,6 +7,20 @@
 
 bool g_popupmenushowing = false;
 
+void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt, int x, int y, int w, int h)
+{
+	RECT r;
+	r.left = x;
+	r.right = x + w;
+	r.top = y;
+	r.bottom = y + h;
+#ifdef WIN32
+	font->DrawTextA(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+#else
+	font->DrawText(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+#endif
+}
+
 TestControl::TestControl(HWND parent, bool delwhendraggedoutside) :
 	LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) 
 {
@@ -309,20 +323,7 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 		if (m_src->IsAvailable()==false)
 		{
 			LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-			{
-				RECT r;
-				r.left = 0;
-				r.right = bm->getWidth()-10;
-				r.top = 0;
-				r.bottom = bm->getHeight();
-#ifdef WIN32
-				m_font.DrawTextA(bm, "Source OFFLINE", -1, &r, DT_CENTER| DT_NOCLIP);
-#else
-				m_font.DrawText(bm, "Source OFFLINE", -1, &r, DT_CENTER| DT_NOCLIP);
-#endif
-				//LICE_DrawText(bm, 25, 25, "SOURCE OFFLINE", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
-			}
-			
+			MRP_DrawTextHelper(bm, &m_font, "Source offline", 2, 2, bm->getWidth(), 30);
 			return;
 		}
 		// Somewhat inefficient to do all this here on each paint, but will suffice for now
@@ -372,31 +373,22 @@ void WaveformControl::paint(LICE_IBitmap* bm)
 	} else
 	{
 		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
-		{
-			RECT r;
-			r.left = 0;
-			r.right = bm->getWidth();
-			r.top = 20;
-			r.bottom = 45;
-#ifdef WIN32
-			m_font.DrawTextA(bm, "Source NULL", -1, &r, DT_TOP|DT_LEFT);
-#else
-			m_font.DrawText(bm, "Source NULL", -1, &r, DT_TOP|DT_LEFT);
-#endif
-			//LICE_DrawText(bm, 25, 25, "SOURCE NULL", LICE_RGBA(255, 255, 255, 255), 1.0f, 0);
-		}
-		
+		MRP_DrawTextHelper(bm, &m_font, "Source null", 2, 2, bm->getWidth(), 30);
 	}
 }
 
 void WaveformControl::mousePressed(const MouseEvent & ev)
 {
+	if (m_src == nullptr)
+		return;
 	m_mouse_down = true;
 	m_drag_start_x = ev.m_x;
 }
 
 void WaveformControl::mouseMoved(const MouseEvent & ev)
 {
+	if (m_src == nullptr)
+		return;
 	if (m_mouse_down == true)
 	{
 		if (m_hot_sel_edge == 0)
@@ -441,6 +433,8 @@ void WaveformControl::mouseMoved(const MouseEvent & ev)
 
 void WaveformControl::mouseReleased(const MouseEvent & ev)
 {
+	if (m_src == nullptr)
+		return;
 	m_mouse_down = false;
 	m_hot_sel_edge = 0;
 }
@@ -569,20 +563,6 @@ EnvelopeControl::EnvelopeControl(HWND parent) : LiceControl(parent)
 	m_font.SetFromHFont(CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
 		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
-}
-
-void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt, int x, int y, int w, int h)
-{
-	RECT r;
-	r.left = x;
-	r.right = x+w;
-	r.top = y;
-	r.bottom = y+h;
-#ifdef WIN32
-	font->DrawTextA(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
-#else
-	font->DrawText(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
-#endif
 }
 
 void EnvelopeControl::paint(LICE_IBitmap* bm)

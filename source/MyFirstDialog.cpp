@@ -211,7 +211,6 @@ HWND open_my_first_modeless_dialog(HWND parent)
 }
 
 std::unique_ptr<TestControl> g_xycontrol;
-std::unique_ptr<WaveformControl> g_wavecontrol;
 std::unique_ptr<PitchBenderEnvelopeControl> g_pitch_bender_control;
 std::unique_ptr<EnvelopeGeneratorEnvelopeControl> g_env_lfo;
 
@@ -334,6 +333,110 @@ INT_PTR CALLBACK envgendialogproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM
 	return FALSE;
 }
 
+class WaveformsContainer
+{
+public:
+	WaveformsContainer(HWND parent)
+	{
+		m_parent_wnd = parent;
+		int numcontrols = 4;
+		for (int i = 0; i < numcontrols; ++i)
+		{
+			auto wc = std::make_shared<WaveformControl>(parent);
+			m_controls.push_back(wc);
+		}
+		m_import_button = CreateWindow("BUTTON", "importbut", WS_CHILD | WS_TABSTOP, 
+			5, 5, 5, 5, m_parent_wnd,
+			(HMENU)1, g_hInst, 0);
+		SetWindowText(m_import_button, "Import");
+		ShowWindow(m_import_button, SW_SHOW);
+		m_render_button = CreateWindow("BUTTON", "renderbut", WS_CHILD | WS_TABSTOP,
+			5, 5, 5, 5, m_parent_wnd,
+			(HMENU)2, g_hInst, 0);
+		SetWindowText(m_render_button, "Render");
+		ShowWindow(m_render_button, SW_SHOW);
+	}
+	void setBounds(int x, int y, int w, int h)
+	{
+		int wavesavailh = h - 30;
+		int wavecontrolh = (double)wavesavailh/m_controls.size();
+		for (int i = 0; i < m_controls.size(); ++i)
+		{
+			int ycor = i*wavecontrolh;
+			m_controls[i]->setBounds(0, ycor, w, wavecontrolh-5);
+		}
+		SetWindowPos(m_import_button, NULL, 5, h - 25, 95, 20, SWP_NOACTIVATE | SWP_NOZORDER);
+		SetWindowPos(m_render_button, NULL, 105, h - 25, 95, 20, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	void on_command_msg(WPARAM wparam, LPARAM lparam)
+	{
+		if (GetDlgItem(m_parent_wnd, LOWORD(wparam)) == m_render_button)
+		{
+			readbg() << "render button clicked\n";
+		}
+		if (GetDlgItem(m_parent_wnd, LOWORD(wparam)) == m_import_button)
+		{
+			readbg() << "import button clicked\n";
+			int num_to_import = std::min((int)m_controls.size(), CountSelectedMediaItems(nullptr));
+			int cnt = 0;
+			for (int i = 0; i < num_to_import; ++i)
+			{
+				MediaItem* item = GetSelectedMediaItem(nullptr, i);
+				MediaItem_Take* take = GetActiveTake(item);
+				if (take != nullptr)
+				{
+					PCM_source* src = GetMediaItemTake_Source(take);
+					std::string err = is_source_audio(src);
+					if (err.empty() == true)
+					{
+						m_controls[cnt]->setSource(src);
+						++cnt;
+					}
+				}
+			}
+		}
+	}
+private:
+	std::vector<std::shared_ptr<WaveformControl>> m_controls;
+	HWND m_parent_wnd = NULL;
+	HWND m_import_button = NULL;
+	HWND m_render_button = NULL;
+};
+
+std::unique_ptr<WaveformsContainer> g_waveformscont;
+
+INT_PTR CALLBACK wavecontrolsdialogproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_INITDIALOG)
+	{
+		SetWindowText(hwndDlg, "Waveforms");
+		g_waveformscont = std::make_unique<WaveformsContainer>(hwndDlg);
+		ShowWindow(hwndDlg, SW_SHOW);
+		return TRUE;
+	}
+	if (uMsg == WM_CLOSE)
+	{
+		ShowWindow(hwndDlg, SW_HIDE);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		RECT r;
+		GetClientRect(hwndDlg, &r);
+		int w = r.right - r.left;
+		int h = r.bottom - r.top;
+		g_waveformscont->setBounds(0, 0, w, h);
+		InvalidateRect(hwndDlg, NULL, TRUE);
+		return TRUE;
+	}
+	if (uMsg == WM_COMMAND)
+	{
+		g_waveformscont->on_command_msg(wParam, lParam);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 HWND g_pitchbenderwindow = NULL;
 
 HWND open_pitch_bender(HWND parent)
@@ -374,6 +477,20 @@ HWND open_xy_control(HWND parent)
 	}
 	ShowWindow(g_xy_control_window, SW_SHOW);
 	return g_xy_control_window;
+}
+
+HWND g_wave_controls_window = NULL;
+
+HWND open_wave_controls(HWND parent)
+{
+	if (g_wave_controls_window == NULL)
+	{
+		g_wave_controls_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+			parent, wavecontrolsdialogproc, NULL);
+		SetWindowPos(g_wave_controls_window, NULL, 20, 60, 700, 400, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_wave_controls_window, SW_SHOW);
+	return g_wave_controls_window;
 }
 
 void clean_up_gui()

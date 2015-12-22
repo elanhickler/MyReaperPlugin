@@ -124,6 +124,11 @@ extern "C"
 				open_xy_control(g_parent);
 			});
 
+			add_action("MRP : Show waveform controls", "MRP_SHOWWAVECONTROLS", ToggleOff, [](action_entry&)
+			{
+				open_wave_controls(g_parent);
+			});
+
 			// Add functions
 #define func(f) add_function(f, #f)
 			func(MRP_DoublePointer);
