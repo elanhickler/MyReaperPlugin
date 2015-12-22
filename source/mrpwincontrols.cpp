@@ -14,7 +14,10 @@ WinControl::WinControl(HWND parent)
 
 WinControl::~WinControl()
 {
-
+	if (m_hwnd != NULL)
+	{
+		DestroyWindow(m_hwnd);
+	}
 }
 
 void WinControl::setBounds(int x, int y, int w, int h)
@@ -32,7 +35,7 @@ WinButton::WinButton(HWND parent, std::string text) :
 		(HMENU)g_control_counter, g_hInst, 0);
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
-	GenericNotification = [this](GenericNotifications) 
+	GenericNotifyCallback = [this](GenericNotifications)
 	{
 		readbg() << "button " << getText() << " clicked\n";
 	};
@@ -53,9 +56,9 @@ std::string WinButton::getText()
 bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (msg == WM_COMMAND && LOWORD(wparam) == m_control_id
-		&& HIWORD(wparam) == BN_CLICKED && GenericNotification)
+		&& HIWORD(wparam) == BN_CLICKED && GenericNotifyCallback)
 	{
-		GenericNotification(GenericNotifications::Clicked);
+		GenericNotifyCallback(GenericNotifications::Clicked);
 		return true;
 	}
 	return false;

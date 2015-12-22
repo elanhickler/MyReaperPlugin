@@ -71,7 +71,7 @@ static accelerator_register_t g_acRec =
 
 bool g_acrecinstalled=false;
 
-LiceControl::LiceControl(HWND parent)
+LiceControl::LiceControl(HWND parent) : WinControl(parent)
 {
 	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
 	if (m_hwnd == NULL)
@@ -79,7 +79,7 @@ LiceControl::LiceControl(HWND parent)
 		readbg() << "Failed to create window for LiceControl " << this << "\n";
 		return;
 	}
-	m_parenthwnd = parent;
+	m_parent = parent;
 
 	m_acreg.isLocal = true;
 	m_acreg.translateAccel = acProc;

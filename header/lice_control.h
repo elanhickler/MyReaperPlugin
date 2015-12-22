@@ -150,7 +150,7 @@ It could get expensive. Likely hundreds can be instantiated without too many pro
 The paint virtual function is pure, so you are always required to implement that in your subclasses. 
 An empty control wouldn't be much fun to look at anyway.
 */
-class LiceControl
+class LiceControl : public WinControl
 {
 public:
 	LiceControl(HWND parent);
@@ -197,8 +197,6 @@ public:
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }
 private:
-	HWND m_hwnd = NULL;
-	HWND m_parenthwnd = NULL;
 	static LRESULT WINAPI wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	std::unique_ptr<LICE_SysBitmap> m_bitmap;
 	bool m_wants_focus = true;

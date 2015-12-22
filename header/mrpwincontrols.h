@@ -58,7 +58,7 @@ public:
 	virtual void setBounds(int x, int y, int w, int h);
 
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
-
+	std::function<void(GenericNotifications)> GenericNotifyCallback;
 protected:
 	HWND m_hwnd = NULL;
 	HWND m_parent = NULL;
@@ -71,8 +71,6 @@ public:
 	WinButton(HWND parent, std::string text);
 	void setText(std::string text);
 	std::string getText();
-	std::function<void(GenericNotifications)> GenericNotification;
-
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
 
