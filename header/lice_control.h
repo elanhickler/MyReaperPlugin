@@ -14,48 +14,9 @@
 #include <functional>
 #include <string>
 #include <array>
+#include "mrpwincontrols.h"
 
 int acProc(MSG *msg, accelerator_register_t *ctx);
-
-enum class GenericNotifications
-{
-	Unknown,
-	Something,
-	SomethingA,
-	SomethingB,
-	SomethingC,
-	SomethingD,
-	Time,
-	Value,
-	TimeRange,
-	ValueRange,
-	ViewTimeRange,
-	ViewValueRange,
-	ObjectMoved,
-	ObjectAdded,
-	ObjectRemoved,
-	ObjectSize,
-	ObjectLength,
-	ObjectProperty,
-	ObjectCount,
-	PositionChanged,
-	Contents,
-	Text,
-	Number,
-	Rotation,
-	Scroll,
-	Color,
-	Image,
-	Audio,
-	PlaybackPosition,
-	PlaybackState,
-	BeforeManipulation,
-	DuringManipulation,
-	AfterManipulation,
-	BeforeTask,
-	DuringTask,
-	AfterTask
-};
 
 enum
 {

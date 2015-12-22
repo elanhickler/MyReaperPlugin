@@ -405,6 +405,49 @@ private:
 
 std::unique_ptr<WaveformsContainer> g_waveformscont;
 
+std::vector<std::shared_ptr<WinControl>> g_win_test_controls;
+
+INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_INITDIALOG)
+	{
+		SetWindowText(hwndDlg, "WinControls test");
+		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 1"));
+		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 2"));
+		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 3"));
+		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 4"));
+		g_win_test_controls.push_back(std::make_shared<WinLabel>(hwndDlg, "This is a label"));
+		ShowWindow(hwndDlg, SW_SHOW);
+		return TRUE;
+	}
+	if (uMsg == WM_CLOSE)
+	{
+		ShowWindow(hwndDlg, SW_HIDE);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		RECT r;
+		GetClientRect(hwndDlg, &r);
+		int w = r.right - r.left;
+		int h = r.bottom - r.top;
+		int buth = (double)h / g_win_test_controls.size();
+		for (int i = 0; i < g_win_test_controls.size(); ++i)
+		{
+			g_win_test_controls[i]->setBounds(5, 5 + buth * i - 5 , w - 10, buth-5);
+		}
+		InvalidateRect(hwndDlg, NULL, TRUE);
+		return TRUE;
+	}
+	if (uMsg == WM_COMMAND)
+	{
+		for (auto& e : g_win_test_controls)
+			e->handleMessage(hwndDlg, uMsg, wParam, lParam);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 INT_PTR CALLBACK wavecontrolsdialogproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_INITDIALOG)
@@ -571,6 +614,20 @@ HWND open_gui_designer(HWND parent)
 	return NULL;
 }
 #endif
+
+HWND g_win_controls_test_window = NULL;
+
+HWND open_win_controls_window(HWND parent)
+{
+	if (g_win_controls_test_window == NULL)
+	{
+		g_win_controls_test_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+			parent, wincontrolstestdlgproc, NULL);
+		SetWindowPos(g_win_controls_test_window, NULL, 20, 60, 700, 400, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_win_controls_test_window, SW_SHOW);
+	return g_win_controls_test_window;
+}
 
 void clean_up_gui()
 {

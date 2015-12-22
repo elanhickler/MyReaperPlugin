@@ -41,4 +41,5 @@ HWND open_env_point_generator(HWND parent);
 HWND open_xy_control(HWND parent);
 HWND open_wave_controls(HWND parent);
 HWND open_gui_designer(HWND parent);
+HWND open_win_controls_window(HWND parent);
 void clean_up_gui();

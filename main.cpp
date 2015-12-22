@@ -145,6 +145,12 @@ extern "C"
 			{
 				open_wave_controls(g_parent);
 			});
+
+			add_action("MRP : Show WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
+			{
+				open_win_controls_window(g_parent);
+			});
+
 #ifdef WIN32
 			add_action("MRP : Show GUI designer", "MRP_SHOWGUIDESIGNER", ToggleOff, [](action_entry&)
 			{
