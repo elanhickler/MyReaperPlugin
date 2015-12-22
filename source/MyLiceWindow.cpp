@@ -741,6 +741,30 @@ void EnvelopeControl::mouseReleased(const MouseEvent& ev)
 	}
 }
 
+void EnvelopeControl::fitEnvelopeTimeRangesIntoView()
+{
+	double mintime = std::numeric_limits<double>::max();
+	double maxtime = std::numeric_limits<double>::min();
+	for (int i = 0; i < m_envs.size(); ++i)
+	{
+		// Technically the first point of the envelope should be the minimum time
+		// and the last point the maximum time, but just in case the points sorting
+		// has got messed up or something, we tediously calculate the min and max
+		// time by iterating all the points
+		for (int j = 0; j < m_envs[i]->get_num_points(); ++j)
+		{
+			double ptime = m_envs[i]->get_point(j).get_x();
+			if (ptime > maxtime)
+				maxtime = ptime;
+			if (ptime < mintime)
+				mintime = ptime;
+		}		
+	}
+	m_view_start_time = mintime;
+	m_view_end_time = maxtime;
+	repaint();
+}
+
 std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
 {
 	if (m_envs.empty() == true)

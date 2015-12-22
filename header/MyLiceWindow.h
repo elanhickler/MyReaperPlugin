@@ -142,7 +142,16 @@ public:
 	// Get envelope. -1 returns active envelope if exists. Returns null on failure
 	std::shared_ptr<breakpoint_envelope> getEnvelope(int index);
 	void set_waveformpainter(std::shared_ptr<WaveformPainter> painter);
-	
+	std::pair<double, double> getViewTimeRange() const { return { m_view_start_time, m_view_end_time }; }
+	void setViewStartTime(double t) { m_view_start_time = t; repaint(); }
+	void setViewEndTime(double t) { m_view_start_time = t; repaint(); }
+	void setViewTimeRange(double t0, double t1)
+	{
+		m_view_start_time = t0;
+		m_view_end_time = t1;
+		repaint();
+	}
+	void fitEnvelopeTimeRangesIntoView();
 protected:
 	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;
@@ -157,6 +166,13 @@ protected:
 	std::string m_text;
 	int m_active_envelope = -1;
 	bool m_point_was_moved = false;
+	void sanitize_view_ranges()
+	{
+		if (m_view_start_time == m_view_end_time)
+			m_view_end_time += 0.001;
+		else if (m_view_start_time > m_view_end_time)
+			std::swap(m_view_start_time, m_view_end_time);
+	}
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl

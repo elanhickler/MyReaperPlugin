@@ -242,6 +242,7 @@ INT_PTR CALLBACK mylicedialogproc(
 		volenv->add_point({ 1.00, 0.00 }, false);
 		volenv->sort_points();
 		g_envelopecontrol->add_envelope(volenv);
+		g_envelopecontrol->fitEnvelopeTimeRangesIntoView();
 		if (false)
 		{
 			g_wavecontrol = std::make_unique<WaveformControl>(hwndDlg);
