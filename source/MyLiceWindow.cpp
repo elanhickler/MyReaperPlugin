@@ -1016,6 +1016,9 @@ EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(HWND parent) 
 		TrackEnvelope* reaenv = GetSelectedEnvelope(nullptr);
 		if (reaenv != nullptr)
 		{
+			bool add_undo = true;
+			if (reason == "Point moved")
+				add_undo = false;
 			DeleteEnvelopePointRange(reaenv, 0.0, 10.0);
 			double last_time = 0.0;
 			for (int i = 0; i < 10; ++i)
@@ -1030,6 +1033,8 @@ EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(HWND parent) 
 				
 			}
 			Envelope_SortPoints(reaenv);
+			if (add_undo == true)
+				Undo_OnStateChangeEx("Generate envelope points", UNDO_STATE_TRACKCFG, - 1);
 			UpdateArrange();
 		}
 		
