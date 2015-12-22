@@ -210,11 +210,53 @@ HWND open_my_first_modeless_dialog(HWND parent)
 	return g_my_dialog->getWindowHandle();
 }
 
-std::vector<std::unique_ptr<TestControl>> g_testcontrols;
+std::unique_ptr<TestControl> g_xycontrol;
 std::unique_ptr<WaveformControl> g_wavecontrol;
-std::unique_ptr<PitchBenderEnvelopeControl> g_envelopecontrol;
+std::unique_ptr<PitchBenderEnvelopeControl> g_pitch_bender_control;
 std::unique_ptr<EnvelopeGeneratorEnvelopeControl> g_env_lfo;
-INT_PTR CALLBACK mylicedialogproc(
+
+INT_PTR CALLBACK xycontroldlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_INITDIALOG)
+	{
+		SetWindowText(hwndDlg, "Multi XY control");
+		g_xycontrol = std::make_unique<TestControl>(hwndDlg);
+		g_xycontrol->PointMovedCallback = [ptr=g_xycontrol.get()](int ptindex, double x, double y)
+		{
+			fx_param_t* x_target = ptr->getFXParamTarget(ptindex, 0);
+			fx_param_t* y_target = ptr->getFXParamTarget(ptindex, 1);
+			if (x_target != nullptr && y_target != nullptr)
+			{
+				if (x_target->tracknum >= 1)
+					TrackFX_SetParamNormalized(GetTrack(nullptr, x_target->tracknum - 1),
+						x_target->fxnum, x_target->paramnum, x);
+				if (y_target->tracknum >= 1)
+					TrackFX_SetParamNormalized(GetTrack(nullptr, y_target->tracknum - 1),
+						y_target->fxnum, y_target->paramnum, y);
+			}
+		};
+		ShowWindow(hwndDlg, SW_SHOW);
+		return TRUE;
+	}
+	if (uMsg == WM_CLOSE)
+	{
+		ShowWindow(hwndDlg, SW_HIDE);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		RECT r;
+		GetClientRect(hwndDlg, &r);
+		int w = r.right - r.left;
+		int h = r.bottom - r.top;
+		g_xycontrol->setBounds(0, 0, w, h);
+		InvalidateRect(hwndDlg, NULL, TRUE);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+INT_PTR CALLBACK pitchbenderdialogproc(
 	HWND   hwndDlg,
 	UINT   uMsg,
 	WPARAM wParam,
@@ -225,9 +267,7 @@ INT_PTR CALLBACK mylicedialogproc(
 	{
 		SetWindowText(hwndDlg, "Lice Test");
 		//g_env_lfo = std::make_unique<EnvelopeGeneratorEnvelopeControl>(hwndDlg);
-		
-		
-		g_envelopecontrol = std::make_unique<PitchBenderEnvelopeControl>(hwndDlg);
+		g_pitch_bender_control = std::make_unique<PitchBenderEnvelopeControl>(hwndDlg);
 		auto pchenv = std::make_shared<breakpoint_envelope>("Bend amount (semitones)",
 			LICE_RGBA(255,255,255,255));
 		pchenv->add_point({ 0.0, 0.0 } , false);
@@ -236,7 +276,7 @@ INT_PTR CALLBACK mylicedialogproc(
 		pchenv->add_point({ 0.9, 1.0 }, false);
 		pchenv->add_point({ 1.0, 0.0 }, false);
 		pchenv->sort_points();
-		g_envelopecontrol->add_envelope(pchenv);
+		g_pitch_bender_control->add_envelope(pchenv);
 		auto volenv = std::make_shared<breakpoint_envelope>("Volume",
 			LICE_RGBA(255, 0, 255, 255));
 		volenv->add_point({ 0.0, 0.0 }, false);
@@ -244,46 +284,9 @@ INT_PTR CALLBACK mylicedialogproc(
 		volenv->add_point({ 0.95, 0.95 }, false);
 		volenv->add_point({ 1.00, 0.00 }, false);
 		volenv->sort_points();
-		g_envelopecontrol->add_envelope(volenv);
-		g_envelopecontrol->fitEnvelopeTimeRangesIntoView();
-		
-		if (false)
-		{
-			g_wavecontrol = std::make_unique<WaveformControl>(hwndDlg);
-			PCM_source* src = PCM_Source_CreateFromFile("/Users/teemu/ReaperProjects/sourcesamples/multichantest/count_9ch.wav");
-			//if (src->IsAvailable()==false)
-			//	readbg() << "failed to create source\n";
-			g_wavecontrol->setSource(src);
-			delete src;
-		}
-		g_testcontrols.clear();
-		int num_controls = 0;
-		for (int i=0;i<num_controls;++i)
-		{
-			bool foo = i == 0;
-			auto temp = std::make_unique<TestControl>(hwndDlg,foo);
-			if (i == 1)
-			{
-				TestControl* ptr = temp.get();
-				temp->PointMovedCallback = [ptr](int ptindex, double x, double y)
-				{
-					fx_param_t* x_target = ptr->getFXParamTarget(ptindex, 0);
-					fx_param_t* y_target = ptr->getFXParamTarget(ptindex, 1);
-					if (x_target != nullptr && y_target != nullptr)
-					{
-						if (x_target->tracknum >= 1)
-							TrackFX_SetParamNormalized(GetTrack(nullptr, x_target->tracknum - 1),
-								x_target->fxnum, x_target->paramnum, x);
-						if (y_target->tracknum >= 1)
-							TrackFX_SetParamNormalized(GetTrack(nullptr, y_target->tracknum - 1),
-								y_target->fxnum, y_target->paramnum, y);
-					}
-				};
-			}
-			g_testcontrols.push_back(std::move(temp));
-		}
+		g_pitch_bender_control->add_envelope(volenv);
+		g_pitch_bender_control->fitEnvelopeTimeRangesIntoView();
 		ShowWindow(hwndDlg, SW_SHOW);
-
 		return TRUE;
 	}
 	if (uMsg == WM_CLOSE)
@@ -297,41 +300,80 @@ INT_PTR CALLBACK mylicedialogproc(
 		GetClientRect(hwndDlg, &r);
 		int w = r.right-r.left;
 		int h = r.bottom-r.top;
-		g_envelopecontrol->setBounds(0, 0, w, h);
-		//g_env_lfo->setBounds(0, 0, w, h);
-		//g_wavecontrol->setBounds(0,0,w,h);
-		if (g_testcontrols.size()>0)
-		{
-			RECT r;
-			GetClientRect(hwndDlg, &r);
-			int w = r.right-r.left;
-			int h = r.bottom-r.top;
-			g_testcontrols[0]->setBounds(0, 0, w/2-5, h/2-5);
-			g_testcontrols[1]->setBounds(w/2+5, 0, w/2-5, h/2-5);
-			g_testcontrols[2]->setBounds(0, h/2+5, w/2-5, h/2-5);
-			g_testcontrols[3]->setBounds(w/2+5, h/2+5, w/2-5, h/2-5);
-			
-		}
+		g_pitch_bender_control->setBounds(0, 0, w, h);
 		InvalidateRect(hwndDlg, NULL, TRUE);
 		return TRUE;
 	}
-	//if (uMsg == WM_KEYDOWN || uMsg == WM_CHAR || uMsg == WM_KEYUP)
-	//	return FALSE;
 	return FALSE;
 }
 
-HWND g_licetestwindow = NULL;
-
-
-HWND open_lice_dialog(HWND parent)
+INT_PTR CALLBACK envgendialogproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (g_licetestwindow==NULL)
+	if (uMsg == WM_INITDIALOG)
 	{
-		g_licetestwindow = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, mylicedialogproc, NULL);
-		SetWindowPos(g_licetestwindow, NULL, 20, 60, 300, 300, SWP_NOACTIVATE | SWP_NOZORDER);
+		SetWindowText(hwndDlg, "Envelope point generator");
+		g_env_lfo = std::make_unique<EnvelopeGeneratorEnvelopeControl>(hwndDlg);
+		ShowWindow(hwndDlg, SW_SHOW);
+		return TRUE;
 	}
-	ShowWindow(g_licetestwindow, SW_SHOW);
-	return g_licetestwindow;
+	if (uMsg == WM_CLOSE)
+	{
+		ShowWindow(hwndDlg, SW_HIDE);
+		return TRUE;
+	}
+	if (uMsg == WM_SIZE)
+	{
+		RECT r;
+		GetClientRect(hwndDlg, &r);
+		int w = r.right - r.left;
+		int h = r.bottom - r.top;
+		g_env_lfo->setBounds(0, 0, w, h);
+		InvalidateRect(hwndDlg, NULL, TRUE);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+HWND g_pitchbenderwindow = NULL;
+
+HWND open_pitch_bender(HWND parent)
+{
+	if (g_pitchbenderwindow ==NULL)
+	{
+		g_pitchbenderwindow = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), 
+			parent, pitchbenderdialogproc, NULL);
+		SetWindowPos(g_pitchbenderwindow, NULL, 20, 60, 600, 350, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_pitchbenderwindow, SW_SHOW);
+	return g_pitchbenderwindow;
+}
+
+HWND g_envpt_gen_window = NULL;
+
+HWND open_env_point_generator(HWND parent)
+{
+	if (g_envpt_gen_window == NULL)
+	{
+		g_envpt_gen_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), 
+			parent, envgendialogproc, NULL);
+		SetWindowPos(g_envpt_gen_window, NULL, 20, 60, 600, 350, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_envpt_gen_window, SW_SHOW);
+	return g_envpt_gen_window;
+}
+
+HWND g_xy_control_window = NULL;
+
+HWND open_xy_control(HWND parent)
+{
+	if (g_xy_control_window == NULL)
+	{
+		g_xy_control_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+			parent, xycontroldlgproc, NULL);
+		SetWindowPos(g_xy_control_window, NULL, 20, 60, 600, 350, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+	ShowWindow(g_xy_control_window, SW_SHOW);
+	return g_xy_control_window;
 }
 
 void clean_up_gui()

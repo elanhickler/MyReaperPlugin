@@ -108,10 +108,20 @@ extern "C"
 				}
 			});
 			
-			// Add actions to show lice window
-			add_action("Show my Lice dialog", "EXAMPLE_ACTION_SHOW_DIALOG2", ToggleOff, [](action_entry&)
+			// Add actions to show lice control containing windows
+			add_action("Show pitch bender", "MRP_SHOWPITCHBENDER", ToggleOff, [](action_entry&)
 			{
-				open_lice_dialog(g_parent);
+				open_pitch_bender(g_parent);
+			});
+
+			add_action("Show envelope point generator", "MRP_SHOWENVPTGEN", ToggleOff, [](action_entry&)
+			{
+				open_env_point_generator(g_parent);
+			});
+
+			add_action("Show effect parameters XY control", "MRP_SHOWFXXY", ToggleOff, [](action_entry&)
+			{
+				open_xy_control(g_parent);
 			});
 
 			// Add functions
