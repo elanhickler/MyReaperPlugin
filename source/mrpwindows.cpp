@@ -196,7 +196,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
 	};
 	auto envcontrol = std::make_shared<PitchBenderEnvelopeControl>(m_hwnd);
-	// Button 3 toggless enabled state of envelope
+	// Button 3 toggless enabled state of envelope control
 	m_controls[3]->GenericNotifyCallback = [this,envcontrol](GenericNotifications)
 	{
 		envcontrol->setEnabled(!envcontrol->isEnabled());
@@ -206,8 +206,6 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_controls[0]->setVisible(!m_controls[0]->isVisible());
 	};
-	
-	
 	auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
 	env->add_point({ 0.0, 0.5 }, true);
 	env->add_point({ 1.0, 0.5 }, true);
@@ -227,6 +225,13 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		std::string txt = line_edit->getText();
 		std::reverse(txt.begin(), txt.end());
 		line_edit->setText(txt);
+	};
+	// Button 4 removes envelope points with value over 0.5
+	m_controls[4]->GenericNotifyCallback = [this, env, envcontrol](GenericNotifications)
+	{
+		env->remove_points_conditionally([](const envbreakpoint& pt)
+		{ return pt.get_y() > 0.5; });
+		envcontrol->repaint();
 	};
 }
 
