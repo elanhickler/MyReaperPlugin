@@ -113,6 +113,40 @@ void MRPWindow::setSize(int w, int h)
 	}
 }
 
+void MRPWindow::init_modal_dialog(HWND hwnd)
+{
+	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
+	m_controls[0]->setBounds(5, 5, 50, 30);
+	m_controls[0]->GenericNotifyCallback = [hwnd](GenericNotifications)
+	{
+		EndDialog(hwnd, 42);
+	};
+	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
+	m_controls[1]->setBounds(60, 5, 50, 30);
+	m_controls[1]->GenericNotifyCallback = [hwnd](GenericNotifications)
+	{
+		EndDialog(hwnd, 666);
+	};
+}
+
+int MRPWindow::runModally(HWND parent)
+{
+	m_is_modal = true;
+	MyDLGTEMPLATE t;
+	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+	t.cx = 200;
+	t.cy = 100;
+	int result = DialogBoxIndirectParam(g_hInst, &t, parent, dlgproc, (LPARAM)this);
+	readbg() << "modal dialog returned " << result << "\n";
+	return result;
+}
+
+void show_modal_dialog(HWND parent)
+{
+	MRPWindow dlg;
+	dlg.runModally(parent);
+}
+
 void MRPWindow::closeRequested()
 {
 	readbg() << "close requested...\n";
@@ -136,6 +170,14 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	if (msg == WM_INITDIALOG)
 	{
+		MRPWindow* mrpw = (MRPWindow*)lp;
+		if (mrpw != nullptr)
+		{
+			mrpw->m_hwnd = hwnd;
+			g_mrpwindowsmap[hwnd] = mrpw;
+			if (mrpw->m_is_modal == true)
+				mrpw->init_modal_dialog(hwnd);
+		}
 		return TRUE;
 	}
 	if (msg == WM_COMMAND || msg == WM_HSCROLL || msg == WM_VSCROLL)
@@ -172,7 +214,14 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
 		if (mptr != nullptr)
 		{
-			mptr->closeRequested();
+			if (mptr->m_is_modal == false)
+			{
+				mptr->closeRequested();
+			}
+			else
+			{
+				EndDialog(hwnd, 666);
+			}
 			return TRUE;
 		}
 	}

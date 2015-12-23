@@ -151,6 +151,11 @@ extern "C"
 				open_win_controls_window(g_parent);
 			});
 
+			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
+			{
+				show_modal_dialog(g_parent);
+			});
+
 #ifdef WIN32
 			add_action("MRP : Show GUI designer", "MRP_SHOWGUIDESIGNER", ToggleOff, [](action_entry&)
 			{

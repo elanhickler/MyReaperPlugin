@@ -16,6 +16,7 @@
 class MRPWindow
 {
 public:
+	MRPWindow() {}
 	MRPWindow(HWND parent, std::string title = "Untitled");
 	virtual ~MRPWindow();
 	void add_control(std::shared_ptr<WinControl> c)
@@ -29,11 +30,14 @@ public:
 	void setSize(int w, int h);
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
+	virtual void init_modal_dialog(HWND hwnd);
+	int runModally(HWND parent);
 protected:
 	HWND m_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	bool m_destroy_on_close = false;
+	bool m_is_modal = false;
 };
 
 class TestMRPPWindow : public MRPWindow
@@ -51,3 +55,4 @@ private:
 };
 
 HWND open_win_controls_window(HWND parent);
+void show_modal_dialog(HWND parent);
