@@ -79,6 +79,10 @@ public:
 private:
 	std::shared_ptr<WinComboBox> m_combo1;
 	std::shared_ptr<WinComboBox> m_combo2;
+	std::shared_ptr<ReaSlider> m_slider1;
+	std::shared_ptr<EnvelopeControl> m_envcontrol1;
+	std::shared_ptr<WinLabel> m_label1;
+	std::shared_ptr<WinLineEdit> m_edit1;
 };
 
 HWND open_win_controls_window(HWND parent);

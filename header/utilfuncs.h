@@ -75,13 +75,30 @@ class IValueConverter
 {
 public:
 	virtual ~IValueConverter() {}
-	virtual double fromNormalized(double x) { return x; }
-	virtual double toNormalized(double x) { return x; }
-	virtual std::string toString(double x) { return std::to_string(x);  }
-	virtual double fromString(const std::string& x) 
-	{  
-		return bound_value(0.0, atof(x.c_str()), 1.0);
+	virtual double fromNormalizedToValue(double x) = 0;
+	virtual double toNormalizedFromValue(double x) = 0;
+	virtual std::string toStringFromValue(double x) = 0;
+	virtual double fromStringToValue(const std::string& x) = 0;
+};
+
+class LinearValueConverter : public IValueConverter
+{
+public:
+	LinearValueConverter(double minval, double maxval) :
+		m_min_value(minval), m_max_value(maxval) {}
+	double fromNormalizedToValue(double x) override
+	{ return map_value(x,0.0,1.0,m_min_value,m_max_value); }
+	double toNormalizedFromValue(double x) override
+	{ return map_value(x,m_min_value,m_max_value,0.0,1.0); }
+	std::string toStringFromValue(double x) override
+	{ return std::to_string(x); }
+	double fromStringToValue(const std::string& x) override
+	{
+		return bound_value(m_min_value, atof(x.c_str()), m_max_value);
 	}
+private:
+	double m_min_value = 0.0;
+	double m_max_value = 1.0;
 };
 
 class NoCopyNoMove

@@ -66,6 +66,8 @@ public:
 	bool isEnabled();
 	virtual void setEnabled(bool b);
 
+	int getXPosition() const;
+	int getYPosition() const;
 	int getWidth() const;
 	int getHeight() const;
 	virtual void setTopLeftPosition(int x, int y);
@@ -136,13 +138,13 @@ class ReaSlider : public WinControl
 public:
 	ReaSlider(HWND parent, double initpos = 0.5);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	std::function<void(int)> SliderValueCallback;
-	int getPosition();
-	void setPosition(int pos);
-	void setTickMarkPosition(int pos);
-	void setValueConverter(std::unique_ptr<IValueConverter> c);
+	std::function<void(double)> SliderValueCallback;
+	double getValue();
+	void setValue(double pos);
+	void setTickMarkPositionFromValue(double pos);
+	void setValueConverter(std::shared_ptr<IValueConverter> c);
 private:
-	std::unique_ptr<IValueConverter> m_val_converter;
+	std::shared_ptr<IValueConverter> m_val_converter;
 };
 
 int get_wincontrol_leak_count();

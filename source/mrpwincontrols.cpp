@@ -77,6 +77,24 @@ void WinControl::setEnabled(bool b)
 #endif
 }
 
+// get*Position are suspect. Copy pasted from Stackoverflow answer
+
+int WinControl::getXPosition() const
+{
+	RECT rc;
+	GetClientRect(m_hwnd, &rc);
+	MapWindowPoints(m_hwnd, GetParent(m_hwnd), (LPPOINT)&rc, 2);
+	return rc.left;
+}
+
+int WinControl::getYPosition() const
+{
+	RECT rc;
+	GetClientRect(m_hwnd, &rc);
+	MapWindowPoints(m_hwnd, GetParent(m_hwnd), (LPPOINT)&rc, 2);
+	return rc.top;
+}
+
 int WinControl::getWidth() const
 {
 	RECT r;
@@ -196,8 +214,8 @@ ReaSlider::ReaSlider(HWND parent, double initpos) : WinControl(parent)
 		WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, 0);
 	SetParent(m_hwnd, parent);
 #endif
-	m_val_converter = std::make_unique<IValueConverter>();
-	int slidpos = 1000*m_val_converter->fromNormalized(initpos);
+	m_val_converter = std::make_shared<LinearValueConverter>(0.0,1.0);
+	int slidpos = 1000*m_val_converter->toNormalizedFromValue(initpos);
 	SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)slidpos);
 	SendMessage(m_hwnd, TBM_SETTIC, 0, (LPARAM)slidpos);
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -211,8 +229,8 @@ bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		{
 			if (SliderValueCallback)
 			{
-				int pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
-				SliderValueCallback(pos);
+				double pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
+				SliderValueCallback(m_val_converter->fromNormalizedToValue(pos/1000.0));
 				return true;
 			}
 		}
@@ -220,31 +238,37 @@ bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return false;
 }
 
-int ReaSlider::getPosition()
+double ReaSlider::getValue()
 {
 	if (m_hwnd != NULL)
 	{
-		return SendMessage(m_hwnd, TBM_GETPOS, 0, 0);
+		int slidpos = SendMessage(m_hwnd, TBM_GETPOS, 0, 0);
+		return m_val_converter->fromNormalizedToValue((double)slidpos / 1000.0);
 	}
-	return 0;
+	return 0.0;
 }
 
-void ReaSlider::setPosition(int pos)
+void ReaSlider::setValue(double val)
 {
 	if (m_hwnd != NULL)
 	{
-		SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)pos);
+		int slidpos = m_val_converter->toNormalizedFromValue(val)*1000.0;
+		SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)slidpos);
 	}
 }
 
-void ReaSlider::setTickMarkPosition(int pos)
+void ReaSlider::setTickMarkPositionFromValue(double val)
 {
-	SendMessage(m_hwnd, TBM_SETTIC, 0, pos);
+	int slidpos = m_val_converter->toNormalizedFromValue(val)*1000.0;
+	SendMessage(m_hwnd, TBM_SETTIC, 0, slidpos);
 }
 
-void ReaSlider::setValueConverter(std::unique_ptr<IValueConverter> c)
+void ReaSlider::setValueConverter(std::shared_ptr<IValueConverter> c)
 {
-	m_val_converter = std::move(c);
+	int curpos = SendMessage(m_hwnd, TBM_GETPOS, 0, 0);
+	double oldnormalized = (double)curpos / 1000.0;
+	m_val_converter = c;
+	setValue(m_val_converter->fromNormalizedToValue(oldnormalized));
 }
 
 WinLineEdit::WinLineEdit(HWND parent, std::string text) : WinControl(parent)

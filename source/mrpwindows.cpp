@@ -243,6 +243,39 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	return FALSE;
 }
 
+class FFTSizesValueConverter : public IValueConverter
+{
+public:
+	FFTSizesValueConverter() {}
+	const std::array<int, 8> c_fft_sizes{ 128,256,512,1024,2048,4096,8192,16384 };
+	// Inherited via IValueConverter
+	virtual double fromNormalizedToValue(double x) override
+	{
+		return c_fft_sizes[x*(c_fft_sizes.size()-1)];
+	}
+
+	virtual double toNormalizedFromValue(double x) override
+	{
+		for (int i = 0; i<c_fft_sizes.size() - 1; ++i)
+		{
+			if (x >= c_fft_sizes[i] && x<c_fft_sizes[i + 1])
+				return 1.0 / c_fft_sizes.size() *i;
+		}
+		return 0.0;
+	}
+
+	virtual std::string toStringFromValue(double x) override
+	{
+		return std::to_string((int)x);
+	}
+
+	virtual double fromStringToValue(const std::string & x) override
+	{
+		return c_fft_sizes[0];
+	}
+
+};
+
 TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(parent, title)
 {
 	for (int i = 0; i < 8; ++i)
@@ -259,11 +292,11 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
 	};
-	auto envcontrol = std::make_shared<EnvelopeControl>(m_hwnd);
+	m_envcontrol1 = std::make_shared<EnvelopeControl>(m_hwnd);
 	// Button 3 toggless enabled state of envelope control
-	m_controls[3]->GenericNotifyCallback = [this,envcontrol](GenericNotifications)
+	m_controls[3]->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		envcontrol->setEnabled(!envcontrol->isEnabled());
+		m_envcontrol1->setEnabled(!m_envcontrol1->isEnabled());
 	};
 	// Button 7 toggless visible state of button 0
 	m_controls[7]->GenericNotifyCallback = [this](GenericNotifications)
@@ -273,29 +306,31 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
 	env->add_point({ 0.0, 0.5 }, true);
 	env->add_point({ 1.0, 0.5 }, true);
-	envcontrol->add_envelope(env);
-	add_control(envcontrol);
-	auto label = std::make_shared<WinLabel>(m_hwnd, "This is a label");
-	add_control(label);
-	auto line_edit = std::make_shared<WinLineEdit>(m_hwnd, "Type into this");
-	add_control(line_edit);
-	line_edit->TextCallback = [label](std::string txt)
+	m_envcontrol1->add_envelope(env);
+	add_control(m_envcontrol1);
+	
+	m_label1 = std::make_shared<WinLabel>(m_hwnd, "This is a label");
+	add_control(m_label1);
+	
+	m_edit1 = std::make_shared<WinLineEdit>(m_hwnd, "Type into this");
+	add_control(m_edit1);
+	m_edit1->TextCallback = [this](std::string txt)
 	{
-		label->setText(txt);
+		m_label1->setText(txt);
 	};
 	// Button 6 reverses text of line edit :-)
-	m_controls[6]->GenericNotifyCallback = [this,line_edit](GenericNotifications)
+	m_controls[6]->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		std::string txt = line_edit->getText();
+		std::string txt = m_edit1->getText();
 		std::reverse(txt.begin(), txt.end());
-		line_edit->setText(txt);
+		m_edit1->setText(txt);
 	};
 	// Button 4 removes envelope points with value over 0.5
-	m_controls[4]->GenericNotifyCallback = [this, env, envcontrol](GenericNotifications)
+	m_controls[4]->GenericNotifyCallback = [this, env](GenericNotifications)
 	{
 		env->remove_points_conditionally([](const envbreakpoint& pt)
 		{ return pt.get_y() > 0.5; });
-		envcontrol->repaint();
+		m_envcontrol1->repaint();
 	};
 	m_combo1 = std::make_shared<WinComboBox>(m_hwnd);
 	m_combo1->addItem("Apple", -9001);
@@ -322,6 +357,14 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	};
 	add_control(m_combo2);
 	m_combo2->setSelectedIndex(0);
+	
+	m_slider1 = std::make_shared<ReaSlider>(m_hwnd, 0.5);
+	m_slider1->setValueConverter(std::make_shared<FFTSizesValueConverter>());
+	m_slider1->SliderValueCallback = [this](double x)
+	{
+		m_label1->setText(std::to_string(x));
+	};
+	add_control(m_slider1);
 }
 
 void TestMRPPWindow::resized()
@@ -332,19 +375,20 @@ void TestMRPPWindow::resized()
 	int w = sz.first;
 	int h = sz.second;
 	int ch = (double)(sz.second-5) / m_controls.size();
-	for (int i = 0; i < m_controls.size()-2; ++i)
+	// layout buttons to left side of window
+	for (int i = 0; i < 8; ++i)
 	{
-		m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
-		continue;
-		if (i<8)
-			m_controls[i]->setBounds(5, 5 + ch*i, 40, ch - 3);
-		else if (i == 8)
-			m_controls[i]->setBounds(50, 5, sz.first - 60, sz.second - 100);
-		else if (i > 8)
-			m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
+		m_controls[i]->setBounds(5, 5 + ch*i, 40, 20);
 	}
+	
 	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);
 	m_combo2->setBounds(w / 2, h - 30, w / 2 - 5, 25);
+	m_edit1->setBounds(5, h - 60, w-10, 20);
+	m_slider1->setBounds(50, 5, w - 55, 20);
+	m_envcontrol1->setBounds(50, 30, w - 55, h - 120);
+	
+	int envcontbot = m_envcontrol1->getYPosition() + m_envcontrol1->getHeight();
+	m_label1->setBounds(50, envcontbot + 3, w - 55, 20);
 }
 
 void TestMRPModalWindow::init_modal_dialog()
