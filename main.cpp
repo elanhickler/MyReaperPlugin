@@ -91,7 +91,9 @@ extern "C"
 			int error_count = REAPERAPI_LoadAPI(rec->GetFunc);
 			if (error_count > 0) 
 			{ 
-				MessageBox(g_parent, "Failed to load expected API functions", "MRP extension error", MB_OK);
+				char errbuf[256];
+				sprintf(errbuf, "Failed to load %d expected API function(s)", error_count);
+				MessageBox(g_parent, errbuf, "MRP extension error", MB_OK);;
 				return 0;
 			}
 			
