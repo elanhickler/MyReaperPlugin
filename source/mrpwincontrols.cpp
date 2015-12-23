@@ -17,9 +17,12 @@ WinControl::WinControl(HWND parent)
 
 WinControl::~WinControl()
 {
+	//readbg() << "WinControl dtor of " << this << "\n";
 	if (m_hwnd != NULL)
 	{
-		DestroyWindow(m_hwnd);
+		// Since these should always be parented to some other window, 
+		// probably don't need to destroy the handle outselves...?
+		//DestroyWindow(m_hwnd);
 	}
 }
 

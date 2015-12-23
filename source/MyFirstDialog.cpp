@@ -667,14 +667,109 @@ HWND g_win_controls_test_window = NULL;
 
 HWND open_win_controls_window(HWND parent)
 {
-	if (g_win_controls_test_window == NULL)
+	static int counter = 1;
+	// Test window deletes itself when it is closed, so we can keep this
+	// raw pointer just here
+	TestMRPPWindow* w = new TestMRPPWindow(parent,std::string("Test window ")+std::to_string(counter));
+	++counter;
+	w->setSize(1000, 300);
+	return w->getWindowHandle();
+}
+
+std::unordered_map<HWND, MRPWindow*> g_mrpwindowsmap;
+
+MRPWindow::MRPWindow(HWND parent,std::string title)
+{
+	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+		parent, dlgproc, (LPARAM)this);
+	g_mrpwindowsmap[m_hwnd] = this;
+	SetWindowText(m_hwnd, title.c_str());
+	SetWindowPos(m_hwnd, NULL, 20, 60, 100, 100, SWP_NOACTIVATE | SWP_NOZORDER);
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+MRPWindow::~MRPWindow()
+{
+	readbg() << "MRPWindow dtor\n";
+	m_controls.clear();
+	if (m_hwnd != NULL)
 	{
-		g_win_controls_test_window = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
-			parent, wincontrolstestdlgproc, NULL);
-		SetWindowPos(g_win_controls_test_window, NULL, 20, 60, 700, 400, SWP_NOACTIVATE | SWP_NOZORDER);
+		DestroyWindow(m_hwnd);
+		g_mrpwindowsmap.erase(m_hwnd);
 	}
-	ShowWindow(g_win_controls_test_window, SW_SHOW);
-	return g_win_controls_test_window;
+}
+
+std::pair<int, int> MRPWindow::getSize()
+{
+	if (m_hwnd == NULL)
+		return{ 0,0 };
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	int w = r.right - r.left;
+	int h = r.bottom - r.top;
+	return{ w,h };
+}
+
+void MRPWindow::setSize(int w, int h)
+{
+	if (m_hwnd != NULL)
+	{
+		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+	}
+}
+
+INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+	if (msg == WM_INITDIALOG)
+	{
+		return TRUE;
+	}
+	if (msg == WM_COMMAND || msg == WM_HSCROLL || msg == WM_VSCROLL)
+	{
+		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		if (mptr != nullptr)
+		{
+			for (auto& e : mptr->m_controls)
+				if (e->handleMessage(hwnd, msg, wp, lp) == true)
+					return TRUE;
+		}
+	}
+	/*
+	if (msg == WM_SHOWWINDOW)
+	{
+		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		if (mptr != nullptr)
+			mptr->resized();
+		return TRUE;
+	}
+	*/
+	if (msg == WM_SIZE)
+	{
+		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		if (mptr != nullptr)
+		{
+			mptr->resized();
+			InvalidateRect(hwnd, NULL, TRUE);
+			return TRUE;
+		}
+	}
+	if (msg == WM_CLOSE)
+	{
+		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		if (mptr != nullptr)
+		{
+			mptr->closeRequested();
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+void TestMRPPWindow::closeRequested()
+{
+	readbg() << "close requested...\n";
+	delete this;
+	readbg() << "window map has " << g_mrpwindowsmap.size() << " entries\n";
 }
 
 void clean_up_gui()
