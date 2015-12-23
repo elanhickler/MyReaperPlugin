@@ -4,7 +4,7 @@
 #include <ostream>
 #include <functional>
 #include <memory>
-
+#include <type_traits>
 class PCM_source;
 class MediaItem;
 
@@ -17,6 +17,7 @@ inline T bound_value(T lower, T n, T upper)
 template<typename T,typename U>
 inline T map_value(U valin, U inmin, U inmax, T outmin, T outmax)
 {
+	static_assert(std::is_arithmetic<T>::value && std::is_arithmetic<U>::value, "Only arithmetic types supported");
 	return outmin + ((outmax - outmin) * ((T)valin - (T)inmin)) / ((T)inmax - (T)inmin);
 }
 
