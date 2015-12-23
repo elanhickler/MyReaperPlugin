@@ -20,11 +20,33 @@ WinControl::~WinControl()
 	}
 }
 
+int WinControl::getWidth() const
+{
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return r.right - r.left;
+}
+
+int WinControl::getHeight() const
+{
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return r.bottom - r.top;
+}
+
 void WinControl::setBounds(int x, int y, int w, int h)
 {
 	if (m_hwnd != NULL)
 	{
 		SetWindowPos(m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+}
+
+void WinControl::setSize(int w, int h)
+{
+	if (m_hwnd != NULL)
+	{
+		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
 	}
 }
 

@@ -154,7 +154,7 @@ class LiceControl : public WinControl
 {
 public:
 	LiceControl(HWND parent);
-	virtual ~LiceControl();
+    ~LiceControl();
 
 	// The bitmap to be used for drawing is passed into the method instead of
 	// the method using the object's bitmap directly. This may be useful in the future,
@@ -168,9 +168,8 @@ public:
 	virtual void mouseWheel(int x, int y, int delta) {}
 
 	void setSize(int w, int h);
-	void setBounds(int x, int y, int w, int h);
-	int getWidth() const;
-	int getHeight() const;
+	void setBounds(int x, int y, int w, int h) override;
+	
 	void repaint();
 
 	bool wantsFocus() const { return m_wants_focus; }

@@ -127,20 +127,6 @@ void LiceControl::repaint()
 	InvalidateRect(m_hwnd, NULL, TRUE);
 }
 
-int LiceControl::getWidth() const
-{
-	RECT r;
-	GetClientRect(m_hwnd, &r);
-	return r.right - r.left;
-}
-
-int LiceControl::getHeight() const
-{
-	RECT r;
-	GetClientRect(m_hwnd, &r);
-	return r.bottom - r.top;
-}
-
 bool LiceControl::hasFocus() const
 {
 	return GetFocus() == m_hwnd;

@@ -55,8 +55,11 @@ class WinControl
 public:
 	WinControl(HWND parent);
 	virtual ~WinControl();
+	
+	int getWidth() const;
+	int getHeight() const;
 	virtual void setBounds(int x, int y, int w, int h);
-
+	virtual void setSize(int w, int h);
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
 protected:
