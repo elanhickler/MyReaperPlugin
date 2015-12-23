@@ -27,6 +27,7 @@
 		C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064A1C1A3AE000186D68 /* MyFirstDialog.h */; };
 		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
 		C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C486A0C31C238CFC00FF41C8 /* reascript.hpp */; };
+		C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */; };
 		C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */ = {isa = PBXBuildFile; fileRef = C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */; };
 		C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C01C28F59900C60DC9 /* lice_control.cpp */; };
 		C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */; };
@@ -63,6 +64,7 @@
 		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
 		C486A0C31C238CFC00FF41C8 /* reascript.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reascript.hpp; path = ../reascript.hpp; sourceTree = "<group>"; };
+		C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpwincontrols.cpp; path = ../source/mrpwincontrols.cpp; sourceTree = "<group>"; };
 		C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mylicecontrols.h; path = ../header/mylicecontrols.h; sourceTree = "<group>"; };
 		C4A793C01C28F59900C60DC9 /* lice_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_control.cpp; path = ../source/lice_control.cpp; sourceTree = "<group>"; };
 		C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mylicecontrols.cpp; path = ../source/mylicecontrols.cpp; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
 				C4A793C01C28F59900C60DC9 /* lice_control.cpp */,
 				C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */,
+				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
 				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
@@ -276,6 +279,7 @@
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
+				C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
 				C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */,
 				C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */,

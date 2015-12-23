@@ -108,7 +108,7 @@ WinLabel::WinLabel(HWND parent, std::string text) : WinControl(parent)
 	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
-	m_hwd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
+	m_hwnd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
 	SetParent(m_hwnd, parent);
 #endif
 	SetWindowText(m_hwnd, text.c_str());
