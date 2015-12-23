@@ -41,6 +41,9 @@
     <ClCompile Include="..\source\mrpwincontrols.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\mrpwindows.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -77,6 +80,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\mrpwincontrols.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\mrpwindows.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

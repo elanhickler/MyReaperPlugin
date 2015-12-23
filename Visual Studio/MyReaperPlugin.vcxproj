@@ -26,6 +26,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\lice_control.cpp" />
     <ClCompile Include="..\source\mrpwincontrols.cpp" />
+    <ClCompile Include="..\source\mrpwindows.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
     <ClCompile Include="..\source\MyFirstDialog.cpp" />
     <ClCompile Include="..\source\mylicecontrols.cpp" />
@@ -37,6 +38,7 @@
   <ItemGroup>
     <ClInclude Include="..\header\lice_control.h" />
     <ClInclude Include="..\header\mrpwincontrols.h" />
+    <ClInclude Include="..\header\mrpwindows.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\MyFirstDialog.h" />
     <ClInclude Include="..\header\mylicecontrols.h" />
