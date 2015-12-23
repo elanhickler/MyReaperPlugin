@@ -1,18 +1,33 @@
 #include "mrpwindows.h"
 #include <unordered_map>
 
-#include "../Visual Studio/resource.h"
-#ifndef _WIN32 // MAC resources
+// Oh, the horror
+#ifndef WIN32
+#define IDD_EMPTYDIALOG 666
 #include "WDL/WDL/swell/swell-dlggen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_dlg"
-#undef BEGIN
-#undef END
-#include "WDL/WDL/swell/swell-menugen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
+#ifndef SWELL_DLG_SCALE_AUTOGEN
+#define SWELL_DLG_SCALE_AUTOGEN 1.7
+#endif
+#ifndef SWELL_DLG_FLAGS_AUTOGEN
+#define SWELL_DLG_FLAGS_AUTOGEN SWELL_DLG_WS_FLIPPED|SWELL_DLG_WS_NOAUTOSIZE
+#endif
+
+#ifndef SET_IDD_EMPTYDIALOG_SCALE
+#define SET_IDD_EMPTYDIALOG_SCALE SWELL_DLG_SCALE_AUTOGEN
+#endif
+#ifndef SET_IDD_EMPTYDIALOG_STYLE
+#define SET_IDD_EMPTYDIALOG_STYLE SWELL_DLG_FLAGS_AUTOGEN|SWELL_DLG_WS_RESIZABLE|SWELL_DLG_WS_OPAQUE
+#endif
+SWELL_DEFINE_DIALOG_RESOURCE_BEGIN(IDD_EMPTYDIALOG,SET_IDD_EMPTYDIALOG_STYLE,"Dialog",309,179,SET_IDD_EMPTYDIALOG_SCALE)
+BEGIN
+END
+SWELL_DEFINE_DIALOG_RESOURCE_END(IDD_EMPTYDIALOG)
 #endif
 
 extern HINSTANCE g_hInst;
 
+
+#ifdef WIN32
 struct MyDLGTEMPLATE : DLGTEMPLATE
 {
 	WORD ext[3];
@@ -21,7 +36,7 @@ struct MyDLGTEMPLATE : DLGTEMPLATE
 		memset(this, 0, sizeof(*this));
 	}
 };
-
+#endif
 
 HWND open_win_controls_window(HWND parent)
 {
@@ -41,12 +56,17 @@ extern HWND g_parent;
 
 MRPWindow::MRPWindow(HWND parent, std::string title)
 {
+#ifdef WIN32
 	MyDLGTEMPLATE t;
 	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
 	t.cx = 200;
 	t.cy = 100;
 	t.dwExtendedStyle = WS_EX_TOOLWINDOW;
 	m_hwnd = CreateDialogIndirectParam(g_hInst, &t, parent, (DLGPROC)dlgproc, (LPARAM)this);
+#else
+	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+		parent, dlgproc, (LPARAM)this);
+#endif
 	//m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
 	//	parent, dlgproc, (LPARAM)this);
 	g_mrpwindowsmap[m_hwnd] = this;
@@ -100,9 +120,7 @@ void MRPWindow::closeRequested()
 	{
 		readbg() << "only hiding this window...\n";
 		ShowWindow(m_hwnd, SW_HIDE);
-		// Reaper sometimes craps up and disappears when closing the child windows
-		// Maybe this helps...
-		BringWindowToTop(g_parent);
+		
 		return;
 	}
 
