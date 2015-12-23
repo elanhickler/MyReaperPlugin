@@ -1,5 +1,8 @@
 #include "mrpwincontrols.h"
 #include "utilfuncs.h"
+#ifdef WIN32
+#include "Commctrl.h"
+#endif
 
 extern HINSTANCE g_hInst;
 
@@ -42,11 +45,19 @@ void WinControl::setBounds(int x, int y, int w, int h)
 	}
 }
 
+void WinControl::setTopLeftPosition(int x, int y)
+{
+	if (m_hwnd != NULL)
+	{
+		SetWindowPos(m_hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+}
+
 void WinControl::setSize(int w, int h)
 {
 	if (m_hwnd != NULL)
 	{
-		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 	}
 }
 
@@ -104,4 +115,46 @@ std::string WinLabel::getText()
 	char buf[1024];
 	GetWindowText(m_hwnd, buf, 1024);
 	return std::string(buf);
+}
+
+ReaSlider::ReaSlider(HWND parent, int initpos) : WinControl(parent)
+{
+	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent,
+		(HMENU)g_control_counter, g_hInst, 0);
+	SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)initpos);
+	SendMessage(m_hwnd, TBM_SETTIC, 0, 500);
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_HSCROLL || msg == WM_VSCROLL)
+	{
+		if ((HWND)lparam == m_hwnd)
+		{
+			if (SliderValueCallback)
+			{
+				int pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
+				SliderValueCallback(pos);
+			}
+		}
+	}
+	return true;
+}
+
+int ReaSlider::getPosition()
+{
+	if (m_hwnd != NULL)
+	{
+		return SendMessage(m_hwnd, TBM_GETPOS, 0, 0);
+	}
+	return 0;
+}
+
+void ReaSlider::setPosition(int pos)
+{
+	if (m_hwnd != NULL)
+	{
+		SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)pos);
+	}
 }

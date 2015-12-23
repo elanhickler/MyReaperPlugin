@@ -58,6 +58,7 @@ public:
 	
 	int getWidth() const;
 	int getHeight() const;
+	virtual void setTopLeftPosition(int x, int y);
 	virtual void setBounds(int x, int y, int w, int h);
 	virtual void setSize(int w, int h);
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
@@ -84,4 +85,14 @@ public:
 	void setText(std::string text);
 	std::string getText();
 	
+};
+
+class ReaSlider : public WinControl
+{
+public:
+	ReaSlider(HWND parent, int initpos = 500);
+	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	std::function<void(int)> SliderValueCallback;
+	int getPosition();
+	void setPosition(int pos);
 };
