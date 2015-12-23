@@ -26,6 +26,39 @@ WinControl::~WinControl()
 	}
 }
 
+bool WinControl::isVisible()
+{
+	if (m_hwnd!=NULL)
+		return IsWindowVisible(m_hwnd);
+	return false;
+}
+
+void WinControl::setVisible(bool b)
+{
+	if (m_hwnd != NULL)
+	{
+		if (b == true)
+			ShowWindow(m_hwnd, SW_SHOW);
+		else ShowWindow(m_hwnd, SW_HIDE);
+	}
+}
+
+bool WinControl::isEnabled()
+{
+	if (m_hwnd == NULL)
+		return false;
+	return IsWindowEnabled(m_hwnd);
+}
+
+void WinControl::setEnabled(bool b)
+{
+	if (m_hwnd == NULL)
+		return;
+	if (b == true)
+		EnableWindow(m_hwnd, TRUE);
+	else EnableWindow(m_hwnd, FALSE);
+}
+
 int WinControl::getWidth() const
 {
 	RECT r;
@@ -62,6 +95,11 @@ void WinControl::setSize(int w, int h)
 	{
 		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 	}
+}
+
+void WinControl::setObjectName(std::string name)
+{
+	m_object_name = name;
 }
 
 WinButton::WinButton(HWND parent, std::string text) :
@@ -182,4 +220,44 @@ void ReaSlider::setPosition(int pos)
 void ReaSlider::setTickMarkPosition(int pos)
 {
 	SendMessage(m_hwnd, TBM_SETTIC, 0, pos);
+}
+
+WinLineEdit::WinLineEdit(HWND parent, std::string text) : WinControl(parent)
+{
+#ifdef WIN32
+	m_hwnd = CreateWindow("EDIT", "edit", WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
+	SetParent(m_hwnd, parent);
+#endif
+	setText(text);
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+std::string WinLineEdit::getText()
+{
+	if (m_hwnd == NULL)
+		return std::string();
+	char buf[1024];
+	GetWindowText(m_hwnd, buf, 1024);
+	return buf;
+}
+
+void WinLineEdit::setText(std::string txt)
+{
+	if (m_hwnd == NULL)
+		return;
+	SetWindowText(m_hwnd, txt.c_str());
+}
+
+bool WinLineEdit::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_COMMAND && LOWORD(wparam) == m_control_id
+		&& HIWORD(wparam) == EN_CHANGE && TextCallback)
+	{
+		TextCallback(getText());
+		return true;
+	}
+	return false;
 }

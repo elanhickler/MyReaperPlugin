@@ -57,18 +57,25 @@ public:
 	WinControl(HWND parent);
 	virtual ~WinControl();
 	
+	bool isVisible();
+	virtual void setVisible(bool b);
+	
+	bool isEnabled();
+	virtual void setEnabled(bool b);
+
 	int getWidth() const;
 	int getHeight() const;
 	virtual void setTopLeftPosition(int x, int y);
 	virtual void setBounds(int x, int y, int w, int h);
 	virtual void setSize(int w, int h);
-	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
-	void setObjectName(std::string name)
-	{
-		m_object_name = name;
-	}
+	
+	
+	void setObjectName(std::string name);
 	const std::string& getObjectName() const { return m_object_name; }
+	
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
+
+	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
 protected:
 	HWND m_hwnd = NULL;
 	HWND m_parent = NULL;
@@ -92,6 +99,16 @@ public:
 	void setText(std::string text);
 	std::string getText();
 	
+};
+
+class WinLineEdit : public WinControl
+{
+public:
+	WinLineEdit(HWND parent, std::string inittext);
+	void setText(std::string text);
+	std::string getText();
+	std::function<void(std::string)> TextCallback;
+	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
 
 class ReaSlider : public WinControl

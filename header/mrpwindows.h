@@ -50,13 +50,24 @@ public:
 			};
 			add_control(but);
 		}
+		m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
+		{
+			m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
+		};
 		auto envcontrol = std::make_shared<EnvelopeControl>(m_hwnd);
 		auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
 		env->add_point( { 0.0, 0.5 }, true );
 		env->add_point( { 1.0, 0.5 }, true );
 		envcontrol->add_envelope(env);
 		add_control(envcontrol);
-		add_control(std::make_shared<WinLabel>(m_hwnd, "This is a label"));
+		auto label = std::make_shared<WinLabel>(m_hwnd, "This is a label");
+		add_control(label);
+		auto line_edit = std::make_shared<WinLineEdit>(m_hwnd, "Type into this");
+		add_control(line_edit);
+		line_edit->TextCallback = [label](std::string txt)
+		{
+			label->setText(txt);
+		};
 	}
 	~TestMRPPWindow()
 	{
