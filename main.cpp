@@ -88,7 +88,12 @@ extern "C"
 			g_parent = rec->hwnd_main;
 
 			// load all Reaper API functions in one go, byebye ugly IMPAPI macro!
-			if (REAPERAPI_LoadAPI(rec->GetFunc) > 0) { return 0; /*todo: proper error*/ }
+			int error_count = REAPERAPI_LoadAPI(rec->GetFunc);
+			if (error_count > 0) 
+			{ 
+				MessageBox(g_parent, "Failed to load expected API functions", "MRP extension error", MB_OK);
+				return 0;
+			}
 			
 #ifndef WIN32
 			// Perhaps to get Reaper faders on OSX...
@@ -204,8 +209,12 @@ extern "C"
 #endif
 #undef func
 
-			if (!rec->Register("hookcommand2", (void*)hookCommandProcEx)) { /*todo: error.*/ }
-			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { /*todo: error*/ }
+			if (!rec->Register("hookcommand2", (void*)hookCommandProcEx)) { 
+				MessageBox(g_parent, "Could not register hookcommand2", "MRP extension error", MB_OK);
+			}
+			if (!rec->Register("toggleaction", (void*)toggleActionCallback)) { 
+				MessageBox(g_parent, "Could not register toggleaction", "MRP extension error", MB_OK);
+			}
 			if (!RegisterExportedFuncs(rec)) { /*todo: error*/ }
 
 			// restore extension global settings

@@ -378,7 +378,7 @@ void TestMRPPWindow::resized()
 	// layout buttons to left side of window
 	for (int i = 0; i < 8; ++i)
 	{
-		m_controls[i]->setBounds(5, 5 + ch*i, 40, 20);
+		m_controls[i]->setBounds(5, 5 + i*20, 40, 25);
 	}
 	
 	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);
