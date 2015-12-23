@@ -132,11 +132,15 @@ void MRPWindow::init_modal_dialog()
 MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 {
 	m_is_modal = true;
+#ifdef WIN32
 	MyDLGTEMPLATE t;
 	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU;
 	t.cx = 200;
 	t.cy = 100;
 	DialogBoxIndirectParam(g_hInst, &t, parent, dlgproc, (LPARAM)this);
+#else
+	DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, dlgproc, (LPARAM)this);
+#endif
 	return m_modal_result;
 }
 
