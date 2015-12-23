@@ -9,6 +9,7 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include <unordered_map>
 
 enum class GenericNotifications
 {
@@ -109,6 +110,23 @@ public:
 	std::string getText();
 	std::function<void(std::string)> TextCallback;
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+};
+
+class WinComboBox : public WinControl
+{
+public:
+	WinComboBox(HWND parent);
+	void addItem(std::string text, int user_id);
+	int numItems();
+	int getSelectedIndex();
+	int getSelectedUserID();
+	void setSelectedIndex(int index);
+	void setSelectedUserID(int id);
+	int userIDfromIndex(int index);
+	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	std::function<void(int)> SelectedChangedCallback;
+private:
+	
 };
 
 class ReaSlider : public WinControl

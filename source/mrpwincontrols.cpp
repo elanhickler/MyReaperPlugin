@@ -268,3 +268,83 @@ bool WinLineEdit::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 	}
 	return false;
 }
+
+WinComboBox::WinComboBox(HWND parent) : WinControl(parent)
+{
+#ifdef WIN32
+	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_SORT | CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
+	SetParent(m_hwnd, parent);
+#endif
+	if (m_hwnd == NULL)
+		readbg() << "yngh";
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+void WinComboBox::addItem(std::string text, int user_id)
+{
+	if (m_hwnd == NULL)
+		return;
+	auto index = SendMessage(m_hwnd, CB_ADDSTRING, 0, (LPARAM)text.c_str());
+	if (index != CB_ERR)
+	{
+		SendMessage(m_hwnd, CB_SETITEMDATA, index, (LPARAM)user_id);
+	}
+}
+
+int WinComboBox::numItems()
+{
+	return SendMessage(m_hwnd, CB_GETCOUNT, 0, 0);
+}
+
+int WinComboBox::getSelectedIndex()
+{
+	return SendMessage(m_hwnd, CB_GETCURSEL, 0, 0);;
+}
+
+int WinComboBox::getSelectedUserID()
+{
+	auto index = getSelectedIndex();
+	return userIDfromIndex(index);
+}
+
+void WinComboBox::setSelectedIndex(int index)
+{
+	SendMessage(m_hwnd, CB_SETCURSEL, index, 0);
+}
+
+void WinComboBox::setSelectedUserID(int id)
+{
+	int count = numItems();
+	for (int i = 0; i < count; ++i)
+	{
+		auto result = SendMessage(m_hwnd, CB_GETITEMDATA, i, 0);
+		if (result == id)
+		{
+			setSelectedIndex(i);
+			return;
+		}
+	}
+}
+
+int WinComboBox::userIDfromIndex(int index)
+{
+	auto result = SendMessage(m_hwnd, CB_GETITEMDATA, index, 0);
+	if (result!=CB_ERR)
+		return result;
+	return -1;
+}
+
+bool WinComboBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_COMMAND && (HWND)lparam == m_hwnd && HIWORD(wparam) == CBN_SELCHANGE &&
+		SelectedChangedCallback)
+	{
+		auto index = SendMessage((HWND)lparam, CB_GETCURSEL, 0, 0);
+		SelectedChangedCallback(index);
+		return true;
+	}
+	return false;
+}

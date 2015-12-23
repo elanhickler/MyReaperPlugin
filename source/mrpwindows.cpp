@@ -195,7 +195,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
 	};
-	auto envcontrol = std::make_shared<PitchBenderEnvelopeControl>(m_hwnd);
+	auto envcontrol = std::make_shared<EnvelopeControl>(m_hwnd);
 	// Button 3 toggless enabled state of envelope control
 	m_controls[3]->GenericNotifyCallback = [this,envcontrol](GenericNotifications)
 	{
@@ -233,6 +233,18 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		{ return pt.get_y() > 0.5; });
 		envcontrol->repaint();
 	};
+	auto combobox1 = std::make_shared<WinComboBox>(m_hwnd);
+	combobox1->addItem("Apple", -9001);
+	combobox1->addItem("Pear", 666);
+	combobox1->addItem("Kiwi", 42);
+	combobox1->addItem("Banana", 100);
+	combobox1->SelectedChangedCallback = [combobox1](int index)
+	{
+		int user_id = combobox1->userIDfromIndex(index);
+		readbg() << "combo index " << index << " userid " << user_id << "\n";
+	};
+	add_control(combobox1);
+	combobox1->setSelectedUserID(42);
 }
 
 void TestMRPPWindow::resized()
@@ -240,14 +252,18 @@ void TestMRPPWindow::resized()
 	if (m_controls.size() == 0)
 		return;
 	auto sz = getSize();
-	int ch = (double)sz.second / m_controls.size();
+	int w = sz.first;
+	int h = sz.second;
+	int ch = (double)(sz.second-5) / m_controls.size();
 	for (int i = 0; i < m_controls.size(); ++i)
 	{
+		m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
+		continue;
 		if (i<8)
 			m_controls[i]->setBounds(5, 5 + ch*i, 40, ch - 3);
 		else if (i == 8)
 			m_controls[i]->setBounds(50, 5, sz.first - 60, sz.second - 100);
-		else
+		else if (i > 8)
 			m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
 	}
 }
