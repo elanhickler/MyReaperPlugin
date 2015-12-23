@@ -140,3 +140,4 @@ public:
 	void setTickMarkPosition(int pos);
 };
 
+int get_wincontrol_leak_count();

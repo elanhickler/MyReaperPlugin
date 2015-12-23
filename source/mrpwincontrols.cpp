@@ -8,11 +8,19 @@ extern HINSTANCE g_hInst;
 
 int g_control_counter = 0;
 
+int g_leak_counter = 0;
+
+int get_wincontrol_leak_count()
+{
+	return g_leak_counter;
+}
+
 WinControl::WinControl(HWND parent)
 {
 	m_parent = parent;
 	++g_control_counter;
 	m_control_id = g_control_counter;
+	++g_leak_counter;
 }
 
 WinControl::~WinControl()
@@ -24,6 +32,7 @@ WinControl::~WinControl()
 		// probably don't need to destroy the handle outselves...?
 		//DestroyWindow(m_hwnd);
 	}
+	--g_leak_counter;
 }
 
 bool WinControl::isVisible()

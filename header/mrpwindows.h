@@ -45,6 +45,9 @@ public:
 		readbg() << "TestMRPWindow dtor\n";
 	}
 	void resized() override;
+private:
+	std::shared_ptr<WinComboBox> m_combo1;
+	std::shared_ptr<WinComboBox> m_combo2;
 };
 
 HWND open_win_controls_window(HWND parent);

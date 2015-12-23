@@ -233,18 +233,31 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		{ return pt.get_y() > 0.5; });
 		envcontrol->repaint();
 	};
-	auto combobox1 = std::make_shared<WinComboBox>(m_hwnd);
-	combobox1->addItem("Apple", -9001);
-	combobox1->addItem("Pear", 666);
-	combobox1->addItem("Kiwi", 42);
-	combobox1->addItem("Banana", 100);
-	combobox1->SelectedChangedCallback = [combobox1](int index)
+	m_combo1 = std::make_shared<WinComboBox>(m_hwnd);
+	m_combo1->addItem("Apple", -9001);
+	m_combo1->addItem("Pear", 666);
+	m_combo1->addItem("Kiwi", 42);
+	m_combo1->addItem("Banana", 100);
+	m_combo1->SelectedChangedCallback = [this](int index)
 	{
-		int user_id = combobox1->userIDfromIndex(index);
+		int user_id = m_combo1->userIDfromIndex(index);
 		readbg() << "combo index " << index << " userid " << user_id << "\n";
 	};
-	add_control(combobox1);
-	combobox1->setSelectedUserID(42);
+	add_control(m_combo1);
+	m_combo1->setSelectedUserID(42);
+
+	m_combo2 = std::make_shared<WinComboBox>(m_hwnd);
+	m_combo2->addItem("Item 1", 100);
+	m_combo2->addItem("Item 2", 101);
+	m_combo2->addItem("Item 3", 102);
+	m_combo2->addItem("Item 4", 103);
+	m_combo2->SelectedChangedCallback = [this](int index)
+	{
+		int user_id = m_combo2->userIDfromIndex(index);
+		readbg() << "combo index " << index << " userid " << user_id << "\n";
+	};
+	add_control(m_combo2);
+	m_combo2->setSelectedIndex(0);
 }
 
 void TestMRPPWindow::resized()
@@ -255,7 +268,7 @@ void TestMRPPWindow::resized()
 	int w = sz.first;
 	int h = sz.second;
 	int ch = (double)(sz.second-5) / m_controls.size();
-	for (int i = 0; i < m_controls.size(); ++i)
+	for (int i = 0; i < m_controls.size()-2; ++i)
 	{
 		m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
 		continue;
@@ -266,4 +279,6 @@ void TestMRPPWindow::resized()
 		else if (i > 8)
 			m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
 	}
+	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);
+	m_combo2->setBounds(w / 2, h - 30, w / 2 - 5, 25);
 }
