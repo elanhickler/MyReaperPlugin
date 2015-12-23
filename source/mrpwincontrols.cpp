@@ -47,16 +47,23 @@ bool WinControl::isEnabled()
 {
 	if (m_hwnd == NULL)
 		return false;
+	
+#ifdef WIN32
 	return IsWindowEnabled(m_hwnd);
+#else
+	return true;
+#endif
 }
 
 void WinControl::setEnabled(bool b)
 {
+#ifdef WIN32
 	if (m_hwnd == NULL)
 		return;
 	if (b == true)
 		EnableWindow(m_hwnd, TRUE);
 	else EnableWindow(m_hwnd, FALSE);
+#endif
 }
 
 int WinControl::getWidth() const
