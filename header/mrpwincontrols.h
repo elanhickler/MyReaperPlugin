@@ -95,4 +95,5 @@ public:
 	std::function<void(int)> SliderValueCallback;
 	int getPosition();
 	void setPosition(int pos);
+	void setTickMarkPosition(int pos);
 };

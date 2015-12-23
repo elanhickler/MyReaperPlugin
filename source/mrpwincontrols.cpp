@@ -64,8 +64,13 @@ void WinControl::setSize(int w, int h)
 WinButton::WinButton(HWND parent, std::string text) :
 	WinControl(parent)
 {
+#ifdef WIN32
 	m_hwnd = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
 		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeButton(0, text.c_str(), g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP);
+	SetParent(m_hwnd, parent);
+#endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 	GenericNotifyCallback = [this](GenericNotifications)
@@ -99,8 +104,13 @@ bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 WinLabel::WinLabel(HWND parent, std::string text) : WinControl(parent)
 {
+#ifdef WIN32
 	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
 		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
+	SetParent(m_hwnd, parent);
+#endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 }
@@ -119,8 +129,14 @@ std::string WinLabel::getText()
 
 ReaSlider::ReaSlider(HWND parent, int initpos) : WinControl(parent)
 {
+#ifdef WIN32
 	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent,
 		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeControl("REAPERhfader", g_control_counter, "REAPERhfader",
+		WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, 0);
+	SetParent(m_hwnd, parent);
+#endif
 	SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)initpos);
 	SendMessage(m_hwnd, TBM_SETTIC, 0, 500);
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -136,10 +152,11 @@ bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			{
 				int pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
 				SliderValueCallback(pos);
+				return true;
 			}
 		}
 	}
-	return true;
+	return false;
 }
 
 int ReaSlider::getPosition()
@@ -157,4 +174,9 @@ void ReaSlider::setPosition(int pos)
 	{
 		SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)pos);
 	}
+}
+
+void ReaSlider::setTickMarkPosition(int pos)
+{
+	SendMessage(m_hwnd, TBM_SETTIC, 0, pos);
 }

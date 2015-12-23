@@ -455,7 +455,7 @@ INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 				num_points = 200;
 			for (int i = 0; i < num_points; ++i)
 			{
-				double t = 1.0 / num_points*i;
+				double t = 1.0 / (num_points-1)*i;
 				double v = 0.5 + 0.5*sin(2 * 3.141592 * t);
 				env->add_point({ t,v }, false);
 			}
@@ -490,8 +490,8 @@ INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 	if (uMsg == WM_COMMAND || uMsg == WM_HSCROLL || uMsg == WM_VSCROLL)
 	{
 		for (auto& e : g_win_test_controls)
-			e->handleMessage(hwndDlg, uMsg, wParam, lParam);
-		return TRUE;
+			if (e->handleMessage(hwndDlg, uMsg, wParam, lParam)==true)
+				return TRUE;
 	}
 	return FALSE;
 }
