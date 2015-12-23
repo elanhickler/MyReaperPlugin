@@ -13,6 +13,16 @@
 
 extern HINSTANCE g_hInst;
 
+struct MyDLGTEMPLATE : DLGTEMPLATE
+{
+	WORD ext[3];
+	MyDLGTEMPLATE()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+};
+
+
 HWND open_win_controls_window(HWND parent)
 {
 	static int counter = 1;
@@ -31,8 +41,14 @@ extern HWND g_parent;
 
 MRPWindow::MRPWindow(HWND parent, std::string title)
 {
-	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
-		parent, dlgproc, (LPARAM)this);
+	MyDLGTEMPLATE t;
+	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+	t.cx = 200;
+	t.cy = 100;
+	t.dwExtendedStyle = WS_EX_TOOLWINDOW;
+	m_hwnd = CreateDialogIndirectParam(g_hInst, &t, parent, (DLGPROC)dlgproc, (LPARAM)this);
+	//m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG),
+	//	parent, dlgproc, (LPARAM)this);
 	g_mrpwindowsmap[m_hwnd] = this;
 	SetWindowText(m_hwnd, title.c_str());
 	SetWindowPos(m_hwnd, NULL, 20, 60, 100, 100, SWP_NOACTIVATE | SWP_NOZORDER);
