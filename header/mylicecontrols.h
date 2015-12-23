@@ -158,6 +158,9 @@ public:
 	void setFloatingPointProperty(int index, double value) override;
 	int getIntegerProperty(int which) override;
 	void setIntegerProperty(int which, int v) override;
+
+	void setEnabled(bool b);
+
 protected:
 	std::vector<std::shared_ptr<breakpoint_envelope>> m_envs;
 	std::shared_ptr<WaveformPainter> m_wave_painter;
@@ -179,6 +182,7 @@ protected:
 		else if (m_view_start_time > m_view_end_time)
 			std::swap(m_view_start_time, m_view_end_time);
 	}
+	bool m_enabled = true;
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl

@@ -573,13 +573,6 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 		MRP_DrawTextHelper(bm, &m_font, "No envelope", 5, 5, bm->getWidth(), bm->getHeight());
 		return;
 	}
-	/*
-	if (m_env.unique()==true)
-	{
-		MRP_DrawTextHelper(bm, &m_font, "Envelope is orphaned (may be a bug)", 5, 5, bm->getWidth(), bm->getHeight());
-		return;
-	}
-	*/
 	if (m_wave_painter != nullptr)
 	{
 		if (m_wave_painter->getSource() != nullptr)
@@ -631,6 +624,10 @@ void EnvelopeControl::paint(LICE_IBitmap* bm)
 				LICE_Line(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
 			}
 		}
+	}
+	if (m_enabled == false)
+	{
+		LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255), 0.5f);
 	}
 }
 
@@ -805,6 +802,13 @@ void EnvelopeControl::setIntegerProperty(int which, int v)
 			m_active_envelope = v;
 	}
 	repaint();
+}
+
+void EnvelopeControl::setEnabled(bool b)
+{
+	m_enabled = b;
+	repaint();
+	WinControl::setEnabled(b);
 }
 
 std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double ycor)
