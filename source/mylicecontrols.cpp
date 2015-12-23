@@ -29,8 +29,9 @@ TestControl::TestControl(HWND parent, bool delwhendraggedoutside) :
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
 
-void TestControl::paint(LICE_IBitmap * bm)
+void TestControl::paint(PaintEvent& ev)
 {
+	LICE_IBitmap* bm = ev.bm;
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
 	for (int i=0;i<m_points.size();++i)
 	{
@@ -316,8 +317,9 @@ WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
 
-void WaveformControl::paint(LICE_IBitmap* bm)
+void WaveformControl::paint(PaintEvent& ev)
 {
+	LICE_IBitmap* bm = ev.bm;
 	if (m_src!=nullptr)
 	{
 		if (m_src->IsAvailable()==false)
@@ -565,8 +567,9 @@ EnvelopeControl::EnvelopeControl(HWND parent) : LiceControl(parent)
 	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
 }
 
-void EnvelopeControl::paint(LICE_IBitmap* bm)
+void EnvelopeControl::paint(PaintEvent& ev)
 {
+	LICE_IBitmap* bm = ev.bm;
 	LICE_FillRect(bm, 0, 0, bm->getWidth(), bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
 	if (m_envs.empty() == true)
 	{

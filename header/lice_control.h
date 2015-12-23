@@ -141,6 +141,15 @@ public:
 	ModifierKeys m_modkeys;
 private:
 };
+
+class PaintEvent
+{
+public:
+	PaintEvent() {}
+	PaintEvent(LICE_IBitmap* thebm) : bm(thebm) {}
+	LICE_IBitmap* bm = nullptr;
+};
+
 /*
 Base class for implementing your own completely custom controls aka widgets. So, useful for things like 
 XY-controls, breakpoint envelope editors, spectral displays etc. These create an underlying win32 
@@ -159,7 +168,7 @@ public:
 	// The bitmap to be used for drawing is passed into the method instead of
 	// the method using the object's bitmap directly. This may be useful in the future,
 	// although for now the LiceControl's internal bitmap is always passed.
-	virtual void paint(LICE_IBitmap*) = 0;
+	virtual void paint(PaintEvent& ev) = 0;
 
 	virtual void mousePressed(const MouseEvent& ev) {}
 	virtual void mouseDoubleClicked(const MouseEvent& ev) {}

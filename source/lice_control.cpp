@@ -239,7 +239,8 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 		GetClientRect(hwnd, &r);
 		PAINTSTRUCT ps = { 0 };
 		HDC dc = BeginPaint(hwnd, &ps);
-		c->paint(c->m_bitmap.get());
+		PaintEvent pev(c->m_bitmap.get());
+		c->paint(pev);
 		BitBlt(dc, r.left,
 			r.top,
 			c->m_bitmap->getWidth(),

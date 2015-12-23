@@ -25,7 +25,7 @@ class TestControl : public LiceControl
 {
 public:
 	TestControl(HWND parent, bool delwhendraggedoutside = false);
-	void paint(LICE_IBitmap* bm) override;
+	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
@@ -101,7 +101,7 @@ public:
 	WaveformControl(HWND parent);
 	void setSource(PCM_source* src);
 	PCM_source* getSource() { return m_src.get(); }
-	void paint(LICE_IBitmap* bm) override;
+	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(const MouseEvent& ev) override;
@@ -133,7 +133,7 @@ class EnvelopeControl : public LiceControl
 {
 public:
 	EnvelopeControl(HWND parent);
-	void paint(LICE_IBitmap* bm) override;
+	void paint(PaintEvent& ev) override;
 	
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved (const MouseEvent& ev) override;
