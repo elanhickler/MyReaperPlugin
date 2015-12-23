@@ -146,7 +146,7 @@ extern "C"
 				open_wave_controls(g_parent);
 			});
 
-			add_action("MRP : Show WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
+			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
 				open_win_controls_window(g_parent);
 			});

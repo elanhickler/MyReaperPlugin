@@ -8,6 +8,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 enum class GenericNotifications
 {
@@ -97,3 +98,4 @@ public:
 	void setPosition(int pos);
 	void setTickMarkPosition(int pos);
 };
+

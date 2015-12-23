@@ -42,15 +42,17 @@ public:
 	MRPWindow(HWND parent,std::string title="Untitled");
 	virtual ~MRPWindow();
 	virtual void resized() {};
-	virtual void closeRequested() {}
+	virtual void closeRequested();
 	std::pair<int, int> getSize();
+	void setPosition(int x, int y);
 	void setSize(int w, int h);
+	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
 protected:
 	HWND m_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
-	
+	bool m_destroy_on_close = false;
 };
 
 class TestMRPPWindow : public MRPWindow
@@ -84,7 +86,7 @@ public:
 			m_controls[i]->setBounds(5, 5 + ch*i, sz.first - 10, ch - 3);
 		}
 	}
-	void closeRequested() override;
+	//void closeRequested() override;
 	
 };
 

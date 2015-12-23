@@ -673,12 +673,15 @@ HWND open_win_controls_window(HWND parent)
 	// Test window deletes itself when it is closed, so we can keep this
 	// raw pointer just here
 	TestMRPPWindow* w = new TestMRPPWindow(parent,std::string("Test window ")+std::to_string(counter));
+	w->setDestroyOnClose(true);
+	w->setPosition(20 + counter * 20, 60 + counter * 20);
+	w->setSize(500, 300);
 	++counter;
-	w->setSize(1000, 300);
 	return w->getWindowHandle();
 }
 
 std::unordered_map<HWND, MRPWindow*> g_mrpwindowsmap;
+extern HWND g_parent;
 
 MRPWindow::MRPWindow(HWND parent,std::string title)
 {
@@ -712,6 +715,14 @@ std::pair<int, int> MRPWindow::getSize()
 	return{ w,h };
 }
 
+void MRPWindow::setPosition(int x, int y)
+{
+	if (m_hwnd != NULL)
+	{
+		SetWindowPos(m_hwnd, NULL, x, y, 0, 0, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSIZE);
+	}
+}
+
 void MRPWindow::setSize(int w, int h)
 {
 	if (m_hwnd != NULL)
@@ -719,6 +730,27 @@ void MRPWindow::setSize(int w, int h)
 		SetWindowPos(m_hwnd, NULL, 0, 0, w, h, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
 	}
 }
+
+void MRPWindow::closeRequested()
+{
+	readbg() << "close requested...\n";
+	if (m_hwnd != NULL && m_destroy_on_close == false)
+	{
+		readbg() << "only hiding this window...\n";
+		ShowWindow(m_hwnd, SW_HIDE);
+		// Reaper sometimes craps up and disappears when closing the child windows
+		// Maybe this helps...
+		BringWindowToTop(g_parent);
+		return;
+	}
+		
+	if (m_destroy_on_close == true)
+	{
+		delete this;
+		readbg() << "window map has " << g_mrpwindowsmap.size() << " entries\n";
+	}
+}
+
 
 INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -765,13 +797,6 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		}
 	}
 	return FALSE;
-}
-
-void TestMRPPWindow::closeRequested()
-{
-	readbg() << "close requested...\n";
-	delete this;
-	readbg() << "window map has " << g_mrpwindowsmap.size() << " entries\n";
 }
 
 void clean_up_gui()
