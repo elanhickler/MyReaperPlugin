@@ -412,11 +412,24 @@ INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 	if (uMsg == WM_INITDIALOG)
 	{
 		SetWindowText(hwndDlg, "WinControls test");
+		auto envcontrol = std::make_shared<EnvelopeControl>(hwndDlg);
+		g_win_test_controls.push_back(envcontrol);
+		auto env = std::make_shared<breakpoint_envelope>("Foo envelope",LICE_RGBA(255,255,255,255));
+		env->add_point({ 0.0,0.5 }, false);
+		env->add_point({ 1.0,0.5 }, false);
+		env->sort_points();
+		envcontrol->add_envelope(env);
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 1"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 2"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 3"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 4"));
-		g_win_test_controls.push_back(std::make_shared<WinLabel>(hwndDlg, "This is a label"));
+		auto lab = std::make_shared<WinLabel>(hwndDlg, "This is a label");
+		g_win_test_controls.push_back(lab);
+		envcontrol->GenericNotifyCallback = [env,lab](GenericNotifications)
+		{
+			int numpts = env->get_num_points();
+			lab->setText(std::string("Envelope has ") + std::to_string(numpts) + " points");
+		};
 		ShowWindow(hwndDlg, SW_SHOW);
 		return TRUE;
 	}
@@ -431,10 +444,12 @@ INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 		GetClientRect(hwndDlg, &r);
 		int w = r.right - r.left;
 		int h = r.bottom - r.top;
-		int buth = (double)h / g_win_test_controls.size();
-		for (int i = 0; i < g_win_test_controls.size(); ++i)
+		int env_h = 200;
+		int buth = (double)(h - env_h) / g_win_test_controls.size();
+		g_win_test_controls[0]->setBounds(0, 0, w, env_h);
+		for (int i = 1; i < g_win_test_controls.size(); ++i)
 		{
-			g_win_test_controls[i]->setBounds(5, 5 + buth * i - 5 , w - 10, buth-5);
+			g_win_test_controls[i]->setBounds(5, env_h + 5 + buth * i - 5 , w - 10, buth-5);
 		}
 		InvalidateRect(hwndDlg, NULL, TRUE);
 		return TRUE;
