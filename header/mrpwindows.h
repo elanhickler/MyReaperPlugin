@@ -18,6 +18,10 @@ class MRPWindow
 public:
 	MRPWindow(HWND parent, std::string title = "Untitled");
 	virtual ~MRPWindow();
+	void add_control(std::shared_ptr<WinControl> c)
+	{
+		m_controls.push_back(c);
+	}
 	virtual void resized() {};
 	virtual void closeRequested();
 	std::pair<int, int> getSize();
@@ -44,15 +48,15 @@ public:
 			{
 				readbg() << "you pressed " << i << "\n";
 			};
-			m_controls.push_back(but);
+			add_control(but);
 		}
 		auto envcontrol = std::make_shared<EnvelopeControl>(m_hwnd);
 		auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
 		env->add_point( { 0.0, 0.5 }, true );
 		env->add_point( { 1.0, 0.5 }, true );
 		envcontrol->add_envelope(env);
-		m_controls.push_back(envcontrol);
-		m_controls.push_back(std::make_shared<WinLabel>(m_hwnd, "This is a label"));
+		add_control(envcontrol);
+		add_control(std::make_shared<WinLabel>(m_hwnd, "This is a label"));
 	}
 	~TestMRPPWindow()
 	{

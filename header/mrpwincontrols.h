@@ -63,11 +63,17 @@ public:
 	virtual void setBounds(int x, int y, int w, int h);
 	virtual void setSize(int w, int h);
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
+	void setObjectName(std::string name)
+	{
+		m_object_name = name;
+	}
+	const std::string& getObjectName() const { return m_object_name; }
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
 protected:
 	HWND m_hwnd = NULL;
 	HWND m_parent = NULL;
 	int m_control_id = 0;
+	std::string m_object_name;
 };
 
 class WinButton : public WinControl
