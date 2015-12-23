@@ -3,8 +3,8 @@
 
 // Oh, the horror
 #ifndef WIN32
-#define IDD_EMPTYDIALOG 666
 #include "WDL/WDL/swell/swell-dlggen.h"
+#define IDD_EMPTYDIALOG 666
 #ifndef SWELL_DLG_SCALE_AUTOGEN
 #define SWELL_DLG_SCALE_AUTOGEN 1.7
 #endif
@@ -22,6 +22,27 @@ SWELL_DEFINE_DIALOG_RESOURCE_BEGIN(IDD_EMPTYDIALOG,SET_IDD_EMPTYDIALOG_STYLE,"Di
 BEGIN
 END
 SWELL_DEFINE_DIALOG_RESOURCE_END(IDD_EMPTYDIALOG)
+
+#define IDD_EMPTYDIALOG2 667
+#ifndef SWELL_DLG_SCALE_AUTOGEN
+#define SWELL_DLG_SCALE_AUTOGEN 1.7
+#endif
+#ifndef SWELL_DLG_FLAGS_AUTOGEN
+#define SWELL_DLG_FLAGS_AUTOGEN SWELL_DLG_WS_FLIPPED|SWELL_DLG_WS_NOAUTOSIZE
+#endif
+
+#ifndef SET_IDD_EMPTYDIALOG_SCALE
+#define SET_IDD_EMPTYDIALOG_SCALE SWELL_DLG_SCALE_AUTOGEN
+#endif
+#ifndef SET_IDD_EMPTYDIALOG2_STYLE
+#define SET_IDD_EMPTYDIALOG2_STYLE SWELL_DLG_FLAGS_AUTOGEN|SWELL_DLG_WS_OPAQUE
+#endif
+SWELL_DEFINE_DIALOG_RESOURCE_BEGIN(IDD_EMPTYDIALOG2,SET_IDD_EMPTYDIALOG2_STYLE,"Dialog",309,179,SET_IDD_EMPTYDIALOG_SCALE)
+BEGIN
+END
+SWELL_DEFINE_DIALOG_RESOURCE_END(IDD_EMPTYDIALOG2)
+
+
 #endif
 
 extern HINSTANCE g_hInst;
@@ -113,22 +134,6 @@ void MRPWindow::setSize(int w, int h)
 	}
 }
 
-void MRPWindow::init_modal_dialog()
-{
-	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
-	m_controls[0]->setBounds(5, 5, 50, 30);
-	m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
-	{
-		finishModal(Accepted);
-	};
-	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
-	m_controls[1]->setBounds(60, 5, 50, 30);
-	m_controls[1]->GenericNotifyCallback = [this](GenericNotifications)
-	{
-		finishModal(Rejected);
-	};
-}
-
 MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 {
 	m_is_modal = true;
@@ -147,10 +152,10 @@ MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 void show_modal_dialog(HWND parent)
 {
 	{
-		MRPWindow dlg;
+		TestMRPModalWindow dlg;
 		MRPWindow::ModalResult r = dlg.runModally(parent);
 		if (r == MRPWindow::Accepted)
-			readbg() << "Dialog was accepted\n";
+			readbg() << "Dialog was accepted : "<<dlg.m_line_edit->getText();
 		else readbg() << "Dialog was cancelled\n";
 	}
 	readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";
@@ -341,3 +346,25 @@ void TestMRPPWindow::resized()
 	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);
 	m_combo2->setBounds(w / 2, h - 30, w / 2 - 5, 25);
 }
+
+void TestMRPModalWindow::init_modal_dialog()
+{
+	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
+	m_controls[0]->setBounds(5, 35, 50, 30);
+	m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		finishModal(Accepted);
+	};
+	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
+	m_controls[1]->setBounds(60, 35, 50, 30);
+	m_controls[1]->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		finishModal(Rejected);
+	};
+	m_line_edit = std::make_shared<WinLineEdit>(m_hwnd,"Sample text");
+	m_line_edit->setBounds(50, 5, getSize().first, 25);
+	add_control(m_line_edit);
+	auto label = std::make_shared<WinLabel>(m_hwnd,"Foobarbaz");
+	add_control(label);
+}
+

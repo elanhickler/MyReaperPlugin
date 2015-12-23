@@ -12,6 +12,7 @@
 		C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */; };
 		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
 		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
+		C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */ = {isa = PBXBuildFile; fileRef = C477BA3D1C2AC74500113894 /* mrpwindows.h */; };
 		C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6851C1BAD49005C6CCC /* swell-dlg.mm */; };
 		C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6861C1BAD49005C6CCC /* swell-gdi.mm */; };
 		C484E68F1C1BAD49005C6CCC /* swell-kb.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6871C1BAD49005C6CCC /* swell-kb.mm */; };
@@ -49,6 +50,7 @@
 		C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_textnew.cpp; path = ../library/WDL/WDL/lice/lice_textnew.cpp; sourceTree = "<group>"; };
 		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
 		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
+		C477BA3D1C2AC74500113894 /* mrpwindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpwindows.h; path = ../header/mrpwindows.h; sourceTree = "<group>"; };
 		C484E6851C1BAD49005C6CCC /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../library/WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
 		C484E6861C1BAD49005C6CCC /* swell-gdi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-gdi.mm"; path = "../library/WDL/WDL/swell/swell-gdi.mm"; sourceTree = "<group>"; };
 		C484E6871C1BAD49005C6CCC /* swell-kb.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-kb.mm"; path = "../library/WDL/WDL/swell/swell-kb.mm"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
 				C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */,
+				C477BA3D1C2AC74500113894 /* mrpwindows.h */,
 				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
 				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
@@ -219,6 +222,7 @@
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
 				C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
+				C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */,
 				C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -31,7 +31,7 @@ public:
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
 	
-	virtual void init_modal_dialog();
+	virtual void init_modal_dialog() {}
 	enum ModalResult
 	{
 		Accepted,
@@ -57,6 +57,14 @@ protected:
 	bool m_destroy_on_close = false;
 	bool m_is_modal = false;
 	ModalResult m_modal_result = Rejected;
+};
+
+class TestMRPModalWindow : public MRPWindow
+{
+public:
+	void init_modal_dialog();
+	std::shared_ptr<WinLineEdit> m_line_edit;
+	
 };
 
 class TestMRPPWindow : public MRPWindow
