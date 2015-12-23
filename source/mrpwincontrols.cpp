@@ -2,6 +2,8 @@
 #include "utilfuncs.h"
 #ifdef WIN32
 #include "Commctrl.h"
+#else
+#include "WDL/WDL/swell/swell-dlggen.h"
 #endif
 
 extern HINSTANCE g_hInst;
@@ -281,10 +283,10 @@ bool WinLineEdit::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 WinComboBox::WinComboBox(HWND parent) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_SORT | CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
-	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
+	m_hwnd = SWELL_MakeCombo(g_control_counter,0,0,20,20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
 	SetParent(m_hwnd, parent);
 #endif
 	if (m_hwnd == NULL)
