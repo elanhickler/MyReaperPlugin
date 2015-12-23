@@ -11,6 +11,7 @@
 #include <vector>
 #include <unordered_set>
 #include "mrpwincontrols.h"
+#include "mylicecontrols.h"
 
 class MRPWindow
 {
@@ -45,6 +46,12 @@ public:
 			};
 			m_controls.push_back(but);
 		}
+		auto envcontrol = std::make_shared<EnvelopeControl>(m_hwnd);
+		auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
+		env->add_point( { 0.0, 0.5 }, true );
+		env->add_point( { 1.0, 0.5 }, true );
+		envcontrol->add_envelope(env);
+		m_controls.push_back(envcontrol);
 		m_controls.push_back(std::make_shared<WinLabel>(m_hwnd, "This is a label"));
 	}
 	~TestMRPPWindow()
