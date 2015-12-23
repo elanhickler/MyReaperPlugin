@@ -113,38 +113,43 @@ void MRPWindow::setSize(int w, int h)
 	}
 }
 
-void MRPWindow::init_modal_dialog(HWND hwnd)
+void MRPWindow::init_modal_dialog()
 {
 	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
 	m_controls[0]->setBounds(5, 5, 50, 30);
-	m_controls[0]->GenericNotifyCallback = [hwnd](GenericNotifications)
+	m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		EndDialog(hwnd, 42);
+		finishModal(Accepted);
 	};
 	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
 	m_controls[1]->setBounds(60, 5, 50, 30);
-	m_controls[1]->GenericNotifyCallback = [hwnd](GenericNotifications)
+	m_controls[1]->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		EndDialog(hwnd, 666);
+		finishModal(Rejected);
 	};
 }
 
-int MRPWindow::runModally(HWND parent)
+MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 {
 	m_is_modal = true;
 	MyDLGTEMPLATE t;
-	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU;
 	t.cx = 200;
 	t.cy = 100;
-	int result = DialogBoxIndirectParam(g_hInst, &t, parent, dlgproc, (LPARAM)this);
-	readbg() << "modal dialog returned " << result << "\n";
-	return result;
+	DialogBoxIndirectParam(g_hInst, &t, parent, dlgproc, (LPARAM)this);
+	return m_modal_result;
 }
 
 void show_modal_dialog(HWND parent)
 {
-	MRPWindow dlg;
-	dlg.runModally(parent);
+	{
+		MRPWindow dlg;
+		MRPWindow::ModalResult r = dlg.runModally(parent);
+		if (r == MRPWindow::Accepted)
+			readbg() << "Dialog was accepted\n";
+		else readbg() << "Dialog was cancelled\n";
+	}
+	readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";
 }
 
 void MRPWindow::closeRequested()
@@ -176,7 +181,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			mrpw->m_hwnd = hwnd;
 			g_mrpwindowsmap[hwnd] = mrpw;
 			if (mrpw->m_is_modal == true)
-				mrpw->init_modal_dialog(hwnd);
+				mrpw->init_modal_dialog();
 		}
 		return TRUE;
 	}
@@ -220,7 +225,8 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			}
 			else
 			{
-				EndDialog(hwnd, 666);
+				mptr->m_modal_result = MRPWindow::Rejected;
+				EndDialog(hwnd, 2);
 			}
 			return TRUE;
 		}

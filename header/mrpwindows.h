@@ -30,14 +30,33 @@ public:
 	void setSize(int w, int h);
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
-	virtual void init_modal_dialog(HWND hwnd);
-	int runModally(HWND parent);
+	
+	virtual void init_modal_dialog();
+	enum ModalResult
+	{
+		Accepted,
+		Rejected
+	};
+	ModalResult runModally(HWND parent);
+	
+	void finishModal(ModalResult result)
+	{
+		if (m_is_modal == true && m_hwnd!=NULL)
+		{
+			m_modal_result = result;
+			if (result == Accepted)
+				EndDialog(m_hwnd, 1);
+			if (result == Rejected)
+				EndDialog(m_hwnd, 2);
+		}
+	}
 protected:
 	HWND m_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	bool m_destroy_on_close = false;
 	bool m_is_modal = false;
+	ModalResult m_modal_result = Rejected;
 };
 
 class TestMRPPWindow : public MRPWindow

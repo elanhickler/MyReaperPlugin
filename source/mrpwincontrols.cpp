@@ -27,7 +27,7 @@ WinControl::WinControl(HWND parent)
 
 WinControl::~WinControl()
 {
-	//readbg() << "WinControl dtor of " << this << "\n";
+	readbg() << "WinControl dtor of " << this << "\n";
 	if (m_hwnd != NULL)
 	{
 		// Since these should always be parented to some other window, 
