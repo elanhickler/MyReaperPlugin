@@ -419,16 +419,31 @@ INT_PTR CALLBACK wincontrolstestdlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, 
 		env->add_point({ 1.0,0.5 }, false);
 		env->sort_points();
 		envcontrol->add_envelope(env);
-		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 1"));
+		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "Reset envelope"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 2"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 3"));
 		g_win_test_controls.push_back(std::make_shared<WinButton>(hwndDlg, "But 4"));
 		auto lab = std::make_shared<WinLabel>(hwndDlg, "This is a label");
 		g_win_test_controls.push_back(lab);
-		envcontrol->GenericNotifyCallback = [env,lab](GenericNotifications)
+		// Get notifications from envelope control about state changes
+		envcontrol->GenericNotifyCallback = [env,lab](GenericNotifications reason)
 		{
-			int numpts = env->get_num_points();
-			lab->setText(std::string("Envelope has ") + std::to_string(numpts) + " points");
+			if (reason != GenericNotifications::ObjectMoved)
+			{
+				int numpts = env->get_num_points();
+				lab->setText(std::string("Envelope has ") + std::to_string(numpts) + " points");
+			}
+			else lab->setText("Point is being moved");
+		};
+		// Button 1 handler
+		g_win_test_controls[1]->GenericNotifyCallback = [env, envcontrol](GenericNotifications)
+		{
+			env->remove_all_points();
+			env->add_point({ 0.0,0.5 }, false);
+			env->add_point({ 1.0,0.5 }, false);
+			env->sort_points();
+			envcontrol->repaint();
+			envcontrol->GenericNotifyCallback(GenericNotifications::ObjectCount);
 		};
 		ShowWindow(hwndDlg, SW_SHOW);
 		return TRUE;

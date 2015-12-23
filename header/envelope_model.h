@@ -37,6 +37,10 @@ public:
 		if (dosortnow == true)
 			sort_points();
 	}
+	void remove_all_points()
+	{
+		m_points.clear();
+	}
 	void remove_point(int index)
 	{
 		if (index >= 0 && index < m_points.size())
