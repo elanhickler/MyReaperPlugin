@@ -345,7 +345,8 @@ public:
 			auto wc = std::make_shared<WaveformControl>(parent);
 			m_controls.push_back(wc);
 		}
-		m_import_button = CreateWindow("BUTTON", "importbut", WS_CHILD | WS_TABSTOP, 
+#ifdef WIN32
+		m_import_button = CreateWindow("BUTTON", "importbut", WS_CHILD | WS_TABSTOP,
 			5, 5, 5, 5, m_parent_wnd,
 			(HMENU)1, g_hInst, 0);
 		SetWindowText(m_import_button, "Import");
@@ -355,6 +356,7 @@ public:
 			(HMENU)2, g_hInst, 0);
 		SetWindowText(m_render_button, "Render");
 		ShowWindow(m_render_button, SW_SHOW);
+#endif
 	}
 	void setBounds(int x, int y, int w, int h)
 	{
