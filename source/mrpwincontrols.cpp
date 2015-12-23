@@ -186,7 +186,7 @@ std::string WinLabel::getText()
 	return std::string(buf);
 }
 
-ReaSlider::ReaSlider(HWND parent, int initpos) : WinControl(parent)
+ReaSlider::ReaSlider(HWND parent, double initpos) : WinControl(parent)
 {
 #ifdef WIN32
 	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent,
@@ -196,8 +196,10 @@ ReaSlider::ReaSlider(HWND parent, int initpos) : WinControl(parent)
 		WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, 0);
 	SetParent(m_hwnd, parent);
 #endif
-	SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)initpos);
-	SendMessage(m_hwnd, TBM_SETTIC, 0, 500);
+	m_val_converter = std::make_unique<IValueConverter>();
+	int slidpos = 1000*m_val_converter->fromNormalized(initpos);
+	SendMessage(m_hwnd, TBM_SETPOS, 0, (LPARAM)slidpos);
+	SendMessage(m_hwnd, TBM_SETTIC, 0, (LPARAM)slidpos);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -238,6 +240,11 @@ void ReaSlider::setPosition(int pos)
 void ReaSlider::setTickMarkPosition(int pos)
 {
 	SendMessage(m_hwnd, TBM_SETTIC, 0, pos);
+}
+
+void ReaSlider::setValueConverter(std::unique_ptr<IValueConverter> c)
+{
+	m_val_converter = std::move(c);
 }
 
 WinLineEdit::WinLineEdit(HWND parent, std::string text) : WinControl(parent)

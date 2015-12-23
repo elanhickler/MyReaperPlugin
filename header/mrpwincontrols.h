@@ -11,6 +11,8 @@
 #include <memory>
 #include <unordered_map>
 
+class IValueConverter;
+
 enum class GenericNotifications
 {
 	Unknown,
@@ -132,12 +134,15 @@ private:
 class ReaSlider : public WinControl
 {
 public:
-	ReaSlider(HWND parent, int initpos = 500);
+	ReaSlider(HWND parent, double initpos = 0.5);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	std::function<void(int)> SliderValueCallback;
 	int getPosition();
 	void setPosition(int pos);
 	void setTickMarkPosition(int pos);
+	void setValueConverter(std::unique_ptr<IValueConverter> c);
+private:
+	std::unique_ptr<IValueConverter> m_val_converter;
 };
 
 int get_wincontrol_leak_count();

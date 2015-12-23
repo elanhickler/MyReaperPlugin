@@ -5,6 +5,8 @@
 #include <functional>
 #include <memory>
 #include <type_traits>
+#include <string>
+
 class PCM_source;
 class MediaItem;
 
@@ -67,6 +69,19 @@ class readbg : public std::ostream
 	readbgbuf buf;
 public:
 	readbg() :std::ostream(&buf) { }
+};
+
+class IValueConverter
+{
+public:
+	virtual ~IValueConverter() {}
+	virtual double fromNormalized(double x) { return x; }
+	virtual double toNormalized(double x) { return x; }
+	virtual std::string toString(double x) { return std::to_string(x);  }
+	virtual double fromString(const std::string& x) 
+	{  
+		return bound_value(0.0, atof(x.c_str()), 1.0);
+	}
 };
 
 class NoCopyNoMove
