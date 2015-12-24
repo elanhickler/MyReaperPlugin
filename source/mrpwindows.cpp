@@ -155,7 +155,7 @@ void show_modal_dialog(HWND parent)
 		TestMRPModalWindow dlg;
 		MRPWindow::ModalResult r = dlg.runModally(parent);
 		if (r == MRPWindow::Accepted)
-			readbg() << "Dialog was accepted : "<<dlg.m_line_edit->getText();
+			readbg() << "Dialog was accepted : "<< dlg.m_line_edit->getText();
 		else readbg() << "Dialog was cancelled\n";
 	}
 	readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";
@@ -204,15 +204,6 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 					return TRUE;
 		}
 	}
-	/*
-	if (msg == WM_SHOWWINDOW)
-	{
-	MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
-	if (mptr != nullptr)
-	mptr->resized();
-	return TRUE;
-	}
-	*/
 	if (msg == WM_SIZE)
 	{
 		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
@@ -473,9 +464,10 @@ void TestMRPModalWindow::init_modal_dialog()
 		finishModal(Rejected);
 	};
 	m_line_edit = std::make_shared<WinLineEdit>(m_hwnd,"Sample text");
-	m_line_edit->setBounds(50, 5, getSize().first, 25);
+	m_line_edit->setBounds(55, 5, getSize().first-100, 25);
 	add_control(m_line_edit);
 	auto label = std::make_shared<WinLabel>(m_hwnd,"Foobarbaz");
 	add_control(label);
+	label->setBounds(5, 5, 45, 20);
 }
 
