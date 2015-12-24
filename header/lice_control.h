@@ -165,9 +165,13 @@ public:
 	LiceControl(HWND parent);
     ~LiceControl();
 
-	// The bitmap to be used for drawing is passed into the method instead of
+	// The bitmap to be used for drawing is passed into the method with the PaintEvent instead of
 	// the method using the object's bitmap directly. This may be useful in the future,
 	// although for now the LiceControl's internal bitmap is always passed.
+	// Currently we don't do any fancy detection and passing of dirty subareas etc so the paint method
+	// needs to just draw everything from scratch each time it is called. Code that ends up causing
+	// the paint calls, like repaint() or control size changing should be careful to not do it too much.
+	// Alternatively LiceControl subclasses could do their own internal caching of drawn things etc...
 	virtual void paint(PaintEvent& ev) = 0;
 
 	virtual void mousePressed(const MouseEvent& ev) {}

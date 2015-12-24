@@ -34,3 +34,13 @@ std::string is_source_audio(PCM_source* src)
 		return "Source length equal or less than zero seconds";
 	return std::string();
 }
+
+create_item_result create_item_with_take_and_source(MediaTrack * track, const char * fn)
+{
+	create_item_result result;
+	result.item = AddMediaItemToTrack(track);
+	result.take = AddTakeToMediaItem(result.item);
+	result.src = PCM_Source_CreateFromFile(fn);
+	SetMediaItemTake_Source(result.take, result.src);
+	return result;
+}

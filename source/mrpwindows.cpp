@@ -276,6 +276,58 @@ public:
 
 };
 
+inline double skip_near_zero(double x, double threshold)
+{
+	if (x >= -threshold && x <= threshold)
+	{
+		if (x < 0.0)
+			return -threshold;
+		if (x >= 0.0)
+			return threshold;
+	}
+	return x;
+}
+
+void generate_items_sequence(std::shared_ptr<breakpoint_envelope> env, const char* fn)
+{
+	SetCursorContext(1, NULL);
+	Main_OnCommand(40182, 0); // select all items
+	Main_OnCommand(40006, 0); // remove selected items
+	MediaTrack* dest_track = GetTrack(nullptr, 0);
+	double timepos = 0.0;
+	double seqlen = 30.0;
+	int sanity = 0;
+	while (timepos < seqlen)
+	{
+		create_item_result r = create_item_with_take_and_source(dest_track, fn);
+		SetMediaItemPosition(r.item, timepos, false);
+		double srclen = GetMediaSourceLength(r.src, nullptr);
+		double normtime = 1.0 / seqlen * timepos;
+		double directionfactor = skip_near_zero(-1.0 + 2.0*env->interpolate(normtime), 0.02);
+		if (directionfactor < 0.0)
+		{
+			//readbg() << "item " << sanity << " should be reversed\n";
+			SetMediaItemSelected(r.item, true);
+			Main_OnCommand(41051, 0); // toggle reverse
+			SetMediaItemSelected(r.item, false);
+		}
+			
+		
+		double absfactor = fabs(directionfactor);
+		double itemlen = bound_value(0.02, srclen*absfactor, srclen);
+		SetMediaItemLength(r.item, itemlen, false);
+		SetMediaItemTakeInfo_Value(r.take, "D_PLAYRATE", 1.0/absfactor);
+		timepos += srclen*absfactor;
+		++sanity;
+		if (sanity > 1000)
+		{
+			readbg() << "too many items created!\n";
+			break;
+		}
+	}
+	UpdateArrange();
+}
+
 TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(parent, title)
 {
 	for (int i = 0; i < 8; ++i)
@@ -293,11 +345,13 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
 	};
 	m_envcontrol1 = std::make_shared<EnvelopeControl>(m_hwnd);
+	
 	// Button 3 toggless enabled state of envelope control
 	m_controls[3]->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		m_envcontrol1->setEnabled(!m_envcontrol1->isEnabled());
 	};
+	
 	// Button 7 toggless visible state of button 0
 	m_controls[7]->GenericNotifyCallback = [this](GenericNotifications)
 	{
@@ -307,12 +361,25 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	env->add_point({ 0.0, 0.5 }, true);
 	env->add_point({ 1.0, 0.5 }, true);
 	m_envcontrol1->add_envelope(env);
+	
+	m_envcontrol1->GenericNotifyCallback = [this,env](GenericNotifications reason)
+	{
+		if (reason==GenericNotifications::AfterManipulation)
+			generate_items_sequence(env,m_edit1->getText().c_str());
+	};
+	
 	add_control(m_envcontrol1);
 	
+	// Button 5 does some Xenakios silliness
+	m_controls[5]->GenericNotifyCallback = [this,env](GenericNotifications)
+	{
+		generate_items_sequence(env, m_edit1->getText().c_str());
+	};
+
 	m_label1 = std::make_shared<WinLabel>(m_hwnd, "This is a label");
 	add_control(m_label1);
 	
-	m_edit1 = std::make_shared<WinLineEdit>(m_hwnd, "Type into this");
+	m_edit1 = std::make_shared<WinLineEdit>(m_hwnd, "C:/MusicAudio/pihla_ei/ei_mono_005.wav");
 	add_control(m_edit1);
 	m_edit1->TextCallback = [this](std::string txt)
 	{
@@ -378,7 +445,7 @@ void TestMRPPWindow::resized()
 	// layout buttons to left side of window
 	for (int i = 0; i < 8; ++i)
 	{
-		m_controls[i]->setBounds(5, 5 + i*20, 40, 25);
+		m_controls[i]->setBounds(5, 5 + i*25, 40, 20);
 	}
 	
 	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);

@@ -9,6 +9,8 @@
 
 class PCM_source;
 class MediaItem;
+class MediaItem_Take;
+class MediaTrack;
 
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
@@ -56,6 +58,15 @@ inline auto get_from_map(Cont& c, const Key& k)
 }
 
 std::string is_source_audio(PCM_source* src);
+
+struct create_item_result
+{
+	MediaItem* item = nullptr;
+	MediaItem_Take* take = nullptr;
+	PCM_source* src = nullptr;
+};
+
+create_item_result create_item_with_take_and_source(MediaTrack* track, const char* fn);
 
 class readbgbuf : public std::streambuf
 {
