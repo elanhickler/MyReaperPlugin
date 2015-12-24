@@ -179,6 +179,18 @@ void MRPWindow::closeRequested()
 	}
 }
 
+bool MRPWindow::isVisible() const
+{
+	return IsWindowVisible(m_hwnd) == TRUE;
+}
+
+void MRPWindow::setVisible(bool b)
+{
+	if (b == true)
+		ShowWindow(m_hwnd, SW_SHOW);
+	else ShowWindow(m_hwnd, SW_HIDE);
+}
+
 
 INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -208,7 +220,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		if (mptr != nullptr)
 		{
 			for (auto& e : mptr->m_controls)
-				if (e->handleMessage(hwnd, msg, wp, lp) == true)
+				if (e!=nullptr && e->handleMessage(hwnd, msg, wp, lp) == true)
 				{
 					return TRUE;
 				}
@@ -478,3 +490,7 @@ void TestMRPModalWindow::init_modal_dialog()
 	label->setBounds({ 5, 5, 45, 20 });
 }
 
+void shutdown_windows()
+{
+	// Should do some GUI stuff clean up here, but not sure yet how...
+}

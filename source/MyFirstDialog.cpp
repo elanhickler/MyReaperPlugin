@@ -55,7 +55,4 @@ INT_PTR CALLBACK xycontroldlgproc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM
 }
 #endif
 
-void clean_up_gui()
-{
-	
-}
+

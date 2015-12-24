@@ -25,6 +25,14 @@ inline T map_value(U valin, U inmin, U inmax, T outmin, T outmax)
 	return outmin + ((outmax - outmin) * ((T)valin - (T)inmin)) / ((T)inmax - (T)inmin);
 }
 
+template<typename F>
+inline double map_value_shaped(double valin, double inmin, double inmax, double outmin, double outmax, F&& shapingfunction)
+{
+	double tempnormalized = map_value(valin, inmin, inmax, 0.0, 1.0);
+	tempnormalized = bound_value(0.0,shapingfunction(tempnormalized),1.0);
+	return map_value(tempnormalized, 0.0, 1.0, outmin, outmax);
+}
+
 inline bool is_point_in_rect(int px, int py, int rx, int ry, int rw, int rh)
 {
 	return px>=rx && px<rx+rw && py>=ry && py<ry+rh;

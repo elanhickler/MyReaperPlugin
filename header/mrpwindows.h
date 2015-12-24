@@ -25,6 +25,8 @@ public:
 	}
 	virtual void resized() {};
 	virtual void closeRequested();
+	bool isVisible() const;
+	void setVisible(bool b);
 	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
@@ -91,3 +93,5 @@ private:
 
 HWND open_win_controls_window(HWND parent);
 void show_modal_dialog(HWND parent);
+
+void shutdown_windows();

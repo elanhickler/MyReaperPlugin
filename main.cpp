@@ -122,17 +122,22 @@ extern "C"
 				add_action(desc, id, CannotToggle, actionfunction);
 			}
 			
-			// Add actions to show lice control containing windows
+			// Add actions to show WinControl containing windows
+			add_action("MRP : Toggle simple example window", "MRP_SHOW_WINCONTROLSIMPLETEST", ToggleOff, [](action_entry&)
+			{
+				toggle_simple_example_window(g_parent);
+			});
+
 			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
 				open_win_controls_window(g_parent);
 			});
-
+#ifdef MODALWINDOWSWORKPROPERLY
 			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
 			{
 				show_modal_dialog(g_parent);
 			});
-
+#endif
 			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
 			
 				// Add functions
@@ -197,7 +202,7 @@ extern "C"
 			return 1; // our plugin registered, return success
 		}
 		else {
-			clean_up_gui();
+			
 			return 0;
 		}
 	}

@@ -25,6 +25,7 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice_textnew.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\lice_control.cpp" />
+    <ClCompile Include="..\source\mrpexamplewindows.cpp" />
     <ClCompile Include="..\source\mrpwincontrols.cpp" />
     <ClCompile Include="..\source\mrpwindows.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\lice_control.h" />
+    <ClInclude Include="..\header\mrpexamplewindows.h" />
     <ClInclude Include="..\header\mrpwincontrols.h" />
     <ClInclude Include="..\header\mrpwindows.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
