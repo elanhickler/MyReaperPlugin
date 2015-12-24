@@ -289,8 +289,11 @@ std::string WinLineEdit::getText()
 	if (m_hwnd == NULL)
 		return std::string();
 	char buf[1024];
-	GetWindowText(m_hwnd, buf, 1024);
-	return buf;
+	if (GetWindowText(m_hwnd, buf, 1024) == 0)
+	{
+		//readbg() << "GetWindowText error : " << GetLastError();
+	}
+	return std::string(buf);
 }
 
 void WinLineEdit::setText(std::string txt)

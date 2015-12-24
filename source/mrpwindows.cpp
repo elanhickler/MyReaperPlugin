@@ -155,7 +155,7 @@ void show_modal_dialog(HWND parent)
 		TestMRPModalWindow dlg;
 		MRPWindow::ModalResult r = dlg.runModally(parent);
 		if (r == MRPWindow::Accepted)
-			readbg() << "Dialog was accepted : "<< dlg.m_line_edit->getText();
+			readbg() << "Dialog was accepted : " << dlg.m_line_edit->getText();
 		else readbg() << "Dialog was cancelled\n";
 	}
 	readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";
