@@ -3,15 +3,12 @@
 // Used by MyReaperPlugin.rc
 //
 #define IDD_DIALOG1                     101
-#define IDD_EMPTYDIALOG                 103
 #define IDD_REASCRIPTDIALOG1            105
 #define IDC_EDIT1                       1001
 #define IDC_DO1                         1002
 #define IDC_BUTTON1                     1003
 #define IDC_DO2                         1003
 #define IDC_EDIT2                       1004
-#define IDC_SCRIPTLINEEDIT1             1005
-#define IDC_REAFADER2                   1009
 
 // Next default values for new objects
 // 

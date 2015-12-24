@@ -133,26 +133,6 @@ extern "C"
 			});
 			
 			// Add actions to show lice control containing windows
-			add_action("MRP : Show pitch bender", "MRP_SHOWPITCHBENDER", ToggleOff, [](action_entry&)
-			{
-				open_pitch_bender(g_parent);
-			});
-
-			add_action("MRP : Show envelope point generator", "MRP_SHOWENVPTGEN", ToggleOff, [](action_entry&)
-			{
-				open_env_point_generator(g_parent);
-			});
-
-			add_action("MRP : Show effect parameters XY control", "MRP_SHOWFXXY", ToggleOff, [](action_entry&)
-			{
-				open_xy_control(g_parent);
-			});
-
-			add_action("MRP : Show waveform controls", "MRP_SHOWWAVECONTROLS", ToggleOff, [](action_entry&)
-			{
-				open_wave_controls(g_parent);
-			});
-
 			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
 				open_win_controls_window(g_parent);
@@ -163,12 +143,6 @@ extern "C"
 				show_modal_dialog(g_parent);
 			});
 
-#ifdef WIN32
-			add_action("MRP : Show GUI designer", "MRP_SHOWGUIDESIGNER", ToggleOff, [](action_entry&)
-			{
-				open_gui_designer(g_parent);
-			});
-#endif
 			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
 			
 				// Add functions
