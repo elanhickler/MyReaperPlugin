@@ -52,9 +52,6 @@
     <ClInclude Include="..\reascript.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MyReaperPlugin.rc" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FA4191B4-03BF-4BC9-BF85-87777089B66D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

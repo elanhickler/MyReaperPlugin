@@ -106,7 +106,4 @@
       <UniqueIdentifier>{da8ecdf5-15b1-42e5-a37f-e1e9631b023a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MyReaperPlugin.rc" />
-  </ItemGroup>
 </Project>

@@ -1,15 +1,5 @@
 #include "MyFirstDialog.h"
 
-#include "../Visual Studio/resource.h"
-#ifndef _WIN32 // MAC resources
-#include "WDL/WDL/swell/swell-dlggen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_dlg"
-#undef BEGIN
-#undef END
-#include "WDL/WDL/swell/swell-menugen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
-#endif
-
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 #include "mylicecontrols.h"
