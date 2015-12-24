@@ -25,7 +25,7 @@ public:
 	}
 	virtual void resized() {};
 	virtual void closeRequested();
-	std::pair<int, int> getSize();
+	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }

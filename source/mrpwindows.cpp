@@ -107,7 +107,7 @@ MRPWindow::~MRPWindow()
 	}
 }
 
-std::pair<int, int> MRPWindow::getSize()
+MRP::Size MRPWindow::getSize()
 {
 	if (m_hwnd == NULL)
 		return{ 0,0 };
@@ -439,8 +439,8 @@ void TestMRPPWindow::resized()
 	if (m_controls.size() == 0)
 		return;
 	auto sz = getSize();
-	int w = sz.first;
-	int h = sz.second;
+	int w = sz.getWidth();
+	int h = sz.getHeight();
 	int gdivs = 16;
 	MRP::Rectangle wg(0, 0, w, h);
 	for (int i = 0; i < 8; ++i)
@@ -471,7 +471,7 @@ void TestMRPModalWindow::init_modal_dialog()
 		finishModal(Rejected);
 	};
 	m_line_edit = std::make_shared<WinLineEdit>(m_hwnd,"Sample text");
-	m_line_edit->setBounds({ 55, 5, getSize().first - 100, 25 });
+	m_line_edit->setBounds({ 55, 5, getSize().getWidth() - 100, 25 });
 	add_control(m_line_edit);
 	auto label = std::make_shared<WinLabel>(m_hwnd,"Foobarbaz");
 	add_control(label);

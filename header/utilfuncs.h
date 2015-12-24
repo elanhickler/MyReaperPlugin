@@ -122,6 +122,41 @@ namespace MRP
 	};
 
 	template<typename T>
+	class GenericPoint
+	{
+	public:
+		GenericPoint() : m_x(T()), m_y(T()) {}
+		GenericPoint(T x, T y) : m_x(x), m_y(y) {}
+		T x() const noexcept { return m_x; }
+		T y() const noexcept { return m_y; }
+		void setX(T x) { m_x = x; }
+		void setY(T y) { m_y = y; }
+	private:
+		T m_x;
+		T m_y;
+	};
+
+	using Point = GenericPoint<int>;
+
+	template<typename T>
+	class GenericSize
+	{
+	public:
+		GenericSize() : m_w(T()), m_h(T()) {}
+		GenericSize(T w, T h) : m_w(w), m_h(h) {}
+		T getWidth() const noexcept { return m_w; }
+		T getHeight() const noexcept { return m_h; }
+		void setWidth(T w) { m_w = w };
+		void setHeight(T h) { m_h = h; }
+		bool isValid() const noexcept { return w > 0 && h > 0; }
+	private:
+		T m_w;
+		T m_h;
+	};
+
+	using Size = GenericSize<int>;
+
+	template<typename T>
 	class GenericRectangle
 	{
 	public:
@@ -136,6 +171,37 @@ namespace MRP
 		T getMiddleY() const noexcept { return m_y + m_h / 2 }
 		T getWidth() const noexcept { return m_w; }
 		T getHeight() const noexcept { return m_h; }
+
+		GenericPoint<T> getTopLeft() const noexcept
+		{
+			return GenericPoint<T>(m_x, m_y);
+		}
+
+		void setTopLeft(GenericPoint<T> pt)
+		{
+			m_x = pt.x();
+			m_y = pt.y();
+		}
+
+		GenericPoint<T> getTopRight() const noexcept
+		{
+			return GenericPoint<T>(m_x+m_w, m_y);
+		}
+
+		GenericPoint<T> getBottomLeft() const noexcept
+		{
+			return GenericPoint<T>(m_x, m_y+m_h);
+		}
+
+		GenericPoint<T> getBottomRight() const noexcept
+		{
+			return GenericPoint<T>(m_x+m_w, m_y + m_h);
+		}
+
+		GenericPoint<T> getCenter() const noexcept
+		{
+			return GenericPoint<T>(m_x + (m_w/2), m_y + (m_h/2));
+		}
 
 		void setX(T x) { m_x = x; }
 		void setY(T y) { m_y = y;  }
