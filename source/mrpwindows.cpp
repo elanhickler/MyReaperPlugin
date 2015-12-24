@@ -194,19 +194,27 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		}
 		return TRUE;
 	}
+	MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+	if (mptr != nullptr && mptr->m_modal_should_end == true)
+	{
+		mptr->m_modal_should_end = false;
+		return EndDialog(hwnd, 0);
+	}
+		
 	if (msg == WM_COMMAND || msg == WM_HSCROLL || msg == WM_VSCROLL)
 	{
-		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		
 		if (mptr != nullptr)
 		{
 			for (auto& e : mptr->m_controls)
 				if (e->handleMessage(hwnd, msg, wp, lp) == true)
+				{
 					return TRUE;
+				}
 		}
 	}
 	if (msg == WM_SIZE)
 	{
-		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
 		if (mptr != nullptr)
 		{
 			mptr->resized();
@@ -216,7 +224,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	}
 	if (msg == WM_CLOSE)
 	{
-		MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
+		
 		if (mptr != nullptr)
 		{
 			if (mptr->m_is_modal == false)
@@ -226,7 +234,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			else
 			{
 				mptr->m_modal_result = MRPWindow::Rejected;
-				EndDialog(hwnd, 2);
+				return EndDialog(hwnd, 2);
 			}
 			return TRUE;
 		}

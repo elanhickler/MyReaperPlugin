@@ -34,6 +34,7 @@ public:
 	virtual void init_modal_dialog() {}
 	enum ModalResult
 	{
+		Undefined,
 		Accepted,
 		Rejected
 	};
@@ -44,6 +45,8 @@ public:
 		if (m_is_modal == true && m_hwnd!=NULL)
 		{
 			m_modal_result = result;
+			m_modal_should_end = true;
+			return;
 			if (result == Accepted)
 				EndDialog(m_hwnd, 1);
 			if (result == Rejected)
@@ -56,6 +59,7 @@ protected:
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	bool m_destroy_on_close = false;
 	bool m_is_modal = false;
+	bool m_modal_should_end = false;
 	ModalResult m_modal_result = Rejected;
 };
 
