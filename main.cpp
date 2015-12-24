@@ -122,16 +122,6 @@ extern "C"
 				add_action(desc, id, CannotToggle, actionfunction);
 			}
 			
-			// Add action to show dialog box
-			add_action("Show my first dialog", "EXAMPLE_ACTION_SHOW_DIALOG1", ToggleOff, [](action_entry&) 
-			{
-				HWND hw = open_my_first_modeless_dialog(g_parent);
-				if (hw==NULL)
-				{
-					ShowConsoleMsg("Failed to create dialog window\n");
-				}
-			});
-			
 			// Add actions to show lice control containing windows
 			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
