@@ -109,11 +109,20 @@ int WinControl::getHeight() const
 	return r.bottom - r.top;
 }
 
-void WinControl::setBounds(int x, int y, int w, int h)
+MRP::Rectangle WinControl::getBounds() const
 {
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return MRP::Rectangle(r.left,r.top,r.right-r.left,r.bottom-r.top);
+}
+
+void WinControl::setBounds(MRP::Rectangle g)
+{
+	if (g.isValid() == false)
+		return;
 	if (m_hwnd != NULL)
 	{
-		SetWindowPos(m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
+		SetWindowPos(m_hwnd, NULL, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOACTIVATE | SWP_NOZORDER);
 	}
 }
 

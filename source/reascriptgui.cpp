@@ -277,7 +277,7 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 	{
 		if (c->m_licecontrol == nullptr)
 			SetWindowPos(c->m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
-		else c->m_licecontrol->setBounds(x, y, w, h);
+		else c->m_licecontrol->setBounds({ x, y, w, h });
 	}
 }
 

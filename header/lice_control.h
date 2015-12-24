@@ -181,7 +181,7 @@ public:
 	virtual void mouseWheel(int x, int y, int delta) {}
 
 	void setSize(int w, int h);
-	void setBounds(int x, int y, int w, int h) override;
+	void setBounds(MRP::Rectangle g) override;
 	
 	void repaint();
 

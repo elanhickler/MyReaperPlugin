@@ -112,6 +112,101 @@ private:
 	double m_max_value = 1.0;
 };
 
+namespace MRP
+{
+	enum class Anchor
+	{
+		TopLeft, TopMiddle, TopRight,
+		MiddleLeft, MiddleMiddle, MiddleRight,
+		BottomLeft, BottomMiddle, BottomRight
+	};
+
+	template<typename T>
+	class GenericRectangle
+	{
+	public:
+		GenericRectangle() : m_x(T()), m_w(T()), m_y(T()), m_h(T()) {}
+		GenericRectangle(T x, T y, T w, T h) :
+			m_x(x), m_w(w), m_y(y), m_h(h) {}
+		T getX() const noexcept { return m_x; }
+		T getY() const noexcept { return m_y; }
+		T getRight() const noexcept { return m_x + m_w; }
+		T getBottom() const noexcept { return m_y + m_h; }
+		T getMiddleX() const noexcept { return m_x + m_w / 2 }
+		T getMiddleY() const noexcept { return m_y + m_h / 2 }
+		T getWidth() const noexcept { return m_w; }
+		T getHeight() const noexcept { return m_h; }
+
+		void setX(T x) { m_x = x; }
+		void setY(T y) { m_y = y;  }
+		void setWidth(T w) { m_w = w;  }
+		void setHeight(T h) { m_h = h;  }
+		GenericRectangle<T> resized(T w, T h)
+		{
+			return GenericRectangle<T>(m_x, m_y, w, h);
+		}
+		GenericRectangle<T> moved(T x, T y)
+		{
+			return GenericRectangle<T>(x, y, m_w, m_h);
+		}
+		GenericRectangle centeredTo(T x, T y)
+		{
+			return GenericRectangle<T>(x - getWidth() / 2, y - getHeight() / 2, m_w, m_h);
+		}
+		GenericRectangle<T> leftShifted(T dx)
+		{
+			return GenericRectangle<T>(m_x + dx, y, m_w - dx, m_h);
+		}
+		GenericRectangle<T> rightShifted(T dx)
+		{
+			return GenericRectangle<T>(m_x, y, m_w + dx, m_h);
+		}
+		GenericRectangle<T> withHorizontalMargins(T margin)
+		{
+			return GenericRectangle<T>(m_x + margin, y, m_w - 2 * margin, m_h);
+		}
+		static GenericRectangle<T> anchoredToBottomOf(const GenericRectangle<T>& g,
+			T x, T w, T h, T offset_from_bottom)
+		{
+			return GenericRectangle<T>(x,
+				g.getBottom() - h - offset_from_bottom,
+				w,
+				h);
+		}
+		static GenericRectangle<T> anchoredTo(const GenericRectangle<T>& g, Anchor anchor, T w, T h)
+		{
+			if (anchor == Anchor::BottomLeft)
+				return GenericRectangle<T>(g.m_x, g.getBottom() - h, w, h);
+			if (anchor == Anchor::BottomRight)
+				return GenericRectangle<T>(g.m_x + g.m_w - w, g.getBottom() - h, w, h);
+			if (anchor == Anchor::Bottom)
+				return GenericRectangle<T>(g.m_x, g.getBottom() - h, g.getWidth(), h);
+			return GenericRectangle<T>();
+		}
+		static GenericRectangle<T> fromGridPositions(const GenericRectangle<T>& g,
+			int griddivs, int x0, int y0, int x1, int y1)
+		{
+			T nx0 = (double)g.getWidth() / griddivs * x0;
+			T ny0 = (double)g.getHeight() / griddivs * y0;
+			T nx1 = (double)g.getWidth() / griddivs * x1;
+			T ny1 = (double)g.getHeight() / griddivs * y1;
+			T nw = nx1 - nx0;
+			T nh = ny1 - ny0;
+			return GenericRectangle<T>(nx0, ny0, nw, nh);
+		}
+		bool isValid() const noexcept 
+		{ 
+			return true; 
+		}
+	private:
+		T m_x;
+		T m_w;
+		T m_y;
+		T m_h;
+	};
+
+	using Rectangle = GenericRectangle<int>;
+}
 class NoCopyNoMove
 {
 public:

@@ -10,6 +10,7 @@
 #include <functional>
 #include <memory>
 #include <unordered_map>
+#include "utilfuncs.h"
 
 class IValueConverter;
 
@@ -70,8 +71,9 @@ public:
 	int getYPosition() const;
 	int getWidth() const;
 	int getHeight() const;
+	MRP::Rectangle getBounds() const;
 	virtual void setTopLeftPosition(int x, int y);
-	virtual void setBounds(int x, int y, int w, int h);
+	virtual void setBounds(MRP::Rectangle geom);
 	virtual void setSize(int w, int h);
 	
 	

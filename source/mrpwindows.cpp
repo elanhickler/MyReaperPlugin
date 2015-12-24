@@ -64,7 +64,7 @@ HWND open_win_controls_window(HWND parent)
 	static int counter = 1;
 	// Test window deletes itself when it is closed, so we can keep this
 	// raw pointer just here
-	TestMRPPWindow* w = new TestMRPPWindow(parent, std::string("Test window ") + std::to_string(counter));
+	TestMRPPWindow* w = new TestMRPPWindow(parent, std::string("Testing window ") + std::to_string(counter));
 	w->setDestroyOnClose(true);
 	w->setPosition(20 + counter * 20, 60 + counter * 20);
 	w->setSize(500, 300);
@@ -440,42 +440,40 @@ void TestMRPPWindow::resized()
 	auto sz = getSize();
 	int w = sz.first;
 	int h = sz.second;
-	int ch = (double)(sz.second-5) / m_controls.size();
-	// layout buttons to left side of window
+	int gdivs = 16;
+	MRP::Rectangle wg(0, 0, w, h);
 	for (int i = 0; i < 8; ++i)
 	{
-		m_controls[i]->setBounds(5, 5 + i*25, 40, 20);
+		m_controls[i]->setBounds(MRP::Rectangle::fromGridPositions(wg,gdivs,0,i,1,i+1));
 	}
+	m_slider1->setBounds(MRP::Rectangle::fromGridPositions(wg,gdivs,1,0,16,1));
+	m_envcontrol1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 1, 16, 10));
+	m_label1->setBounds(MRP::Rectangle::fromGridPositions(wg,gdivs,1,10,16,11));
+	m_edit1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 11, 16, 12));
+	m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
+	m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));
 	
-	m_combo1->setBounds(5, h - 30, w / 2 - 10, 25);
-	m_combo2->setBounds(w / 2, h - 30, w / 2 - 5, 25);
-	m_edit1->setBounds(5, h - 60, w-10, 20);
-	m_slider1->setBounds(50, 5, w - 55, 20);
-	m_envcontrol1->setBounds(50, 30, w - 55, h - 120);
-	
-	int envcontbot = m_envcontrol1->getYPosition() + m_envcontrol1->getHeight();
-	m_label1->setBounds(50, envcontbot + 3, w - 55, 20);
 }
 
 void TestMRPModalWindow::init_modal_dialog()
 {
 	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
-	m_controls[0]->setBounds(5, 35, 50, 30);
+	m_controls[0]->setBounds({ 5, 35, 50, 30 });
 	m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		finishModal(Accepted);
 	};
 	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
-	m_controls[1]->setBounds(60, 35, 50, 30);
+	m_controls[1]->setBounds({ 60, 35, 50, 30 });
 	m_controls[1]->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		finishModal(Rejected);
 	};
 	m_line_edit = std::make_shared<WinLineEdit>(m_hwnd,"Sample text");
-	m_line_edit->setBounds(55, 5, getSize().first-100, 25);
+	m_line_edit->setBounds({ 55, 5, getSize().first - 100, 25 });
 	add_control(m_line_edit);
 	auto label = std::make_shared<WinLabel>(m_hwnd,"Foobarbaz");
 	add_control(label);
-	label->setBounds(5, 5, 45, 20);
+	label->setBounds({ 5, 5, 45, 20 });
 }
 

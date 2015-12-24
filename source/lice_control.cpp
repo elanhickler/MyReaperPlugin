@@ -94,7 +94,7 @@ LiceControl::LiceControl(HWND parent) : WinControl(parent)
 
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
-	setBounds(20, 60, 200, 200);
+	setBounds({ 20, 60, 200, 200 });
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -115,10 +115,12 @@ void LiceControl::setSize(int w, int h)
 	SetWindowPos(m_hwnd, 0, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-void LiceControl::setBounds(int x, int y, int w, int h)
+void LiceControl::setBounds(MRP::Rectangle g)
 {
-	m_bitmap->resize(w, h);
-	SetWindowPos(m_hwnd, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+	if (g.isValid() == false)
+		return;
+	m_bitmap->resize(g.getWidth(), g.getHeight());
+	SetWindowPos(m_hwnd, 0, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 
