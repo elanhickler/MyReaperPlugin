@@ -28,12 +28,14 @@ struct ReaScriptDialogTemplate : DLGTEMPLATE
 ReaScriptWindow::ReaScriptWindow(std::string title)
 {
 	HWND parent = GetMainHwnd();
+#ifdef WIN32
 	ReaScriptDialogTemplate t;
 	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
 	t.cx = 200;
 	t.cy = 100;
 	t.dwExtendedStyle = WS_EX_TOOLWINDOW;
 	m_hwnd = CreateDialogIndirectParam(g_hInst, &t, parent, (DLGPROC)dlgproc, (LPARAM)this);
+#endif
 	if (m_hwnd == NULL)
 	{
 		readbg() << "failed to create reascript dialog\n";
