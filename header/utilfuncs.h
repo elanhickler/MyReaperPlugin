@@ -196,7 +196,7 @@ namespace MRP
 		}
 		bool isValid() const noexcept 
 		{ 
-			return true; 
+			return getX()<getRight() && getY()<getBottom(); 
 		}
 	private:
 		T m_x;
