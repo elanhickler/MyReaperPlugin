@@ -1,13 +1,4 @@
 #include "reascriptgui.h"
-#include "../Visual Studio/resource.h"
-#ifndef _WIN32 // MAC resources
-#include "WDL/WDL/swell/swell-dlggen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_dlg"
-#undef BEGIN
-#undef END
-#include "WDL/WDL/swell/swell-menugen.h"
-#include "../Visual Studio/MyReaperPlugin.rc_mac_menu"
-#endif
 
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
@@ -23,10 +14,26 @@ extern HINSTANCE g_hInst;
 
 std::unordered_map<HWND, ReaScriptWindow*> g_reascriptwindowsmap;
 
+#ifdef WIN32
+struct ReaScriptDialogTemplate : DLGTEMPLATE
+{
+	WORD ext[3];
+	ReaScriptDialogTemplate()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+};
+#endif
+
 ReaScriptWindow::ReaScriptWindow(std::string title)
 {
 	HWND parent = GetMainHwnd();
-	m_hwnd = CreateDialogParam(g_hInst, MAKEINTRESOURCE(IDD_REASCRIPTDIALOG1), parent, dlgproc, (LPARAM)this);
+	ReaScriptDialogTemplate t;
+	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME;
+	t.cx = 200;
+	t.cy = 100;
+	t.dwExtendedStyle = WS_EX_TOOLWINDOW;
+	m_hwnd = CreateDialogIndirectParam(g_hInst, &t, parent, (DLGPROC)dlgproc, (LPARAM)this);
 	if (m_hwnd == NULL)
 	{
 		readbg() << "failed to create reascript dialog\n";

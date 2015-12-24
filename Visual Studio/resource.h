@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by MyReaperPlugin.rc
 //
-#define IDD_REASCRIPTDIALOG1            105
 #define IDC_BUTTON1                     1003
 
 // Next default values for new objects
