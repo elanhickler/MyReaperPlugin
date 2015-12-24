@@ -198,7 +198,8 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	if (mptr != nullptr && mptr->m_modal_should_end == true)
 	{
 		mptr->m_modal_should_end = false;
-		return EndDialog(hwnd, 0);
+		EndDialog(hwnd, 0);
+		return TRUE;
 	}
 		
 	if (msg == WM_COMMAND || msg == WM_HSCROLL || msg == WM_VSCROLL)
@@ -234,7 +235,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			else
 			{
 				mptr->m_modal_result = MRPWindow::Rejected;
-				return EndDialog(hwnd, 2);
+				EndDialog(hwnd, 2);
 			}
 			return TRUE;
 		}
