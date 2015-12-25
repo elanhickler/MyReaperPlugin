@@ -225,7 +225,7 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](para
 "It comes down to how size_t is of different size between the 32 and 64 bit "
 "architectures."
 );
-
+#ifdef REASCRIPTGUIWORKS
 function_entry MRP_CreateWindow("MRP_Window*", "const char*", "title", [](params)
 {
 	const char* wtitle = (const char*)arg[0];
@@ -495,6 +495,7 @@ function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,double,double,d
 "Set MRP control position and size"
 );
 
+#endif
 
 function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 	return_obj(GetSelectedMediaItem(0, 0));

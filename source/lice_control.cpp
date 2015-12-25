@@ -1,4 +1,5 @@
 #include "lice_control.h"
+#include "mrpwindows.h"
 #include <unordered_map>
 #include "utilfuncs.h"
 #include <string>
@@ -71,9 +72,9 @@ static accelerator_register_t g_acRec =
 
 bool g_acrecinstalled=false;
 
-LiceControl::LiceControl(HWND parent) : WinControl(parent)
+LiceControl::LiceControl(MRPWindow* parent) : WinControl(parent)
 {
-	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
+	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent->getWindowHandle(), wndproc, NULL);
 	if (m_hwnd == NULL)
 	{
 		readbg() << "Failed to create window for LiceControl " << this << "\n";
@@ -94,7 +95,7 @@ LiceControl::LiceControl(HWND parent) : WinControl(parent)
 
 	g_controlsmap[m_hwnd] = this;
 	m_bitmap = std::make_unique<LICE_SysBitmap>(200, 200);
-	setBounds(20, 60, 200, 200);
+	setBounds({ 20, 60, 200, 200 });
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -115,10 +116,12 @@ void LiceControl::setSize(int w, int h)
 	SetWindowPos(m_hwnd, 0, 0, 0, w, h, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-void LiceControl::setBounds(int x, int y, int w, int h)
+void LiceControl::setBounds(MRP::Rectangle g)
 {
-	m_bitmap->resize(w, h);
-	SetWindowPos(m_hwnd, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+	if (g.isValid() == false)
+		return;
+	m_bitmap->resize(g.getWidth(), g.getHeight());
+	SetWindowPos(m_hwnd, 0, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 

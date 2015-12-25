@@ -3,6 +3,8 @@
 #include "lice_control.h"
 #include "envelope_model.h"
 
+class MRPWindow;
+
 struct fx_param_t
 {
 	int tracknum = -1;
@@ -24,7 +26,7 @@ struct point
 class TestControl : public LiceControl
 {
 public:
-	TestControl(HWND parent, bool delwhendraggedoutside = false);
+	TestControl(MRPWindow* parent, bool delwhendraggedoutside = false);
 	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseDoubleClicked(const MouseEvent& ev) override;
@@ -98,7 +100,7 @@ private:
 class WaveformControl : public LiceControl
 {
 public:
-	WaveformControl(HWND parent);
+	WaveformControl(MRPWindow* parent);
 	void setSource(PCM_source* src);
 	PCM_source* getSource() { return m_src.get(); }
 	void paint(PaintEvent& ev) override;
@@ -132,7 +134,7 @@ private:
 class EnvelopeControl : public LiceControl
 {
 public:
-	EnvelopeControl(HWND parent);
+	EnvelopeControl(MRPWindow* parent);
 	void paint(PaintEvent& ev) override;
 	
 	void mousePressed(const MouseEvent& ev) override;
@@ -188,7 +190,7 @@ protected:
 class PitchBenderEnvelopeControl : public EnvelopeControl
 {
 public:
-	PitchBenderEnvelopeControl(HWND parent) : EnvelopeControl(parent)
+	PitchBenderEnvelopeControl(MRPWindow* parent) : EnvelopeControl(parent)
 	{
 
 	}
@@ -205,6 +207,6 @@ std::string pitch_bend_selected_item(std::shared_ptr<breakpoint_envelope> pchenv
 class EnvelopeGeneratorEnvelopeControl : public EnvelopeControl
 {
 public:
-	EnvelopeGeneratorEnvelopeControl(HWND parent);
+	EnvelopeGeneratorEnvelopeControl(MRPWindow* parent);
 	
 };

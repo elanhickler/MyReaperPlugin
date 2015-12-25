@@ -5,9 +5,6 @@
     <ClCompile Include="..\source\MyFirstClass.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\MyFirstDialog.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp">
       <Filter>library\WDL\Lice</Filter>
     </ClCompile>
@@ -44,13 +41,13 @@
     <ClCompile Include="..\source\mrpwindows.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\mrpexamplewindows.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
     <ClInclude Include="..\header\MyFirstClass.hpp">
-      <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\MyFirstDialog.h">
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
@@ -83,6 +80,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\mrpwindows.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\mrpexamplewindows.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

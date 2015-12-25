@@ -1,3 +1,4 @@
+#ifdef REASCRIPTGUIWORKS
 #include "reascriptgui.h"
 
 #include "WDL/WDL/lice/lice.h"
@@ -279,7 +280,7 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 	{
 		if (c->m_licecontrol == nullptr)
 			SetWindowPos(c->m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
-		else c->m_licecontrol->setBounds(x, y, w, h);
+		else c->m_licecontrol->setBounds({ x, y, w, h });
 	}
 }
 
@@ -357,3 +358,4 @@ ReaScriptWindow* open_reascript_test_gui(std::string title)
 	ReaScriptWindow* result = new ReaScriptWindow(title);
 	return result;
 }
+#endif

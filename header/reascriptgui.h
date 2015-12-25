@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef REASCRIPTGUIWORKS
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -68,3 +70,4 @@ private:
 };
 
 ReaScriptWindow* open_reascript_test_gui(std::string title);
+#endif

@@ -10,8 +10,10 @@
 #include <functional>
 #include <memory>
 #include <unordered_map>
+#include "utilfuncs.h"
 
 class IValueConverter;
+class MRPWindow;
 
 enum class GenericNotifications
 {
@@ -57,7 +59,7 @@ enum class GenericNotifications
 class WinControl
 {
 public:
-	WinControl(HWND parent);
+	WinControl(MRPWindow* parent);
 	virtual ~WinControl();
 	
 	bool isVisible();
@@ -70,8 +72,9 @@ public:
 	int getYPosition() const;
 	int getWidth() const;
 	int getHeight() const;
+	MRP::Rectangle getBounds() const;
 	virtual void setTopLeftPosition(int x, int y);
-	virtual void setBounds(int x, int y, int w, int h);
+	virtual void setBounds(MRP::Rectangle geom);
 	virtual void setSize(int w, int h);
 	
 	
@@ -83,7 +86,7 @@ public:
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
 protected:
 	HWND m_hwnd = NULL;
-	HWND m_parent = NULL;
+	MRPWindow* m_parent = nullptr;
 	int m_control_id = 0;
 	std::string m_object_name;
 };
@@ -91,7 +94,7 @@ protected:
 class WinButton : public WinControl
 {
 public:
-	WinButton(HWND parent, std::string text);
+	WinButton(MRPWindow* parent, std::string text);
 	void setText(std::string text);
 	std::string getText();
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -100,7 +103,7 @@ public:
 class WinLabel : public WinControl
 {
 public:
-	WinLabel(HWND parent, std::string text);
+	WinLabel(MRPWindow* parent, std::string text);
 	void setText(std::string text);
 	std::string getText();
 	
@@ -109,7 +112,7 @@ public:
 class WinLineEdit : public WinControl
 {
 public:
-	WinLineEdit(HWND parent, std::string inittext);
+	WinLineEdit(MRPWindow* parent, std::string inittext);
 	void setText(std::string text);
 	std::string getText();
 	std::function<void(std::string)> TextCallback;
@@ -119,7 +122,7 @@ public:
 class WinComboBox : public WinControl
 {
 public:
-	WinComboBox(HWND parent);
+	WinComboBox(MRPWindow* parent);
 	void addItem(std::string text, int user_id);
 	int numItems();
 	int getSelectedIndex();
@@ -136,9 +139,9 @@ private:
 class ReaSlider : public WinControl
 {
 public:
-	ReaSlider(HWND parent, double initpos = 0.5);
+	ReaSlider(MRPWindow* parent, double initpos = 0.5);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	std::function<void(double)> SliderValueCallback;
+	std::function<void(GenericNotifications,double)> SliderValueCallback;
 	double getValue();
 	void setValue(double pos);
 	void setTickMarkPositionFromValue(double pos);

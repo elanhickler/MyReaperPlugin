@@ -1,4 +1,5 @@
 #include "mrpwincontrols.h"
+#include "mrpwindows.h"
 #include "utilfuncs.h"
 #ifdef WIN32
 #include "Commctrl.h"
@@ -17,7 +18,7 @@ int get_wincontrol_leak_count()
 	return g_leak_counter;
 }
 
-WinControl::WinControl(HWND parent)
+WinControl::WinControl(MRPWindow* parent)
 {
 	m_parent = parent;
 	++g_control_counter;
@@ -109,11 +110,20 @@ int WinControl::getHeight() const
 	return r.bottom - r.top;
 }
 
-void WinControl::setBounds(int x, int y, int w, int h)
+MRP::Rectangle WinControl::getBounds() const
 {
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	return MRP::Rectangle(r.left,r.top,r.right-r.left,r.bottom-r.top);
+}
+
+void WinControl::setBounds(MRP::Rectangle g)
+{
+	if (g.isValid() == false)
+		return;
 	if (m_hwnd != NULL)
 	{
-		SetWindowPos(m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
+		SetWindowPos(m_hwnd, NULL, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOACTIVATE | SWP_NOZORDER);
 	}
 }
 
@@ -138,15 +148,15 @@ void WinControl::setObjectName(std::string name)
 	m_object_name = name;
 }
 
-WinButton::WinButton(HWND parent, std::string text) :
+WinButton::WinButton(MRPWindow* parent, std::string text) :
 	WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
+	m_hwnd = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeButton(0, text.c_str(), g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -179,14 +189,14 @@ bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return false;
 }
 
-WinLabel::WinLabel(HWND parent, std::string text) : WinControl(parent)
+WinLabel::WinLabel(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
+	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -204,15 +214,15 @@ std::string WinLabel::getText()
 	return std::string(buf);
 }
 
-ReaSlider::ReaSlider(HWND parent, double initpos) : WinControl(parent)
+ReaSlider::ReaSlider(MRPWindow* parent, double initpos) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent,
+	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeControl("REAPERhfader", g_control_counter, "REAPERhfader",
 		WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, 0);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	m_val_converter = std::make_shared<LinearValueConverter>(0.0,1.0);
 	int slidpos = 1000*m_val_converter->toNormalizedFromValue(initpos);
@@ -227,10 +237,15 @@ bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 		if ((HWND)lparam == m_hwnd)
 		{
-			if (SliderValueCallback)
+			double pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
+			if (LOWORD(wparam) == SB_THUMBTRACK && SliderValueCallback)
 			{
-				double pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
-				SliderValueCallback(m_val_converter->fromNormalizedToValue(pos/1000.0));
+				SliderValueCallback(GenericNotifications::DuringManipulation, m_val_converter->fromNormalizedToValue(pos/1000.0));
+				return true;
+			}
+			if (LOWORD(wparam) == SB_ENDSCROLL && SliderValueCallback)
+			{
+				SliderValueCallback(GenericNotifications::AfterManipulation, m_val_converter->fromNormalizedToValue(pos / 1000.0));
 				return true;
 			}
 		}
@@ -271,14 +286,14 @@ void ReaSlider::setValueConverter(std::shared_ptr<IValueConverter> c)
 	setValue(m_val_converter->fromNormalizedToValue(oldnormalized));
 }
 
-WinLineEdit::WinLineEdit(HWND parent, std::string text) : WinControl(parent)
+WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("EDIT", "edit", WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+	m_hwnd = CreateWindow("EDIT", "edit", WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	setText(text);
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -314,14 +329,14 @@ bool WinLineEdit::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 	return false;
 }
 
-WinComboBox::WinComboBox(HWND parent) : WinControl(parent)
+WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeCombo(g_control_counter,0,0,20,20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	if (m_hwnd == NULL)
 		readbg() << "yngh";
