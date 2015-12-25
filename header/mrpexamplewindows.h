@@ -12,7 +12,6 @@ private:
 	std::shared_ptr<WinLineEdit> m_edit2;
 	std::shared_ptr<WinButton> m_but1;
 	std::shared_ptr<WinButton> m_but2;
-	std::shared_ptr<DoodleControl> m_doodlecontrol1;
 };
 
 HWND toggle_simple_example_window(HWND parent);

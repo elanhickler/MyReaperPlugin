@@ -49,7 +49,7 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	add_control(m_but2);
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
-	m_doodlecontrol1 = std::make_shared<DoodleControl>(this);
+	
 	setSize(500, 500);
 }
 
@@ -59,7 +59,7 @@ void SimpleExampleWindow::resized()
 	m_edit1->setBounds({ 5,5,sz.getWidth() - 10,20 });
 	m_but1->setBounds({ 5, 30 , 100 , 20 });
 	m_but2->setBounds({ sz.getWidth()-105, 30 ,100,20 });
-	m_doodlecontrol1->setBounds({ 0,55, sz.getWidth(),sz.getHeight() - 55 });
+	
 }
 
 SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider bank")
