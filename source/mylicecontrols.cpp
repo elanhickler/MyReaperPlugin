@@ -21,7 +21,7 @@ void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt
 #endif
 }
 
-TestControl::TestControl(HWND parent, bool delwhendraggedoutside) :
+TestControl::TestControl(MRPWindow* parent, bool delwhendraggedoutside) :
 	LiceControl(parent), m_delete_point_when_dragged_outside(delwhendraggedoutside) 
 {
 	m_font.SetFromHFont(CreateFont(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
@@ -309,7 +309,7 @@ fx_param_t * TestControl::getFXParamTarget(int index, int which)
 	return nullptr;
 }
 
-WaveformControl::WaveformControl(HWND parent) : LiceControl(parent)
+WaveformControl::WaveformControl(MRPWindow* parent) : LiceControl(parent)
 {
 	setWantsFocus(true);
 	m_font.SetFromHFont(CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET,
@@ -560,7 +560,7 @@ double WaveformControl::getFloatingPointProperty(int which)
 	return 0.0;
 }
 
-EnvelopeControl::EnvelopeControl(HWND parent) : LiceControl(parent) 
+EnvelopeControl::EnvelopeControl(MRPWindow* parent) : LiceControl(parent)
 {
 	m_font.SetFromHFont(CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
 		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
@@ -1052,7 +1052,7 @@ bool WaveformPainter::paint(LICE_IBitmap * bm, double starttime, double endtime,
 	return true;
 }
 
-EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(HWND parent) :
+EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(MRPWindow* parent) :
 	EnvelopeControl(parent)
 {
 	auto env = std::make_shared<breakpoint_envelope>("LFO",LICE_RGBA(0,255,0,255));

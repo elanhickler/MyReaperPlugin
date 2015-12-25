@@ -149,6 +149,7 @@ extern "C"
 			func(MRP_CastDoubleToInt);
 			func(MRP_ReturnMediaItem);
 			func(MRP_DoNothing);
+#ifdef REASCRIPTGUIWORKS
 			func(MRP_CreateWindow);
 			func(MRP_DestroyWindow);
 			func(MRP_WindowSetTitle);
@@ -168,6 +169,7 @@ extern "C"
 			func(MRP_WindowAddLiceControl);
 			func(MRP_WindowIsDirtyControl);
 			func(MRP_WindowClearDirtyControls);
+#endif
 			func(MRP_CreateArray);
 			func(MRP_DestroyArray);
 			func(MRP_GenerateSine);

@@ -1,4 +1,5 @@
 #include "lice_control.h"
+#include "mrpwindows.h"
 #include <unordered_map>
 #include "utilfuncs.h"
 #include <string>
@@ -71,9 +72,9 @@ static accelerator_register_t g_acRec =
 
 bool g_acrecinstalled=false;
 
-LiceControl::LiceControl(HWND parent) : WinControl(parent)
+LiceControl::LiceControl(MRPWindow* parent) : WinControl(parent)
 {
-	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent, wndproc, NULL);
+	m_hwnd = SWELL_CreatePlainWindow(g_hInst, parent->getWindowHandle(), wndproc, NULL);
 	if (m_hwnd == NULL)
 	{
 		readbg() << "Failed to create window for LiceControl " << this << "\n";

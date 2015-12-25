@@ -1,3 +1,4 @@
+#ifdef REASCRIPTGUIWORKS
 #include "reascriptgui.h"
 
 #include "WDL/WDL/lice/lice.h"
@@ -357,3 +358,4 @@ ReaScriptWindow* open_reascript_test_gui(std::string title)
 	ReaScriptWindow* result = new ReaScriptWindow(title);
 	return result;
 }
+#endif

@@ -16,7 +16,7 @@ HWND toggle_simple_example_window(HWND parent)
 
 SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWindow(parent,title)
 {
-	m_but1 = std::make_shared<WinButton>(m_hwnd, "Get take name");
+	m_but1 = std::make_shared<WinButton>(this, "Get take name");
 	m_but1->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		if (CountSelectedMediaItems(nullptr) > 0)
@@ -32,7 +32,7 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 		}
 	};
 	add_control(m_but1);
-	m_but2 = std::make_shared<WinButton>(m_hwnd, "Set take name");
+	m_but2 = std::make_shared<WinButton>(this, "Set take name");
 	m_but2->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		if (CountSelectedMediaItems(nullptr) > 0)
@@ -47,7 +47,7 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 		}
 	};
 	add_control(m_but2);
-	m_edit1 = std::make_shared<WinLineEdit>(m_hwnd, "No take name yet");
+	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
 	setSize(300, 90);
 }

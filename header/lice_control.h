@@ -6,6 +6,8 @@
 #include "WDL/WDL/swell/swell.h"
 #endif
 
+class MRPWindow;
+
 #include "WDL/WDL/lice/lice.h"
 #include "WDL/WDL/lice/lice_text.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
@@ -162,7 +164,7 @@ An empty control wouldn't be much fun to look at anyway.
 class LiceControl : public WinControl
 {
 public:
-	LiceControl(HWND parent);
+	LiceControl(MRPWindow* parent);
     ~LiceControl();
 
 	// The bitmap to be used for drawing is passed into the method with the PaintEvent instead of

@@ -1,4 +1,5 @@
 #include "mrpwincontrols.h"
+#include "mrpwindows.h"
 #include "utilfuncs.h"
 #ifdef WIN32
 #include "Commctrl.h"
@@ -17,7 +18,7 @@ int get_wincontrol_leak_count()
 	return g_leak_counter;
 }
 
-WinControl::WinControl(HWND parent)
+WinControl::WinControl(MRPWindow* parent)
 {
 	m_parent = parent;
 	++g_control_counter;
@@ -149,15 +150,15 @@ void WinControl::setObjectName(std::string name)
 	m_object_name = name;
 }
 
-WinButton::WinButton(HWND parent, std::string text) :
+WinButton::WinButton(MRPWindow* parent, std::string text) :
 	WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
+	m_hwnd = CreateWindow("BUTTON", "button", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeButton(0, text.c_str(), g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -190,14 +191,14 @@ bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return false;
 }
 
-WinLabel::WinLabel(HWND parent, std::string text) : WinControl(parent)
+WinLabel::WinLabel(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent,
+	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -215,15 +216,15 @@ std::string WinLabel::getText()
 	return std::string(buf);
 }
 
-ReaSlider::ReaSlider(HWND parent, double initpos) : WinControl(parent)
+ReaSlider::ReaSlider(MRPWindow* parent, double initpos) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent,
+	m_hwnd = CreateWindow("REAPERhfader", "slider", WS_CHILD | WS_TABSTOP, 5, 5, 30, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeControl("REAPERhfader", g_control_counter, "REAPERhfader",
 		WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, 0);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	m_val_converter = std::make_shared<LinearValueConverter>(0.0,1.0);
 	int slidpos = 1000*m_val_converter->toNormalizedFromValue(initpos);
@@ -282,14 +283,14 @@ void ReaSlider::setValueConverter(std::shared_ptr<IValueConverter> c)
 	setValue(m_val_converter->fromNormalizedToValue(oldnormalized));
 }
 
-WinLineEdit::WinLineEdit(HWND parent, std::string text) : WinControl(parent)
+WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("EDIT", "edit", WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+	m_hwnd = CreateWindow("EDIT", "edit", WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	setText(text);
 	ShowWindow(m_hwnd, SW_SHOW);
@@ -325,14 +326,14 @@ bool WinLineEdit::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 	return false;
 }
 
-WinComboBox::WinComboBox(HWND parent) : WinControl(parent)
+WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent,
+	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeCombo(g_control_counter,0,0,20,20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
-	SetParent(m_hwnd, parent);
+	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	if (m_hwnd == NULL)
 		readbg() << "yngh";

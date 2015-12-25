@@ -344,7 +344,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 {
 	for (int i = 0; i < 8; ++i)
 	{
-		auto but = std::make_shared<WinButton>(m_hwnd, std::to_string(i));
+		auto but = std::make_shared<WinButton>(this, std::to_string(i));
 		but->GenericNotifyCallback = [i](GenericNotifications)
 		{
 			readbg() << "you pressed " << i << "\n";
@@ -356,7 +356,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_controls[1]->setEnabled(!m_controls[1]->isEnabled());
 	};
-	m_envcontrol1 = std::make_shared<EnvelopeControl>(m_hwnd);
+	m_envcontrol1 = std::make_shared<EnvelopeControl>(this);
 	
 	// Button 3 toggless enabled state of envelope control
 	m_controls[3]->GenericNotifyCallback = [this](GenericNotifications)
@@ -388,10 +388,10 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		generate_items_sequence(env, m_edit1->getText().c_str());
 	};
 
-	m_label1 = std::make_shared<WinLabel>(m_hwnd, "This is a label");
+	m_label1 = std::make_shared<WinLabel>(this, "This is a label");
 	add_control(m_label1);
 	
-	m_edit1 = std::make_shared<WinLineEdit>(m_hwnd, "C:/MusicAudio/pihla_ei/ei_mono_005.wav");
+	m_edit1 = std::make_shared<WinLineEdit>(this, "C:/MusicAudio/pihla_ei/ei_mono_005.wav");
 	add_control(m_edit1);
 	m_edit1->TextCallback = [this](std::string txt)
 	{
@@ -411,7 +411,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		{ return pt.get_y() > 0.5; });
 		m_envcontrol1->repaint();
 	};
-	m_combo1 = std::make_shared<WinComboBox>(m_hwnd);
+	m_combo1 = std::make_shared<WinComboBox>(this);
 	m_combo1->addItem("Apple", -9001);
 	m_combo1->addItem("Pear", 666);
 	m_combo1->addItem("Kiwi", 42);
@@ -424,7 +424,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	add_control(m_combo1);
 	m_combo1->setSelectedUserID(42);
 
-	m_combo2 = std::make_shared<WinComboBox>(m_hwnd);
+	m_combo2 = std::make_shared<WinComboBox>(this);
 	m_combo2->addItem("Item 1", 100);
 	m_combo2->addItem("Item 2", 101);
 	m_combo2->addItem("Item 3", 102);
@@ -437,7 +437,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	add_control(m_combo2);
 	m_combo2->setSelectedIndex(0);
 	
-	m_slider1 = std::make_shared<ReaSlider>(m_hwnd, 0.5);
+	m_slider1 = std::make_shared<ReaSlider>(this, 0.5);
 	m_slider1->setValueConverter(std::make_shared<FFTSizesValueConverter>());
 	m_slider1->SliderValueCallback = [this](double x)
 	{
@@ -470,22 +470,22 @@ void TestMRPPWindow::resized()
 
 void TestMRPModalWindow::init_modal_dialog()
 {
-	add_control(std::make_shared<WinButton>(m_hwnd, "OK"));
+	add_control(std::make_shared<WinButton>(this, "OK"));
 	m_controls[0]->setBounds({ 5, 35, 50, 30 });
 	m_controls[0]->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		finishModal(Accepted);
 	};
-	add_control(std::make_shared<WinButton>(m_hwnd, "Cancel"));
+	add_control(std::make_shared<WinButton>(this, "Cancel"));
 	m_controls[1]->setBounds({ 60, 35, 50, 30 });
 	m_controls[1]->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		finishModal(Rejected);
 	};
-	m_line_edit = std::make_shared<WinLineEdit>(m_hwnd,"Sample text");
+	m_line_edit = std::make_shared<WinLineEdit>(this,"Sample text");
 	m_line_edit->setBounds({ 55, 5, getSize().getWidth() - 100, 25 });
 	add_control(m_line_edit);
-	auto label = std::make_shared<WinLabel>(m_hwnd,"Foobarbaz");
+	auto label = std::make_shared<WinLabel>(this,"Foobarbaz");
 	add_control(label);
 	label->setBounds({ 5, 5, 45, 20 });
 }
