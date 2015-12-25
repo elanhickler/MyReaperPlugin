@@ -10,6 +10,8 @@
 		C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */ = {isa = PBXBuildFile; fileRef = C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */; };
 		C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */; };
 		C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */; };
+		C43CE9AB1C2CDB4B00315BC9 /* mrpexamplewindows.h in Headers */ = {isa = PBXBuildFile; fileRef = C43CE9AA1C2CDB4B00315BC9 /* mrpexamplewindows.h */; };
+		C43CE9AD1C2CDB5500315BC9 /* mrpexamplewindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */; };
 		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
 		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
 		C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */ = {isa = PBXBuildFile; fileRef = C477BA3D1C2AC74500113894 /* mrpwindows.h */; };
@@ -24,8 +26,6 @@
 		C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6971C1BAE94005C6CCC /* lice_arc.cpp */; };
 		C484E69B1C1BAE94005C6CCC /* lice_line.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6981C1BAE94005C6CCC /* lice_line.cpp */; };
 		C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6991C1BAE94005C6CCC /* lice.cpp */; };
-		C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */; };
-		C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064A1C1A3AE000186D68 /* MyFirstDialog.h */; };
 		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
 		C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C486A0C31C238CFC00FF41C8 /* reascript.hpp */; };
 		C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */; };
@@ -48,6 +48,8 @@
 		C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reascriptgui.h; path = ../header/reascriptgui.h; sourceTree = "<group>"; };
 		C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reascriptgui.cpp; path = ../source/reascriptgui.cpp; sourceTree = "<group>"; };
 		C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_textnew.cpp; path = ../library/WDL/WDL/lice/lice_textnew.cpp; sourceTree = "<group>"; };
+		C43CE9AA1C2CDB4B00315BC9 /* mrpexamplewindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpexamplewindows.h; path = ../header/mrpexamplewindows.h; sourceTree = "<group>"; };
+		C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpexamplewindows.cpp; path = ../source/mrpexamplewindows.cpp; sourceTree = "<group>"; };
 		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
 		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
 		C477BA3D1C2AC74500113894 /* mrpwindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpwindows.h; path = ../header/mrpwindows.h; sourceTree = "<group>"; };
@@ -63,8 +65,6 @@
 		C484E6981C1BAE94005C6CCC /* lice_line.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_line.cpp; path = ../library/WDL/WDL/lice/lice_line.cpp; sourceTree = "<group>"; };
 		C484E6991C1BAE94005C6CCC /* lice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice.cpp; path = ../library/WDL/WDL/lice/lice.cpp; sourceTree = "<group>"; };
 		C484E69F1C1BB435005C6CCC /* utilfuncs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utilfuncs.h; path = ../header/utilfuncs.h; sourceTree = "<group>"; };
-		C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MyFirstDialog.cpp; path = ../source/MyFirstDialog.cpp; sourceTree = "<group>"; };
-		C486064A1C1A3AE000186D68 /* MyFirstDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstDialog.h; path = ../header/MyFirstDialog.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
 		C486A0C31C238CFC00FF41C8 /* reascript.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reascript.hpp; path = ../reascript.hpp; sourceTree = "<group>"; };
 		C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpwincontrols.cpp; path = ../source/mrpwincontrols.cpp; sourceTree = "<group>"; };
@@ -132,9 +132,9 @@
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
 				C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */,
 				C477BA3D1C2AC74500113894 /* mrpwindows.h */,
+				C43CE9AA1C2CDB4B00315BC9 /* mrpexamplewindows.h */,
 				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
-				C486064A1C1A3AE000186D68 /* MyFirstDialog.h */,
 				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 			);
 			name = header;
@@ -146,11 +146,11 @@
 				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
 				C4A793C01C28F59900C60DC9 /* lice_control.cpp */,
 				C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */,
+				C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */,
 				C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */,
 				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
-				C48606481C1A3ACF00186D68 /* MyFirstDialog.cpp */,
 				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 			);
 			name = source;
@@ -217,9 +217,9 @@
 				C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */,
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
 				C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */,
-				C486064B1C1A3AE000186D68 /* MyFirstDialog.h in Headers */,
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
+				C43CE9AB1C2CDB4B00315BC9 /* mrpexamplewindows.h in Headers */,
 				C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
 				C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */,
@@ -285,6 +285,7 @@
 				C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */,
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
+				C43CE9AD1C2CDB5500315BC9 /* mrpexamplewindows.cpp in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
 				C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
@@ -298,7 +299,6 @@
 				C484E6911C1BAD49005C6CCC /* swell-misc.mm in Sources */,
 				C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */,
 				C484E69B1C1BAE94005C6CCC /* lice_line.cpp in Sources */,
-				C48606491C1A3ACF00186D68 /* MyFirstDialog.cpp in Sources */,
 				E3E1DB0D1C18C67100D648F5 /* main.cpp in Sources */,
 				C484E6921C1BAD49005C6CCC /* swell-miscdlg.mm in Sources */,
 			);
