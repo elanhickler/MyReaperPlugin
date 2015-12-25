@@ -120,6 +120,31 @@ private:
 	double m_max_value = 1.0;
 };
 
+template<typename T>
+class copy_on_write
+{
+public:
+	copy_on_write() { m_x = std::make_shared<T>(); }
+	copy_on_write(T x) { m_x = std::make_shared<T>(x); }
+	copy_on_write(const copy_on_write&) = delete;
+	copy_on_write(copy_on_write&&) = delete;
+	copy_on_write& operator=(const copy_on_write&) = delete;
+	copy_on_write& operator=(copy_on_write&&) = delete;
+	const T& read() const { return *m_x; }
+	T& write() 
+	{ 
+		detach_if_needed();
+		return *m_x; 
+	}
+private:
+	std::shared_ptr<T> m_x;
+	void detach_if_needed()
+	{
+		if (m_x.unique() == false)
+			m_x = std::make_shared<T>(*m_x);
+	}
+};
+
 namespace MRP
 {
 	enum class Anchor

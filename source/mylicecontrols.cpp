@@ -1090,3 +1090,78 @@ EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(MRPWindow* pa
 		
 	};
 }
+
+DoodleControl::DoodleControl(MRPWindow * parent) : LiceControl(parent)
+{
+	m_current_bitmap = std::make_shared<LICE_MemBitmap>(1000, 1000);
+	LICE_FillRect(m_current_bitmap.get(), 0, 0, 1000, 1000, 0);
+	add_undo_state();
+}
+
+void DoodleControl::add_undo_state()
+{
+	auto temp = std::make_shared<LICE_MemBitmap>(1000, 1000);
+	LICE_Copy(temp.get(), m_current_bitmap.get());
+	m_history.push_back(temp);
+	++m_undo_level;
+}
+
+void DoodleControl::paint(PaintEvent & ev)
+{
+	LICE_Blit(ev.bm, m_current_bitmap.get(), 0, 0, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), 1.0f, 0);
+}
+
+void DoodleControl::mousePressed(const MouseEvent & ev)
+{
+	m_mousedown = true;
+}
+
+void DoodleControl::mouseMoved(const MouseEvent & ev)
+{
+	if (m_mousedown == true)
+	{
+		LICE_FillCircle(m_current_bitmap.get(), ev.m_x, ev.m_y, 5.0f, LICE_RGBA(0, 255, 0, 255), 1.0f, true);
+		repaint();
+	}
+}
+
+void DoodleControl::mouseReleased(const MouseEvent & ev)
+{
+	m_mousedown = false;
+	add_undo_state();
+	readbg() << "now at undo level " << m_undo_level << "\n";
+}
+
+bool DoodleControl::keyPressed(const ModifierKeys & modkeys, int keycode)
+{
+	if (keycode == 'Z')
+	{
+		if (modkeys.areModifiersDown({ ModifierKey::MKControl,ModifierKey::MKShift }))
+		{
+			++m_undo_level;
+			if (m_undo_level == m_history.size())
+				m_undo_level = m_history.size() - 1;
+			readbg() << "redo : now at undo level " << m_undo_level << "\n";
+			m_current_bitmap = m_history[m_undo_level];
+			repaint();
+			return true;
+		}
+		if (modkeys.areModifiersDown({ ModifierKey::MKControl }))
+		{
+			--m_undo_level;
+			if (m_undo_level < 0)
+				m_undo_level = 0;
+			readbg() << "undo : now at undo level " << m_undo_level << "\n";
+			m_current_bitmap = m_history[m_undo_level];
+			repaint();
+			return true;
+		}
+		
+		return true;
+	}
+	if (keycode == 'Z' && modkeys.areModifiersDown({ ModifierKey::MKControl,ModifierKey::MKShift }))
+	{
+		
+	}
+	return false;
+}

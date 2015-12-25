@@ -210,3 +210,21 @@ public:
 	EnvelopeGeneratorEnvelopeControl(MRPWindow* parent);
 	
 };
+
+class DoodleControl : public LiceControl
+{
+public:
+	DoodleControl(MRPWindow* parent);
+	void paint(PaintEvent& ev) override;
+	void mousePressed(const MouseEvent& ev) override;
+	void mouseMoved(const MouseEvent& ev);
+	void mouseReleased(const MouseEvent& ev);
+	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
+	std::string getType() const override { return "DoodleControl"; }
+private:
+	std::vector<std::shared_ptr<LICE_MemBitmap>> m_history;
+	std::shared_ptr<LICE_MemBitmap> m_current_bitmap;
+	bool m_mousedown = false;
+	int m_undo_level = -1;
+	void add_undo_state();
+};
