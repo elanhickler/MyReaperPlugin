@@ -1157,9 +1157,5 @@ bool DoodleControl::keyPressed(const ModifierKeys & modkeys, int keycode)
 		
 		return true;
 	}
-	if (keycode == 'Z' && modkeys.areModifiersDown({ ModifierKey::MKControl,ModifierKey::MKShift }))
-	{
-		
-	}
 	return false;
 }
