@@ -1100,7 +1100,7 @@ DoodleControl::DoodleControl(MRPWindow * parent) : LiceControl(parent)
 
 void DoodleControl::add_undo_state()
 {
-	m_dochistory.emplace_back(m_current_bitmap.get(),32);
+	m_dochistory.emplace_back(m_current_bitmap.get(),64);
 	++m_undo_level;
 }
 
