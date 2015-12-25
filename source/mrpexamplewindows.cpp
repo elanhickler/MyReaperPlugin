@@ -59,3 +59,57 @@ void SimpleExampleWindow::resized()
 	m_but1->setBounds({ 5,sz.getHeight() - 25,100,20 });
 	m_but2->setBounds({ sz.getWidth()-105,sz.getHeight() - 25,100,20 });
 }
+
+SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider bank")
+{
+	int numsliders = 16;
+	for (int i = 0; i < numsliders; ++i)
+	{
+		slider_controls entry;
+		entry.m_slider = std::make_shared<ReaSlider>(this,1.0/numsliders*i);
+		entry.m_slider->SliderValueCallback=[this,i](double v)
+		{
+			on_slider_value_changed(i, v);
+		};
+		entry.m_label = std::make_shared<WinLabel>(this, std::string("Slider " + std::to_string(i + 1)));
+		entry.m_editbox = std::make_shared<WinLineEdit>(this, "foo");
+		add_control(entry.m_slider);
+		add_control(entry.m_editbox);
+		add_control(entry.m_label);
+		m_sliders.push_back(entry);
+	}
+	setSize(500, numsliders*25+40);
+}
+
+void SliderBankWindow::resized()
+{
+	MRP::Size sz = getSize();
+	int labw = 90;
+	int editw = 60;
+	for (int i = 0; i < m_sliders.size(); ++i)
+	{
+		m_sliders[i].m_label->setBounds({ 5,5 + i * 25, labw , 20 });
+		m_sliders[i].m_slider->setBounds({ labw+10, 5 + i * 25, sz.getWidth() - labw - editw - 20 , 20 });
+		int slidright = m_sliders[i].m_slider->getBounds().getRight();
+		m_sliders[i].m_editbox->setBounds({ labw + slidright + 15 ,5 + i * 25,editw, 20 });
+	}
+}
+
+void SliderBankWindow::on_slider_value_changed(int slidindex, double v)
+{
+	//readbg() << slidindex << " moved to " << v << "\n";
+}
+
+SliderBankWindow* g_sliderbankwindow = nullptr;
+
+HWND toggle_sliderbank_window(HWND parent)
+{
+	if (g_sliderbankwindow == nullptr)
+	{
+		g_sliderbankwindow = new SliderBankWindow(parent);
+		// Currently, if this isn't set to true, crash on Reaper quit
+		g_sliderbankwindow->setDestroyOnClose(true);
+	}
+	g_sliderbankwindow->setVisible(true);
+	return g_sliderbankwindow->getWindowHandle();
+}

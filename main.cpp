@@ -128,6 +128,11 @@ extern "C"
 				toggle_simple_example_window(g_parent);
 			});
 
+				add_action("MRP : Toggle slider bank window", "MRP_SHOW_WINCONTROLSLIDERBANK", ToggleOff, [](action_entry&)
+			{
+				toggle_sliderbank_window(g_parent);
+			}); 
+
 			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
 				open_win_controls_window(g_parent);
