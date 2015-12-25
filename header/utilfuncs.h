@@ -179,9 +179,9 @@ namespace MRP
 		GenericSize(T w, T h) : m_w(w), m_h(h) {}
 		T getWidth() const noexcept { return m_w; }
 		T getHeight() const noexcept { return m_h; }
-		void setWidth(T w) { m_w = w };
+		void setWidth(T w) { m_w = w; };
 		void setHeight(T h) { m_h = h; }
-		bool isValid() const noexcept { return w > 0 && h > 0; }
+		bool isValid() const noexcept { return m_w > 0 && m_h > 0; }
 	private:
 		T m_w;
 		T m_h;
@@ -200,8 +200,8 @@ namespace MRP
 		T getY() const noexcept { return m_y; }
 		T getRight() const noexcept { return m_x + m_w; }
 		T getBottom() const noexcept { return m_y + m_h; }
-		T getMiddleX() const noexcept { return m_x + m_w / 2 }
-		T getMiddleY() const noexcept { return m_y + m_h / 2 }
+		T getMiddleX() const noexcept { return m_x + m_w / 2; }
+		T getMiddleY() const noexcept { return m_y + m_h / 2; }
 		T getWidth() const noexcept { return m_w; }
 		T getHeight() const noexcept { return m_h; }
 
@@ -254,15 +254,15 @@ namespace MRP
 		}
 		GenericRectangle<T> leftShifted(T dx)
 		{
-			return GenericRectangle<T>(m_x + dx, y, m_w - dx, m_h);
+			return GenericRectangle<T>(m_x + dx, m_y, m_w - dx, m_h);
 		}
 		GenericRectangle<T> rightShifted(T dx)
 		{
-			return GenericRectangle<T>(m_x, y, m_w + dx, m_h);
+			return GenericRectangle<T>(m_x, m_y, m_w + dx, m_h);
 		}
 		GenericRectangle<T> withHorizontalMargins(T margin)
 		{
-			return GenericRectangle<T>(m_x + margin, y, m_w - 2 * margin, m_h);
+			return GenericRectangle<T>(m_x + margin, m_y, m_w - 2 * margin, m_h);
 		}
 		static GenericRectangle<T> anchoredToBottomOf(const GenericRectangle<T>& g,
 			T x, T w, T h, T offset_from_bottom)
@@ -278,7 +278,7 @@ namespace MRP
 				return GenericRectangle<T>(g.m_x, g.getBottom() - h, w, h);
 			if (anchor == Anchor::BottomRight)
 				return GenericRectangle<T>(g.m_x + g.m_w - w, g.getBottom() - h, w, h);
-			if (anchor == Anchor::Bottom)
+			if (anchor == Anchor::BottomMiddle)
 				return GenericRectangle<T>(g.m_x, g.getBottom() - h, g.getWidth(), h);
 			return GenericRectangle<T>();
 		}
