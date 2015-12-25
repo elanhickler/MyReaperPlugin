@@ -141,7 +141,7 @@ class ReaSlider : public WinControl
 public:
 	ReaSlider(MRPWindow* parent, double initpos = 0.5);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-	std::function<void(double)> SliderValueCallback;
+	std::function<void(GenericNotifications,double)> SliderValueCallback;
 	double getValue();
 	void setValue(double pos);
 	void setTickMarkPositionFromValue(double pos);

@@ -239,10 +239,15 @@ bool ReaSlider::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 		if ((HWND)lparam == m_hwnd)
 		{
-			if (SliderValueCallback)
+			double pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
+			if (LOWORD(wparam) == SB_THUMBTRACK && SliderValueCallback)
 			{
-				double pos = SendMessage((HWND)lparam, TBM_GETPOS, 0, 0);
-				SliderValueCallback(m_val_converter->fromNormalizedToValue(pos/1000.0));
+				SliderValueCallback(GenericNotifications::DuringManipulation, m_val_converter->fromNormalizedToValue(pos/1000.0));
+				return true;
+			}
+			if (LOWORD(wparam) == SB_ENDSCROLL && SliderValueCallback)
+			{
+				SliderValueCallback(GenericNotifications::AfterManipulation, m_val_converter->fromNormalizedToValue(pos / 1000.0));
 				return true;
 			}
 		}

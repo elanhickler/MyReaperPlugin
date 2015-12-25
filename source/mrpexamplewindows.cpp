@@ -67,9 +67,10 @@ SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider b
 	{
 		slider_controls entry;
 		entry.m_slider = std::make_shared<ReaSlider>(this,1.0/numsliders*i);
-		entry.m_slider->SliderValueCallback=[this,i](double v)
+		entry.m_slider->SliderValueCallback=[this,i](GenericNotifications reason, double v)
 		{
-			on_slider_value_changed(i, v);
+			if (reason==GenericNotifications::AfterManipulation)
+				on_slider_value_changed(i, v);
 		};
 		entry.m_label = std::make_shared<WinLabel>(this, std::string("Slider " + std::to_string(i + 1)));
 		entry.m_editbox = std::make_shared<WinLineEdit>(this, "foo");
@@ -97,7 +98,7 @@ void SliderBankWindow::resized()
 
 void SliderBankWindow::on_slider_value_changed(int slidindex, double v)
 {
-	//readbg() << slidindex << " moved to " << v << "\n";
+	readbg() << slidindex << " moved to " << v << "\n";
 }
 
 SliderBankWindow* g_sliderbankwindow = nullptr;

@@ -439,7 +439,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	
 	m_slider1 = std::make_shared<ReaSlider>(this, 0.5);
 	m_slider1->setValueConverter(std::make_shared<FFTSizesValueConverter>());
-	m_slider1->SliderValueCallback = [this](double x)
+	m_slider1->SliderValueCallback = [this](GenericNotifications,double x)
 	{
 		m_label1->setText(std::to_string(x));
 	};
