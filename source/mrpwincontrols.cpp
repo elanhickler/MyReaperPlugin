@@ -77,8 +77,6 @@ void WinControl::setEnabled(bool b)
 #endif
 }
 
-// get*Position are suspect. Copy pasted from Stackoverflow answer
-
 int WinControl::getXPosition() const
 {
 	RECT r;
