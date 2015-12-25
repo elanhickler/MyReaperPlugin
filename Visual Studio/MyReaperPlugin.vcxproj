@@ -28,6 +28,7 @@
     <ClCompile Include="..\source\mrpexamplewindows.cpp" />
     <ClCompile Include="..\source\mrpwincontrols.cpp" />
     <ClCompile Include="..\source\mrpwindows.cpp" />
+    <ClCompile Include="..\source\mrp_pcm_source.cpp" />
     <ClCompile Include="..\source\MyFirstClass.cpp" />
     <ClCompile Include="..\source\mylicecontrols.cpp" />
     <ClCompile Include="..\source\reaper_action_helper.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="..\header\mrpexamplewindows.h" />
     <ClInclude Include="..\header\mrpwincontrols.h" />
     <ClInclude Include="..\header\mrpwindows.h" />
+    <ClInclude Include="..\header\mrp_pcm_source.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\mylicecontrols.h" />
     <ClInclude Include="..\header\reaper_action_helper.h" />
