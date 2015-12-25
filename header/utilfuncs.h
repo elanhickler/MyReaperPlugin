@@ -126,10 +126,23 @@ class copy_on_write
 public:
 	copy_on_write() { m_x = std::make_shared<T>(); }
 	copy_on_write(T x) { m_x = std::make_shared<T>(x); }
-	copy_on_write(const copy_on_write&) = delete;
-	copy_on_write(copy_on_write&&) = delete;
-	copy_on_write& operator=(const copy_on_write&) = delete;
-	copy_on_write& operator=(copy_on_write&&) = delete;
+	copy_on_write(const copy_on_write& other)
+	{
+		m_x = other.m_x;
+	}
+	//copy_on_write(copy_on_write&&) = delete;
+	/*
+	copy_on_write& operator=(const copy_on_write& other)
+	{
+		detach_if_needed();
+		m_x = other.m_x;
+	}
+	*/
+	copy_on_write& operator=(copy_on_write&& other)
+	{
+		std::swap(m_x, other.m_x);
+		return *this;
+	}
 	const T& read() const { return *m_x; }
 	T& write() 
 	{ 

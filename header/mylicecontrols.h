@@ -211,6 +211,46 @@ public:
 	
 };
 
+class licebitmaphandle
+{
+public:
+	licebitmaphandle() {}
+	~licebitmaphandle()
+	{
+		delete m_bm;
+	}
+	licebitmaphandle(int w, int h)
+	{
+		m_bm = new LICE_MemBitmap(w, h);
+	}
+	licebitmaphandle(const licebitmaphandle& other)
+	{
+		m_bm = new LICE_MemBitmap(other.m_bm->getWidth(),other.m_bm->getHeight());
+		LICE_Copy(m_bm, other.m_bm);
+	}
+	licebitmaphandle(licebitmaphandle&& other)
+	{
+		m_bm = other.m_bm;
+		other.m_bm = nullptr;
+	}
+	/*
+	licebitmaphandle& operator = (const licebitmaphandle& other)
+	{
+		delete m_bm;
+		m_bm = new LICE_MemBitmap(other.m_bm->getWidth(), other.m_bm->getHeight());
+		LICE_Copy(m_bm, other.m_bm);
+	}
+	*/
+	licebitmaphandle& operator = (licebitmaphandle&& other)
+	{
+		std::swap(other.m_bm, m_bm);
+		return *this;
+	}
+	LICE_MemBitmap* get() const { return m_bm; }
+private:
+	LICE_MemBitmap* m_bm = nullptr;
+};
+
 class DoodleControl : public LiceControl
 {
 public:
@@ -222,7 +262,47 @@ public:
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::string getType() const override { return "DoodleControl"; }
 private:
-	std::vector<std::shared_ptr<LICE_MemBitmap>> m_history;
+	struct document_t
+	{
+		document_t() {}
+		document_t(LICE_MemBitmap* srcbm, int tilesize) 
+		{
+			m_tilesize = tilesize;
+			int horztiles = srcbm->getWidth() / tilesize;
+			int verttiles = srcbm->getHeight() / tilesize;
+			m_tiles.resize(horztiles*verttiles);
+			for (int i = 0; i < horztiles; ++i)
+			{
+				for (int j = 0; j < verttiles; ++j)
+				{
+					licebitmaphandle bmh(tilesize, tilesize);
+					int srcx = i*tilesize;
+					int srcy = j*tilesize;
+					LICE_Blit(bmh.get(), srcbm, 0, 0, srcx, srcy, tilesize, tilesize, 1.0f, 0);
+					m_tiles[i * horztiles + j] = copy_on_write<licebitmaphandle>(bmh);
+				}
+			}
+		}
+		void stitch(LICE_MemBitmap* destbm)
+		{
+			int horztiles = destbm->getWidth() / m_tilesize;
+			int verttiles = destbm->getHeight() / m_tilesize;
+			for (int i = 0; i < horztiles; ++i)
+			{
+				for (int j = 0; j < verttiles; ++j)
+				{
+					
+					LICE_MemBitmap* srcbm = m_tiles[i * horztiles + j].read().get();
+					int destx = i*m_tilesize;
+					int desty = j*m_tilesize;
+					LICE_Blit(destbm, srcbm, destx, desty, 0, 0, m_tilesize, m_tilesize, 1.0f, 0);
+				}
+			}
+		}
+		std::vector<copy_on_write<licebitmaphandle>> m_tiles;
+		int m_tilesize = 0;
+	};
+	std::vector<document_t> m_dochistory;
 	std::shared_ptr<LICE_MemBitmap> m_current_bitmap;
 	bool m_mousedown = false;
 	int m_undo_level = -1;

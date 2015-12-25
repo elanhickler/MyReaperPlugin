@@ -1100,9 +1100,7 @@ DoodleControl::DoodleControl(MRPWindow * parent) : LiceControl(parent)
 
 void DoodleControl::add_undo_state()
 {
-	auto temp = std::make_shared<LICE_MemBitmap>(1000, 1000);
-	LICE_Copy(temp.get(), m_current_bitmap.get());
-	m_history.push_back(temp);
+	m_dochistory.emplace_back(m_current_bitmap.get(),32);
 	++m_undo_level;
 }
 
@@ -1139,10 +1137,10 @@ bool DoodleControl::keyPressed(const ModifierKeys & modkeys, int keycode)
 		if (modkeys.areModifiersDown({ ModifierKey::MKControl,ModifierKey::MKShift }))
 		{
 			++m_undo_level;
-			if (m_undo_level == m_history.size())
-				m_undo_level = m_history.size() - 1;
+			if (m_undo_level == m_dochistory.size())
+				m_undo_level = m_dochistory.size() - 1;
 			readbg() << "redo : now at undo level " << m_undo_level << "\n";
-			m_current_bitmap = m_history[m_undo_level];
+			m_dochistory[m_undo_level].stitch(m_current_bitmap.get());
 			repaint();
 			return true;
 		}
@@ -1152,7 +1150,7 @@ bool DoodleControl::keyPressed(const ModifierKeys & modkeys, int keycode)
 			if (m_undo_level < 0)
 				m_undo_level = 0;
 			readbg() << "undo : now at undo level " << m_undo_level << "\n";
-			m_current_bitmap = m_history[m_undo_level];
+			m_dochistory[m_undo_level].stitch(m_current_bitmap.get());
 			repaint();
 			return true;
 		}
