@@ -32,6 +32,7 @@ double MRP_PCMSource::GetSampleRate()
 
 double MRP_PCMSource::GetLength()
 {
+	// Have to return some length in seconds here, 11 days seems long enough :)
 	return 1000000.0;
 }
 
@@ -112,7 +113,11 @@ void test_pcm_source(int op)
 			g_test_source = std::make_shared<MRP_PCMSource>(mydsp);
 			g_prev_reg.src = g_test_source.get();
 			g_prev_reg.volume = 1.0;
+#ifdef WIN32
 			InitializeCriticalSection(&g_prev_reg.cs);
+#else
+			// pthread init stuff needed here!
+#endif
 		}
 		if (g_is_playing == false)
 		{
@@ -127,11 +132,15 @@ void test_pcm_source(int op)
 			g_is_playing = false;
 		}
 	}
-	else if (op == 1)
+	else if (op == 1) // Clean up on Reaper shutdown
 	{
 		if (g_is_playing == true)
 			StopPreview(&g_prev_reg);
 		g_test_source.reset();
+#ifdef WIN32
 		DeleteCriticalSection(&g_prev_reg.cs);
+#else
+		// pthread destroy stuff needed here!
+#endif
 	}
 }
