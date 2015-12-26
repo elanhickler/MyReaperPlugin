@@ -64,8 +64,11 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	{
 		int user_id = m_listbox1->userIDfromIndex(index);
 		MediaItem* itemfromlist = m_itemmap[user_id];
-		m_edit1->setText(std::string("You chose item with mem address " +
+		if (ValidatePtr((void*)itemfromlist,"MediaItem*")==true)
+		{
+			m_edit1->setText(std::string("You chose item with mem address " +
 									 std::to_string((uint64_t)itemfromlist) + " from the listbox"));
+		} else m_edit1->setText(("You chose an item from listbox that's no longer valid!"));
 	};
 	add_control(m_listbox1);
 	setSize(500, 500);
@@ -90,9 +93,7 @@ void SimpleExampleWindow::populate_listbox()
 				// Note that the item pointers stored into this map
 				// may easily become invalid if the items are removed by the user etc...
 				// It doesn't matter in this code as we don't dereference the pointers in any way yet.
-				// Real code should iterate over the project items and check the item pointers
-				// used by code like this are still there
-				
+				// Note how the validation can be done in the button3 handler lambda!
 				m_itemmap[i]=item;
 			}
 			
