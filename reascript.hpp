@@ -148,10 +148,10 @@ function_entry MRP_MultiplyArraysMT("void", "MRP_Array*,MRP_Array*,MRP_Array*", 
 		ReaScriptError("MRP_MultiplyArraysMT : incompatible array lengths");
 		return (void*)nullptr;
 	}
-	Concurrency::parallel_for((size_t)0, vecref0.size(), [&vecref0, &vecref1, &vecref2](size_t index) 
+	Concurrency::parallel_for((size_t)0, vecref0.size(), (size_t)1, [&vecref0, &vecref1, &vecref2](size_t index) 
 	{
 		vecref2[index] = vecref0[index] * vecref1[index];
-	},Concurrency::static_partitioner());
+	});
 	return (void*)nullptr;
 },
 "Multiply 2 MRP_Arrays of same length. Result is written to 3rd array. Uses multiple threads."
