@@ -163,8 +163,11 @@ extern "C"
 			func(MRP_CreateWindow);
 			func(MRP_DestroyWindow);
 			func(MRP_WindowIsClosed);
-#ifdef REASCRIPTGUIWORKS
 			func(MRP_WindowSetTitle);
+			func(MRP_WindowAddControl);
+			func(MRP_SetControlBounds);
+#ifdef REASCRIPTGUIWORKS
+			
 			
 			func(MRP_GetControlText);
 			func(MRP_SetControlText);
@@ -172,7 +175,7 @@ extern "C"
 			func(MRP_SetControlFloatNumber);
 			func(MRP_SetWindowDirty);
 			func(MRP_GetWindowDirty);
-			func(MRP_SetControlBounds);
+			
 			func(MRP_GetWindowPosSizeValue);
 			func(MRP_WindowAddSlider);
 			func(MRP_WindowAddButton);

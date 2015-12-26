@@ -19,8 +19,11 @@ class ReaScriptWindow : public MRPWindow
 public:
 	ReaScriptWindow(std::string title);
 	~ReaScriptWindow();
+	void addControlFromName(std::string cname, std::string objectname);
+	void setControlBounds(std::string name, int x, int y, int w, int h);
 private:
 	std::vector<char> m_leak_test;
+	WinControl* control_from_name(std::string name);
 };
 
 bool is_valid_reascriptwindow(ReaScriptWindow* w);

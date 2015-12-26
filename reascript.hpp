@@ -265,7 +265,7 @@ function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
 },
 "Returns if the window has been closed and the ReaScript defer loop should likely be exited"
 );
-#ifdef REASCRIPTGUIWORKS
+
 function_entry MRP_WindowSetTitle("void", "MRP_Window*,const char*", "window,title", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -277,6 +277,39 @@ function_entry MRP_WindowSetTitle("void", "MRP_Window*,const char*", "window,tit
 "Set window title"
 );
 
+function_entry MRP_WindowAddControl("void", "MRP_Window*,const char*,const char*", "window,controltypename,objectname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* controltypename = (const char*)arg[1];
+	const char* objectname = (const char*)arg[2];
+	if (w != nullptr && controltypename != nullptr && objectname!=nullptr)
+	{
+		w->addControlFromName(controltypename, objectname);
+		return_null;
+	}
+	return_null;
+},
+"Add a control to window. Controltypename is the type of control to create. Objectname must be a unique id"
+);
+
+function_entry MRP_SetControlBounds("void", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
+{
+	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	double x = (in)arg[2];
+	double y = (in)arg[3];
+	double w = (in)arg[4];
+	double h = (in)arg[5];
+	if (wptr != nullptr && cname != nullptr)
+	{
+		wptr->setControlBounds(cname, x, y, w, h);
+	}
+	return_null;
+},
+"Set MRP control position and size"
+);
+
+#ifdef REASCRIPTGUIWORKS
 function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -488,22 +521,7 @@ function_entry MRP_WindowClearDirtyControls("void", "MRP_Window*", "window", [](
 "Clear the last clicked button name of the window"
 );
 
-function_entry MRP_SetControlBounds("void", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
-{
-	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	double x = (in)arg[2];
-	double y = (in)arg[3];
-	double w = (in)arg[4];
-	double h = (in)arg[5];
-	if (wptr != nullptr && cname != nullptr)
-	{
-		wptr->setControlBounds(cname, x, y, w, h);
-	}
-	return_null;
-},
-"Set MRP control position and size"
-);
+
 
 #endif
 

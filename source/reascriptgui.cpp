@@ -17,6 +17,35 @@ ReaScriptWindow::~ReaScriptWindow()
 	g_reascriptwindows.erase(this);
 }
 
+void ReaScriptWindow::addControlFromName(std::string cname, std::string objectname)
+{
+	if (cname == "Button")
+	{
+		auto c = std::make_shared<WinButton>(this, objectname);
+		c->setObjectName(objectname);
+		c->setBounds({ 5, 5, 50, 25 });
+		add_control(c);
+	}
+}
+
+void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, int h)
+{
+	WinControl* c = control_from_name(name);
+	if (c != nullptr)
+	{
+		c->setBounds({ x, y, w, h });
+		//SetWindowPos(c->m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
+	}
+}
+
+WinControl* ReaScriptWindow::control_from_name(std::string name)
+{
+	for (auto& e : m_controls)
+		if (e->getObjectName() == name)
+			return e.get();
+	return nullptr;
+}
+
 bool is_valid_reascriptwindow(ReaScriptWindow* w)
 {
 	return g_reascriptwindows.count(w) == 1;

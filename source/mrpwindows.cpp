@@ -103,6 +103,11 @@ void MRPWindow::add_control(std::shared_ptr<WinControl> c)
 		m_controls.push_back(c);
 }
 
+void MRPWindow::setWindowTitle(std::string title)
+{
+	SetWindowText(m_hwnd, title.c_str());
+}
+
 MRP::Size MRPWindow::getSize()
 {
 	if (m_hwnd == NULL)

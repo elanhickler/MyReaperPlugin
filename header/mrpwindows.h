@@ -25,6 +25,7 @@ public:
 	bool isVisible() const;
 	void setVisible(bool b);
 	bool isClosed() { return m_is_closed; }
+	void setWindowTitle(std::string title);
 	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
