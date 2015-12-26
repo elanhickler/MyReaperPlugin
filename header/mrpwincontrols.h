@@ -147,6 +147,10 @@ public:
 	void clearItems();
 	int userIDfromIndex(int index);
 	std::function<void(int)> SelectedChangedCallback;
+	int numItems();
+	std::string getItemText(int index);
+	int getSelectedIndex();
+	void setSelectedIndex(int index);
 };
 
 class ReaSlider : public WinControl

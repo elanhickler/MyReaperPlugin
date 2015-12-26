@@ -462,6 +462,35 @@ int WinListBox::userIDfromIndex(int index)
 	return -1;
 }
 
+int WinListBox::numItems()
+{
+	return SendMessage(m_hwnd, LB_GETCOUNT, 0, 0);
+}
+
+std::string WinListBox::getItemText(int index)
+{
+	int textLen = SendMessage(m_hwnd, LB_GETTEXTLEN, index, 0);
+	if (textLen > 0)
+	{
+		std::string result(textLen+1, '\0');
+		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
+		return result;
+	}
+	return std::string();
+}
+
+int WinListBox::getSelectedIndex()
+{
+	return SendMessage(m_hwnd, LB_GETCURSEL, 0, 0);
+}
+
+void WinListBox::setSelectedIndex(int index)
+{
+	SendMessage(m_hwnd, LB_SETCURSEL, index, 0);
+}
+
+
+
 void WinListBox::clearItems()
 {
 	SendMessage(m_hwnd, LB_RESETCONTENT, 0, 0);

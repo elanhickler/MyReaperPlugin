@@ -16,6 +16,7 @@ HWND toggle_simple_example_window(HWND parent)
 
 SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWindow(parent,title)
 {
+	m_last_project_change_count = GetProjectStateChangeCount(nullptr);
 	m_but1 = std::make_shared<WinButton>(this, "Get take name");
 	m_but1->GenericNotifyCallback = [this](GenericNotifications)
 	{
@@ -62,13 +63,19 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	
 	m_listbox1->SelectedChangedCallback = [this](int index) mutable
 	{
-		int user_id = m_listbox1->userIDfromIndex(index);
-		MediaItem* itemfromlist = m_itemmap[user_id];
-		if (ValidatePtr((void*)itemfromlist,"MediaItem*")==true)
+		if (index >= 0)
 		{
-			m_edit1->setText(std::string("You chose item with mem address " +
-									 std::to_string((uint64_t)itemfromlist) + " from the listbox"));
-		} else m_edit1->setText(("You chose an item from listbox that's no longer valid!"));
+			readbg() << "you chose " << m_listbox1->getItemText(index) << " from the listbox\n";
+			int user_id = m_listbox1->userIDfromIndex(index);
+			MediaItem* itemfromlist = m_itemmap[user_id];
+			if (ValidatePtr((void*)itemfromlist, "MediaItem*") == true)
+			{
+				m_edit1->setText(std::string("You chose item with mem address " +
+					std::to_string((uint64_t)itemfromlist) + " from the listbox"));
+			}
+			else m_edit1->setText(("You chose an item from listbox that's no longer valid!"));
+		}
+		else readbg() << "you managed to choose no item from the listbox\n";
 	};
 	add_control(m_listbox1);
 	setSize(500, 500);
@@ -76,6 +83,7 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 
 void SimpleExampleWindow::populate_listbox()
 {
+	int old_index = m_listbox1->getSelectedIndex();
 	m_listbox1->clearItems();
 	m_itemmap.clear();
 	int numitems = CountMediaItems(nullptr);
@@ -98,6 +106,18 @@ void SimpleExampleWindow::populate_listbox()
 			}
 			
 		}
+	}
+	//readbg() << "listbox has " << m_listbox1->numItems() << " items\n";
+}
+
+void SimpleExampleWindow::onRefreshTimer()
+{
+	int new_count = GetProjectStateChangeCount(nullptr);
+	if (m_last_project_change_count != new_count)
+	{
+		m_last_project_change_count = new_count;
+		populate_listbox();
+		//readbg() << "project has changed! " << m_last_project_change_count << "\n";
 	}
 }
 

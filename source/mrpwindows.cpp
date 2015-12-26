@@ -178,6 +178,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			g_mrpwindowsmap[hwnd] = mrpw;
 			if (mrpw->m_is_modal == true)
 				mrpw->init_modal_dialog();
+			mrpw->m_helper_timer = SetTimer(hwnd, 0, 2000, nullptr);
 		}
 		return TRUE;
 	}
@@ -226,6 +227,18 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			}
 			return TRUE;
 		}
+	}
+	if (msg == WM_TIMER)
+	{
+		if (mptr != nullptr)
+			mptr->onRefreshTimer();
+		//readbg() << "MRPWindow 2 second timer\n";
+		return TRUE;
+	}
+	if (msg == WM_DESTROY)
+	{
+		if (mptr != nullptr)
+			KillTimer(hwnd, mptr->m_helper_timer);
 	}
 	return FALSE;
 }

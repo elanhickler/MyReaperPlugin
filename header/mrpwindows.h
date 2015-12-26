@@ -55,6 +55,7 @@ public:
 				EndDialog(m_hwnd, 2);
 		}
 	}
+	virtual void onRefreshTimer() {}
 protected:
 	HWND m_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
@@ -63,6 +64,7 @@ protected:
 	bool m_is_modal = false;
 	bool m_modal_should_end = false;
 	ModalResult m_modal_result = Rejected;
+	UINT_PTR m_helper_timer = 0;
 };
 
 void shutdown_windows();
