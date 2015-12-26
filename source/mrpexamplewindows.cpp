@@ -87,6 +87,12 @@ void SimpleExampleWindow::populate_listbox()
 			if (GetSetMediaItemTakeInfo_String(take,"P_NAME",namebuf,false))
 			{
 				m_listbox1->addItem(namebuf, i);
+				// Note that the item pointers stored into this map
+				// may easily become invalid if the items are removed by the user etc...
+				// It doesn't matter in this code as we don't dereference the pointers in any way yet.
+				// Real code should iterate over the project items and check the item pointers
+				// used by code like this are still there
+				
 				m_itemmap[i]=item;
 			}
 			
