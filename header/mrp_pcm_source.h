@@ -133,6 +133,7 @@ private:
 	std::shared_ptr<MRP_AudioDSP> m_dsp;
 	// mutex guards changing the dsp object while playing back
 	std::mutex m_mutex;
+	int64_t m_playpos = 0;
 };
 
 void test_pcm_source(int op);

@@ -47,14 +47,21 @@ void MRP_PCMSource::GetSamples(PCM_source_transfer_t * block)
 	// wasteful prezeroing if no problem, but meh for now...
 	for (int i = 0; i < block->length*block->nch; ++i)
 		block->samples[i] = 0.0;
+	
 	if (m_dsp != nullptr)
 	{
 		if (m_dsp->is_prepared() == true)
 		{
+			// this isn't completely correct, should probably round or do a fuzzy comparison etc
+			if ((double)(m_playpos+block->length) / block->samplerate != block->time_s)
+			{
+				// was probably seeked
+			}
 			m_dsp->process_audio(block->samples, block->nch, block->samplerate, block->length);
 		}
 	}
 	block->samples_out = block->length;
+	m_playpos = block->time_s*block->samplerate;
 }
 
 void MRP_PCMSource::GetPeakInfo(PCM_source_peaktransfer_t * block)
