@@ -92,8 +92,13 @@ public:
 	
 	void set_dsp(std::shared_ptr<MRP_AudioDSP> dsp)
 	{
-		std::lock_guard<std::mutex> locker(m_mutex);
+		// take pointer copy so that if we are currently the only owner, the switch doesn't block
+		// while the old object is being destroyed
+		auto old = m_dsp;
+		m_mutex.lock();
 		m_dsp = dsp;
+		m_mutex.unlock();
+		// if old was the only owner, it is now destroyed at end of scope, outside the mutex lock
 	}
 	
 	std::shared_ptr<MRP_AudioDSP> get_dsp()
