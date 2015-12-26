@@ -1100,17 +1100,25 @@ DoodleControl::DoodleControl(MRPWindow * parent) : LiceControl(parent)
 
 void DoodleControl::add_undo_state()
 {
-	m_dochistory.emplace_back(m_current_bitmap.get(),64);
+	m_dochistory.emplace_back(m_current_bitmap.get(),m_tile_size);
 	++m_undo_level;
 }
 
 void DoodleControl::paint(PaintEvent & ev)
 {
 	LICE_Blit(ev.bm, m_current_bitmap.get(), 0, 0, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), 1.0f, 0);
+	for (int i=0;i<m_dirty_tiles.size();++i)
+	{
+		int xcor = m_dirty_tiles[i].first*m_tile_size;
+		int ycor = m_dirty_tiles[i].second*m_tile_size;
+		LICE_FillRect(ev.bm, xcor, ycor, m_tile_size, m_tile_size, LICE_RGBA(255,0,0,255),0.5f,0);
+		
+	}
 }
 
 void DoodleControl::mousePressed(const MouseEvent & ev)
 {
+	m_dirty_tiles.clear();
 	m_mousedown = true;
 }
 
@@ -1118,7 +1126,18 @@ void DoodleControl::mouseMoved(const MouseEvent & ev)
 {
 	if (m_mousedown == true)
 	{
-		LICE_FillCircle(m_current_bitmap.get(), ev.m_x, ev.m_y, 5.0f, LICE_RGBA(0, 255, 0, 255), 1.0f, true);
+		LICE_FillCircle(m_current_bitmap.get(), ev.m_x, ev.m_y, 10.0f, LICE_RGBA(0, 255, 0, 255), 1.0f, true);
+		int tile_x = ev.m_x/m_tile_size;
+		int tile_y = ev.m_y/m_tile_size;
+		bool found = false;
+		for (auto& e: m_dirty_tiles)
+			if (e.first==tile_x && e.second==tile_y)
+			{
+				found = true;
+				break;
+			}
+		if (found==false)
+			m_dirty_tiles.emplace_back(tile_x,tile_y);
 		repaint();
 	}
 }

@@ -257,8 +257,8 @@ public:
 	DoodleControl(MRPWindow* parent);
 	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
-	void mouseMoved(const MouseEvent& ev);
-	void mouseReleased(const MouseEvent& ev);
+	void mouseMoved(const MouseEvent& ev) override;
+	void mouseReleased(const MouseEvent& ev) override;
 	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
 	std::string getType() const override { return "DoodleControl"; }
 private:
@@ -303,8 +303,10 @@ private:
 		int m_tilesize = 0;
 	};
 	std::vector<document_t> m_dochistory;
+	std::vector<std::pair<int,int>> m_dirty_tiles;
 	std::shared_ptr<LICE_MemBitmap> m_current_bitmap;
 	bool m_mousedown = false;
 	int m_undo_level = -1;
+	int m_tile_size = 128;
 	void add_undo_state();
 };
