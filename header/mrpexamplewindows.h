@@ -12,6 +12,7 @@ private:
 	std::shared_ptr<WinLineEdit> m_edit2;
 	std::shared_ptr<WinButton> m_but1;
 	std::shared_ptr<WinButton> m_but2;
+	std::shared_ptr<WinListBox> m_listbox1;
 };
 
 HWND toggle_simple_example_window(HWND parent);

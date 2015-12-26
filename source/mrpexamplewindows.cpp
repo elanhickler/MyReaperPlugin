@@ -49,7 +49,15 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	add_control(m_but2);
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
-	
+	m_listbox1 = std::make_shared<WinListBox>(this);
+	m_listbox1->addItem("Vonation", 1);
+	m_listbox1->addItem("Focustire", 2);
+	m_listbox1->addItem("Zenheiser", 3);
+	m_listbox1->SelectedChangedCallback = [this](int index)
+	{
+		m_edit1->setText(std::string("You chose item index " + std::to_string(index) + " from the listbox"));
+	};
+	add_control(m_listbox1);
 	setSize(500, 500);
 }
 
@@ -59,7 +67,7 @@ void SimpleExampleWindow::resized()
 	m_edit1->setBounds({ 5,5,sz.getWidth() - 10,20 });
 	m_but1->setBounds({ 5, 30 , 100 , 20 });
 	m_but2->setBounds({ sz.getWidth()-105, 30 ,100,20 });
-	
+	m_listbox1->setBounds({ 5,sz.getHeight() - 150,sz.getWidth() - 10,145 });
 }
 
 SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider bank")

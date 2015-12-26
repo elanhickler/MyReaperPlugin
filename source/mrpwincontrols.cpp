@@ -339,7 +339,7 @@ WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	if (m_hwnd == NULL)
-		readbg() << "yngh";
+		readbg() << "ComboBox could not be created\n";
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -407,4 +407,36 @@ bool WinComboBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 		return true;
 	}
 	return false;
+}
+
+WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
+{
+#ifdef WIN32
+	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
+		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeCombo(g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
+	SetParent(m_hwnd, parent->getWindowHandle());
+#endif
+	if (m_hwnd == NULL)
+		readbg() << "ListBox could not be created\n";
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+bool WinListBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_COMMAND && (HWND)lparam == m_hwnd && HIWORD(wparam) == LBN_SELCHANGE &&
+		SelectedChangedCallback)
+	{
+		auto index = SendMessage((HWND)lparam, LB_GETCURSEL, 0, 0);
+		SelectedChangedCallback(index);
+		return true;
+	}
+	return false;
+}
+
+void WinListBox::addItem(std::string text, int user_id)
+{
+	int pos = (int)SendMessage(m_hwnd, LB_ADDSTRING, 0, (LPARAM)text.c_str());
+	SendMessage(m_hwnd, LB_SETITEMDATA, pos, (LPARAM)user_id);
 }

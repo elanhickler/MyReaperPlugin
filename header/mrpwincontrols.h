@@ -136,6 +136,15 @@ private:
 	
 };
 
+class WinListBox : public WinControl
+{
+public:
+	WinListBox(MRPWindow* parent);
+	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	void addItem(std::string text, int user_id);
+	std::function<void(int)> SelectedChangedCallback;
+};
+
 class ReaSlider : public WinControl
 {
 public:
