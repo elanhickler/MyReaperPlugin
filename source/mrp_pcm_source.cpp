@@ -116,7 +116,11 @@ void test_pcm_source(int op)
 #ifdef WIN32
 			InitializeCriticalSection(&g_prev_reg.cs);
 #else
-			// pthread init stuff needed here!
+			// I wonder if pthread copies this stuff internally...
+			pthread_mutexattr_t mta;
+			pthread_mutexattr_init(&mta);
+			pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE);
+			pthread_mutex_init(&g_prev_reg.mutex, &mta);
 #endif
 		}
 		if (g_is_playing == false)
@@ -140,7 +144,7 @@ void test_pcm_source(int op)
 #ifdef WIN32
 		DeleteCriticalSection(&g_prev_reg.cs);
 #else
-		// pthread destroy stuff needed here!
+		pthread_mutex_destroy(&g_prev_reg.mutex);
 #endif
 	}
 }

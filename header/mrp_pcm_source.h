@@ -5,9 +5,10 @@
 #include "envelope_model.h"
 #include <memory>
 #include <mutex>
-
+#include <cmath>
 /*
 Reaper provides a way for extension plugins to play sound independent of Reaper's tracks.
+(Example from Reaper itself : The Media Explorer.)
 This requires there is a PCM_source object that the preview system can use to
 render the sound. The PCM_source base class is quite beastly to implement, so here a convenience
 mechanism is provided. Instead of writing your own full PCM_source subclass, you can write a subclass of
