@@ -42,17 +42,16 @@ int MRP_PCMSource::PropertiesWindow(HWND hwndParent)
 
 void MRP_PCMSource::GetSamples(PCM_source_transfer_t * block)
 {
-	if (m_dsp->is_prepared() == false)
-		m_dsp->prepare_audio(block->nch, block->samplerate, block->length);
-	if (m_dsp->is_prepared() == true)
+	std::lock_guard<std::mutex> locker(m_mutex);
+	// wasteful prezeroing if no problem, but meh for now...
+	for (int i = 0; i < block->length*block->nch; ++i)
+		block->samples[i] = 0.0;
+	if (m_dsp != nullptr)
 	{
-		m_dsp->process_audio(block->samples, block->length);
-	}
-	else
-	{
-		// output silence if the dsp couldn't prepare itself
-		for (int i = 0; i < block->length*block->nch; ++i)
-			block->samples[i] = 0.0;
+		if (m_dsp->is_prepared() == true)
+		{
+			m_dsp->process_audio(block->samples, block->nch, block->samplerate, block->length);
+		}
 	}
 	block->samples_out = block->length;
 }
@@ -90,6 +89,7 @@ void MRP_PCMSource::PeaksBuild_Finish()
 
 int MRP_PCMSource::Extended(int call, void *parm1, void *parm2, void *parm3)
 {
+	// not called with the Preview system
 	if (call == PCM_SOURCE_EXT_ENDPLAYNOTIFY)
 	{
 		m_dsp->release_audio();
@@ -116,12 +116,14 @@ void test_pcm_source(int op)
 		}
 		if (g_is_playing == false)
 		{
+			g_test_source->get_dsp()->prepare_audio(2, 44100.0, 512);
 			PlayPreview(&g_prev_reg);
 			g_is_playing = true;
 		}
 		else
 		{
 			StopPreview(&g_prev_reg);
+			g_test_source->get_dsp()->release_audio();
 			g_is_playing = false;
 		}
 	}
