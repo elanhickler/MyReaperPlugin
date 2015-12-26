@@ -83,7 +83,19 @@ public:
 	
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
 
+	// These are mainly for use with functions exported to be used with
+	// ReaScript. However, perhaps sometimes a nice hacky use case can be found 
+	// in C++ code too...
+	virtual double getFloatingPointProperty(int which) { return 0.0; }
+	virtual void setFloatingPointProperty(int which, double v) {}
+	virtual int getIntegerProperty(int which) { return 0; }
+	virtual void setIntegerProperty(int which, int v) {}
+	virtual std::string getStringProperty(int which) { return ""; }
+	virtual void setStringProperty(int which, std::string v) {}
+
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
+	// Use this responsibly.
+	HWND getWindowHandle() const { return m_hwnd; }
 protected:
 	HWND m_hwnd = NULL;
 	MRPWindow* m_parent = nullptr;
