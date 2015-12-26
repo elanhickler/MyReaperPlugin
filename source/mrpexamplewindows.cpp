@@ -50,13 +50,29 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
 	m_listbox1 = std::make_shared<WinListBox>(this);
-	m_listbox1->addItem("Vonation", 100);
-	m_listbox1->addItem("Focustire", 345);
-	m_listbox1->addItem("Zenheiser", 9876);
-	m_listbox1->SelectedChangedCallback = [this](int index)
+	int numitems= CountMediaItems(nullptr);
+	std::unordered_map<int, MediaItem*> itemmap;
+	for (int i=0;i<numitems;++i)
+	{
+		MediaItem* item = GetMediaItem(nullptr,i);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (item!=nullptr)
+		{
+			char namebuf[1024];
+			if (GetSetMediaItemTakeInfo_String(take,"P_NAME",namebuf,false))
+			{
+				m_listbox1->addItem(namebuf, i);
+				itemmap[i]=item;
+			}
+			
+		}
+	}
+	m_listbox1->SelectedChangedCallback = [this,itemmap](int index) mutable
 	{
 		int user_id = m_listbox1->userIDfromIndex(index);
-		m_edit1->setText(std::string("You chose item with user id " + std::to_string(user_id) + " from the listbox"));
+		MediaItem* itemfromlist = itemmap[user_id];
+		m_edit1->setText(std::string("You chose item with mem address " +
+									 std::to_string((uint64_t)itemfromlist) + " from the listbox"));
 	};
 	add_control(m_listbox1);
 	setSize(500, 500);

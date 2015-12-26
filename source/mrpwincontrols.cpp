@@ -426,7 +426,7 @@ WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
 	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
-	m_hwnd = SWELL_MakeCombo(g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
+	m_hwnd = SWELL_MakeListBox(g_control_counter, 0, 0, 20, 20, LVS_SINGLESEL | WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	if (m_hwnd == NULL)
