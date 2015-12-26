@@ -9,6 +9,8 @@
 
 extern HINSTANCE g_hInst;
 
+HFONT g_defaultwincontrolfont = NULL;
+
 int g_control_counter = 0;
 
 int g_leak_counter = 0;
@@ -24,6 +26,12 @@ WinControl::WinControl(MRPWindow* parent)
 	++g_control_counter;
 	m_control_id = g_control_counter;
 	++g_leak_counter;
+	if (g_defaultwincontrolfont == NULL)
+	{
+		g_defaultwincontrolfont = CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial");
+	}
+
 }
 
 WinControl::~WinControl()
@@ -158,6 +166,7 @@ WinButton::WinButton(MRPWindow* parent, std::string text) :
 	m_hwnd = SWELL_MakeButton(0, text.c_str(), g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 	GenericNotifyCallback = [this](GenericNotifications)
@@ -295,6 +304,7 @@ WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(paren
 	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	setText(text);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
@@ -420,6 +430,8 @@ WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
 #endif
 	if (m_hwnd == NULL)
 		readbg() << "ListBox could not be created\n";
+	
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -439,4 +451,12 @@ void WinListBox::addItem(std::string text, int user_id)
 {
 	int pos = (int)SendMessage(m_hwnd, LB_ADDSTRING, 0, (LPARAM)text.c_str());
 	SendMessage(m_hwnd, LB_SETITEMDATA, pos, (LPARAM)user_id);
+}
+
+int WinListBox::userIDfromIndex(int index)
+{
+	auto result = SendMessage(m_hwnd, LB_GETITEMDATA, index, 0);
+	if (result != LB_ERR)
+		return result;
+	return -1;
 }

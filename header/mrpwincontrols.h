@@ -136,12 +136,15 @@ private:
 	
 };
 
+// Just a single column listbox. Probably best to do a separate subclass for multicolumn listview as
+// that's pretty complicated to deal with...
 class WinListBox : public WinControl
 {
 public:
 	WinListBox(MRPWindow* parent);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	void addItem(std::string text, int user_id);
+	int userIDfromIndex(int index);
 	std::function<void(int)> SelectedChangedCallback;
 };
 

@@ -50,12 +50,13 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
 	m_listbox1 = std::make_shared<WinListBox>(this);
-	m_listbox1->addItem("Vonation", 1);
-	m_listbox1->addItem("Focustire", 2);
-	m_listbox1->addItem("Zenheiser", 3);
+	m_listbox1->addItem("Vonation", 100);
+	m_listbox1->addItem("Focustire", 345);
+	m_listbox1->addItem("Zenheiser", 9876);
 	m_listbox1->SelectedChangedCallback = [this](int index)
 	{
-		m_edit1->setText(std::string("You chose item index " + std::to_string(index) + " from the listbox"));
+		int user_id = m_listbox1->userIDfromIndex(index);
+		m_edit1->setText(std::string("You chose item with user id " + std::to_string(user_id) + " from the listbox"));
 	};
 	add_control(m_listbox1);
 	setSize(500, 500);
