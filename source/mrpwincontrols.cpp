@@ -423,7 +423,7 @@ bool WinComboBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
 {
 #ifdef WIN32
-	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
+	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_VSCROLL | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeListBox(g_control_counter, 0, 0, 20, 20, LVS_SINGLESEL | WS_CHILD | WS_TABSTOP);
@@ -494,4 +494,13 @@ void WinListBox::setSelectedIndex(int index)
 void WinListBox::clearItems()
 {
 	SendMessage(m_hwnd, LB_RESETCONTENT, 0, 0);
+}
+
+void WinListBox::removeItem(int index)
+{
+	if (index >= 0 && index < numItems())
+	{
+		SendMessage(m_hwnd, LB_DELETESTRING, index, 0);
+	}
+	
 }

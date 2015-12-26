@@ -19,10 +19,7 @@ public:
 	MRPWindow() {}
 	MRPWindow(HWND parent, std::string title = "Untitled");
 	virtual ~MRPWindow();
-	void add_control(std::shared_ptr<WinControl> c)
-	{
-		m_controls.push_back(c);
-	}
+	void add_control(std::shared_ptr<WinControl> c);
 	virtual void resized() {};
 	virtual void closeRequested();
 	bool isVisible() const;

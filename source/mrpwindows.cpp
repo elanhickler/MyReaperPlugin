@@ -94,6 +94,13 @@ MRPWindow::~MRPWindow()
 	}
 }
 
+void MRPWindow::add_control(std::shared_ptr<WinControl> c)
+{
+	auto it = std::find(m_controls.begin(), m_controls.end(), c);
+	if (it == m_controls.end())
+		m_controls.push_back(c);
+}
+
 MRP::Size MRPWindow::getSize()
 {
 	if (m_hwnd == NULL)

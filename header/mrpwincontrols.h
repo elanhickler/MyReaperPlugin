@@ -145,6 +145,7 @@ public:
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	void addItem(std::string text, int user_id);
 	void clearItems();
+	void removeItem(int index);
 	int userIDfromIndex(int index);
 	std::function<void(int)> SelectedChangedCallback;
 	int numItems();

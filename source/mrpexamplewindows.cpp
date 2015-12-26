@@ -56,6 +56,17 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	};
 	add_control(m_but3);
 	
+	m_but4 = std::make_shared<WinButton>(this, "Rem sel listbox item");
+	m_but4->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		int selindex = m_listbox1->getSelectedIndex();
+		if (selindex >= 0)
+		{
+			m_listbox1->removeItem(selindex);
+			m_itemmap.erase(m_listbox1->userIDfromIndex(selindex));
+		}
+	};
+	add_control(m_but4);
 	
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
@@ -77,6 +88,7 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 		}
 		else readbg() << "you managed to choose no item from the listbox\n";
 	};
+	add_control(m_listbox1);
 	add_control(m_listbox1);
 	setSize(500, 500);
 }
@@ -112,6 +124,7 @@ void SimpleExampleWindow::populate_listbox()
 
 void SimpleExampleWindow::onRefreshTimer()
 {
+	return;
 	int new_count = GetProjectStateChangeCount(nullptr);
 	if (m_last_project_change_count != new_count)
 	{
@@ -128,7 +141,8 @@ void SimpleExampleWindow::resized()
 	m_but1->setBounds({ 5, 30 , 100 , 20 });
 	m_but2->setBounds({ sz.getWidth()-105, 30 ,100,20 });
 	m_but3->setBounds({ 105, 30 ,120,20 });
-	m_listbox1->setBounds({ 5,sz.getHeight() - 150,sz.getWidth() - 10,145 });
+	m_but4->setBounds({ 230, 30 ,120,20 });
+	m_listbox1->setBounds({ 5, 55, sz.getWidth() - 10, sz.getHeight()-60 });
 }
 
 SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider bank")
