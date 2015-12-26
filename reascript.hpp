@@ -111,46 +111,50 @@ function_entry MRP_GenerateSine("void", "MRP_Array*,double,double", "array,sampl
 "Generate a sine wave into a MRP_Array"
 );
 
-function_entry MRP_MultiplyArrays("void", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
-	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+function_entry MRP_MultiplyArrays("void", "MRP_Array*,MRP_Array*,MRP_Array*", "array1, array2, array3", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0
+		|| g_active_mrp_arrays.count(arg[2]) == 0)
 	{
 		ReaScriptError("MRP_MultiplyArrays : passed in invalid MRP_Array(s)");
 		return (void*)nullptr;
 	}
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
-	if (vecref0.size() != vecref1.size())
+	std::vector<double>& vecref2 = *(std::vector<double>*)arg[2];
+	if ((vecref0.size()==vecref1.size() && vecref1.size()==vecref2.size())==false)
 	{
 		ReaScriptError("MRP_MultiplyArrays : incompatible array lengths");
 		return (void*)nullptr;
 	}
 	for (size_t i = 0; i < vecref0.size(); ++i)
-		vecref0[i] = vecref0[i] * vecref1[i];
+		vecref2[i] = vecref0[i] * vecref1[i];
 	return (void*)nullptr;
 },
-"Multiply 2 MRP_Arrays of same length. First array is overwritten with result!"
+"Multiply 2 MRP_Arrays of same length. Result is written to 3rd array."
 );
 #ifdef WIN32
-function_entry MRP_MultiplyArraysMT("void", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
-	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+function_entry MRP_MultiplyArraysMT("void", "MRP_Array*,MRP_Array*,MRP_Array*", "array1, array2,array3", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0
+		|| g_active_mrp_arrays.count(arg[2]) == 0)
 	{
 		ReaScriptError("MRP_MultiplyArraysMT : passed in invalid MRP_Array(s)");
 		return (void*)nullptr;
 	}
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
-	if (vecref0.size() != vecref1.size())
+	std::vector<double>& vecref2 = *(std::vector<double>*)arg[2];
+	if ((vecref0.size() == vecref1.size() && vecref1.size() == vecref2.size()) == false)
 	{
 		ReaScriptError("MRP_MultiplyArraysMT : incompatible array lengths");
 		return (void*)nullptr;
 	}
-	Concurrency::parallel_for((size_t)0, vecref0.size(), [&vecref0, &vecref1](size_t index) 
+	Concurrency::parallel_for((size_t)0, vecref0.size(), [&vecref0, &vecref1, &vecref2](size_t index) 
 	{
-		vecref0[index] = vecref0[index] * vecref1[index];
+		vecref2[index] = vecref0[index] * vecref1[index];
 	},Concurrency::static_partitioner());
 	return (void*)nullptr;
 },
-"Multiply 2 MRP_Arrays of same length. First array is overwritten with result! Uses multiple threads."
+"Multiply 2 MRP_Arrays of same length. Result is written to 3rd array. Uses multiple threads."
 );
 #else
 
