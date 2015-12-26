@@ -350,6 +350,7 @@ WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 #endif
 	if (m_hwnd == NULL)
 		readbg() << "ComboBox could not be created\n";
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
