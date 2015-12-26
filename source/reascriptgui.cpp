@@ -23,6 +23,21 @@ void ReaScriptWindow::addControlFromName(std::string cname, std::string objectna
 	{
 		auto c = std::make_shared<WinButton>(this, objectname);
 		c->setObjectName(objectname);
+		c->GenericNotifyCallback = [this,objectname](GenericNotifications)
+		{
+			m_dirty_controls.insert(objectname);
+		};
+		c->setBounds({ 5, 5, 50, 25 });
+		add_control(c);
+	}
+	if (cname == "Slider")
+	{
+		auto c = std::make_shared<ReaSlider>(this);
+		c->setObjectName(objectname);
+		c->SliderValueCallback = [this, objectname](GenericNotifications,double)
+		{
+			m_dirty_controls.insert(objectname);
+		};
 		c->setBounds({ 5, 5, 50, 25 });
 		add_control(c);
 	}
@@ -34,7 +49,6 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 	if (c != nullptr)
 	{
 		c->setBounds({ x, y, w, h });
-		//SetWindowPos(c->m_hwnd, NULL, x, y, w, h, SWP_NOACTIVATE | SWP_NOZORDER);
 	}
 }
 
@@ -44,6 +58,25 @@ WinControl* ReaScriptWindow::control_from_name(std::string name)
 		if (e->getObjectName() == name)
 			return e.get();
 	return nullptr;
+}
+
+bool ReaScriptWindow::isControlDirty(std::string name)
+{
+	return m_dirty_controls.count(name)==1;
+}
+
+void ReaScriptWindow::clearDirtyControls()
+{
+	m_dirty_controls.clear();
+}
+
+double ReaScriptWindow::getControlValueDouble(std::string obname, int which)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		return c->getFloatingPointProperty(which);
+	}
 }
 
 bool is_valid_reascriptwindow(ReaScriptWindow* w)

@@ -309,6 +309,47 @@ function_entry MRP_SetControlBounds("void", "MRP_Window*,const char*,double,doub
 "Set MRP control position and size"
 );
 
+function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (in)arg[1];
+	if (w != nullptr)
+	{
+		bool isdirty = w->isControlDirty(cname);
+		if (isdirty == true)
+			return_int(1);
+	}
+	return_int(0);
+},
+"Returns true if control was manipulated"
+);
+
+function_entry MRP_WindowClearDirtyControls("void", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w != nullptr)
+	{
+		w->clearDirtyControls();
+	}
+	return_null;
+},
+"Clears the dirty states of the controls in a window."
+);
+
+function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_double(w->getControlValueDouble(cname, which));
+	}
+	return_double(0.0);
+},
+"Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
 #ifdef REASCRIPTGUIWORKS
 function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
 {
@@ -385,20 +426,6 @@ function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which
 	return_int(0);
 },
 "Get window geometry values. which : 0 x, 1 y, 2 w, 3 h"
-);
-
-function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	int which = (in)arg[2];
-	if (w != nullptr && cname != nullptr)
-	{
-		return_double(w->getControlValueDouble(cname,which));
-	}
-	return_double(0.0);
-},
-"Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
 function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
@@ -494,32 +521,7 @@ function_entry MRP_WindowAddLiceControl("void", "MRP_Window*,const char*,const c
 								  );
 
 
-function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (in)arg[1];
-	if (w != nullptr)
-	{
-		bool isdirty=w->m_last_used_controls.count(cname);
-		if (isdirty==true)
-			return_int(1);
-	}
-	return_int(0);
-},
-"Returns true if control was manipulated"
-);
 
-function_entry MRP_WindowClearDirtyControls("void", "MRP_Window*", "window", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	if (w != nullptr)
-	{
-		w->m_last_used_controls.clear();
-	}
-	return_null;
-},
-"Clear the last clicked button name of the window"
-);
 
 
 

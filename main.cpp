@@ -166,12 +166,15 @@ extern "C"
 			func(MRP_WindowSetTitle);
 			func(MRP_WindowAddControl);
 			func(MRP_SetControlBounds);
+			func(MRP_WindowIsDirtyControl);
+			func(MRP_WindowClearDirtyControls);
+			func(MRP_GetControlFloatNumber);
 #ifdef REASCRIPTGUIWORKS
 			
 			
 			func(MRP_GetControlText);
 			func(MRP_SetControlText);
-			func(MRP_GetControlFloatNumber);
+			
 			func(MRP_SetControlFloatNumber);
 			func(MRP_SetWindowDirty);
 			func(MRP_GetWindowDirty);
@@ -182,8 +185,7 @@ extern "C"
 			func(MRP_WindowAddLineEdit);
 			func(MRP_WindowAddLabel);
 			func(MRP_WindowAddLiceControl);
-			func(MRP_WindowIsDirtyControl);
-			func(MRP_WindowClearDirtyControls);
+			
 #endif
 			func(MRP_CreateArray);
 			func(MRP_DestroyArray);

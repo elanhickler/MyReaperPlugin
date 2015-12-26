@@ -295,6 +295,13 @@ void ReaSlider::setValueConverter(std::shared_ptr<IValueConverter> c)
 	setValue(m_val_converter->fromNormalizedToValue(oldnormalized));
 }
 
+double ReaSlider::getFloatingPointProperty(int which)
+{
+	if (which == 0)
+		return getValue();
+	return 0.0;
+}
+
 WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
