@@ -6,16 +6,28 @@
 #include <memory>
 #include <mutex>
 
+/*
+Reaper provides a way for extension plugins to play sound independent of Reaper's tracks.
+This requires there is a PCM_source object that the preview system can use to
+render the sound. The PCM_source base class is quite beastly to implement, so here a convenience
+mechanism is provided. Instead of writing your own full PCM_source subclass, you can write a subclass of
+MRP_AudioDSP which is a simpler interface to implement. You can then create a MRP_PCMSource and pass your
+MRP_AudioDSP instance for it.
+*/
+
 class MRP_AudioDSP
 {
 public:
 	virtual ~MRP_AudioDSP() {}
 	virtual bool is_prepared() { return false; }
-	// called before calls to process_audio begin
+	// Called before calls to process_audio begin
 	virtual void prepare_audio(int numchans, double sr, int expected_max_bufsize) {}
-	// called when new audio is needed
+	// Called when new audio is needed.
+	// The usual realtime audio coding rules apply here : don't do anything too time consuming, try to avoid
+	// doing anything that can take a "random" amount of time, like allocating memory or
+	// waiting for mutexes that are around complicated unpredictable code.
 	virtual void process_audio(double* buf, int nch, double sr, int nframes) = 0;
-	// called when audio is stopped and more call calls to process_audio
+	// Called when audio is stopped and more call calls to process_audio
 	virtual void release_audio() {}
 };
 
@@ -34,7 +46,7 @@ public:
 	breakpoint_envelope m_env;
 	void prepare_audio(int numchans, double sr, int expected)
 	{
-		OutputDebugString("MRP prepare_audio");
+		//OutputDebugString("MRP prepare_audio");
 		m_env.remove_all_points();
 		m_env.add_point({ 0.0,1.0 }, false);
 		m_env.add_point({ 2.0,0.0 }, false);
@@ -58,7 +70,7 @@ public:
 	void release_audio()
 	{
 		m_is_prepared = false;
-		OutputDebugString("MRP release_audio");
+		//OutputDebugString("MRP release_audio");
 	}
 };
 
