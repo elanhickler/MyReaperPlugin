@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef REASCRIPTGUIWORKS
+
 
 #ifdef _WIN32
 #include <windows.h>
@@ -12,7 +12,20 @@
 #include <functional>
 #include <vector>
 #include <unordered_set>
+#include "mrpwindows.h"
 
+class ReaScriptWindow : public MRPWindow
+{
+public:
+	ReaScriptWindow(std::string title);
+	~ReaScriptWindow();
+private:
+	std::vector<char> m_leak_test;
+};
+
+bool is_valid_reascriptwindow(ReaScriptWindow* w);
+
+#ifdef REASCRIPTGUIWORKS
 class LiceControl;
 
 class ReaScriptWindow

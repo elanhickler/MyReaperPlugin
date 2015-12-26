@@ -229,23 +229,29 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](para
 "It comes down to how size_t is of different size between the 32 and 64 bit "
 "architectures."
 );
-#ifdef REASCRIPTGUIWORKS
+
 function_entry MRP_CreateWindow("MRP_Window*", "const char*", "title", [](params)
 {
 	const char* wtitle = (const char*)arg[0];
 	ReaScriptWindow* w = new ReaScriptWindow(wtitle);
+	//w->setDestroyOnClose(true);
+	w->setSize(400, 400);
 	return_obj(w);
 },
-"Create test window"
+"Create window"
 );
 
 function_entry MRP_DestroyWindow("void", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	delete w;
+	if (is_valid_reascriptwindow(w) == true)
+	{
+		delete w;
+	}
+	else ReaScriptError("Passed in MRP_Window has already been destroyed");
 	return_null;
 },
-"Destroy test window"
+"Destroy window"
 );
 
 function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
@@ -253,13 +259,13 @@ function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w == nullptr)
 		return_int(0);
-	if (w->m_was_closed == true)
+	if (w->isClosed() == true)
 		return_int(1);
 	return_int(0);
 },
-"Destroy test window"
+"Returns if the window has been closed and the ReaScript defer loop should likely be exited"
 );
-
+#ifdef REASCRIPTGUIWORKS
 function_entry MRP_WindowSetTitle("void", "MRP_Window*,const char*", "window,title", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];

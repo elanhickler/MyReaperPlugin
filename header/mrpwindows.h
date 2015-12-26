@@ -24,6 +24,7 @@ public:
 	virtual void closeRequested();
 	bool isVisible() const;
 	void setVisible(bool b);
+	bool isClosed() { return m_is_closed; }
 	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
@@ -62,6 +63,7 @@ protected:
 	bool m_modal_should_end = false;
 	ModalResult m_modal_result = Rejected;
 	UINT_PTR m_helper_timer = 0;
+	bool m_is_closed = true;
 };
 
 void shutdown_windows();

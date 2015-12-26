@@ -1,5 +1,28 @@
-#ifdef REASCRIPTGUIWORKS
+
 #include "reascriptgui.h"
+
+extern HWND g_parent;
+
+std::unordered_set<ReaScriptWindow*> g_reascriptwindows;
+
+ReaScriptWindow::ReaScriptWindow(std::string title) : MRPWindow(g_parent,title)
+{
+	g_reascriptwindows.insert(this);
+	// deliberately allocate tons of memory to see object destruction works
+	m_leak_test.resize(100000000);
+}
+
+ReaScriptWindow::~ReaScriptWindow()
+{
+	g_reascriptwindows.erase(this);
+}
+
+bool is_valid_reascriptwindow(ReaScriptWindow* w)
+{
+	return g_reascriptwindows.count(w) == 1;
+}
+
+#ifdef REASCRIPTGUIWORKS
 
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"

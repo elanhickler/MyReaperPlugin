@@ -159,11 +159,13 @@ extern "C"
 			func(MRP_CastDoubleToInt);
 			func(MRP_ReturnMediaItem);
 			func(MRP_DoNothing);
-#ifdef REASCRIPTGUIWORKS
+
 			func(MRP_CreateWindow);
 			func(MRP_DestroyWindow);
-			func(MRP_WindowSetTitle);
 			func(MRP_WindowIsClosed);
+#ifdef REASCRIPTGUIWORKS
+			func(MRP_WindowSetTitle);
+			
 			func(MRP_GetControlText);
 			func(MRP_SetControlText);
 			func(MRP_GetControlFloatNumber);

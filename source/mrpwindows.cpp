@@ -81,11 +81,13 @@ MRPWindow::MRPWindow(HWND parent, std::string title)
 	SetWindowText(m_hwnd, title.c_str());
 	SetWindowPos(m_hwnd, NULL, 20, 60, 100, 100, SWP_NOACTIVATE | SWP_NOZORDER);
 	ShowWindow(m_hwnd, SW_SHOW);
+	m_is_closed = false;
 }
 
 MRPWindow::~MRPWindow()
 {
 	readbg() << "MRPWindow dtor\n";
+	m_is_closed = true; 
 	m_controls.clear();
 	if (m_hwnd != NULL)
 	{
@@ -146,6 +148,7 @@ MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 void MRPWindow::closeRequested()
 {
 	readbg() << "close requested...\n";
+	m_is_closed = true;
 	if (m_hwnd != NULL && m_destroy_on_close == false)
 	{
 		readbg() << "only hiding this window...\n";
