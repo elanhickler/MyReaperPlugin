@@ -30,6 +30,7 @@ public:
 	virtual void process_audio(double* buf, int nch, double sr, int nframes) = 0;
 	// Called when audio is stopped and more call calls to process_audio
 	virtual void release_audio() {}
+	virtual void seek(double seconds) {}
 };
 
 class MyTestAudioDSP : public MRP_AudioDSP
@@ -45,6 +46,11 @@ public:
 	double m_sr = 0;
 	bool is_prepared() { return m_is_prepared; }
 	breakpoint_envelope m_env;
+	void seek(double seconds)
+	{
+		m_osc_phase = 0.0;
+		//OutputDebugString("was seeked");
+	}
 	void prepare_audio(int numchans, double sr, int expected)
 	{
 		//OutputDebugString("MRP prepare_audio");
@@ -133,7 +139,7 @@ private:
 	std::shared_ptr<MRP_AudioDSP> m_dsp;
 	// mutex guards changing the dsp object while playing back
 	std::mutex m_mutex;
-	int64_t m_playpos = 0;
+	double m_lastpos = 0.0;
 };
 
 void test_pcm_source(int op);

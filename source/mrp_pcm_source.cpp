@@ -32,13 +32,18 @@ double MRP_PCMSource::GetSampleRate()
 
 double MRP_PCMSource::GetLength()
 {
-	// Have to return some length in seconds here, 11 days seems long enough :)
-	return 1000000.0;
+	// Have to return some length in seconds here
+	return 3.0;
 }
 
 int MRP_PCMSource::PropertiesWindow(HWND hwndParent)
 {
 	return 0;
+}
+
+static inline bool fuzzy_compare(double p1, double p2)
+{
+	return (fabs(p1 - p2) * 1000000000000. <= std::min(fabs(p1), fabs(p2)));
 }
 
 void MRP_PCMSource::GetSamples(PCM_source_transfer_t * block)
@@ -52,16 +57,23 @@ void MRP_PCMSource::GetSamples(PCM_source_transfer_t * block)
 	{
 		if (m_dsp->is_prepared() == true)
 		{
-			// this isn't completely correct, should probably round or do a fuzzy comparison etc
-			if ((double)(m_playpos+block->length) / block->samplerate != block->time_s)
+			// Oddly enough, PCM_source doesn't have a Seek method that we could react to.
+			// So a hack like this is needed to detect a seek happened...
+			// This may not be completely correct but the fuzzy comparison should make it pretty close
+			double t0 = m_lastpos + ((double)block->length / block->samplerate);
+			if (fuzzy_compare(t0, block->time_s) == false)
 			{
 				// was probably seeked
+				//char buf[256];
+				//sprintf(buf, "pcm_source seeked %f %f %f", m_lastpos, t0, block->time_s);
+				//OutputDebugString(buf);
+				m_dsp->seek(block->time_s);
 			}
 			m_dsp->process_audio(block->samples, block->nch, block->samplerate, block->length);
 		}
 	}
 	block->samples_out = block->length;
-	m_playpos = block->time_s*block->samplerate;
+	m_lastpos = block->time_s;
 }
 
 void MRP_PCMSource::GetPeakInfo(PCM_source_peaktransfer_t * block)
@@ -120,6 +132,7 @@ void test_pcm_source(int op)
 			g_test_source = std::make_shared<MRP_PCMSource>(mydsp);
 			g_prev_reg.src = g_test_source.get();
 			g_prev_reg.volume = 1.0;
+			g_prev_reg.loop = true;
 #ifdef WIN32
 			InitializeCriticalSection(&g_prev_reg.cs);
 #else
