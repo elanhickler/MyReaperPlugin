@@ -89,14 +89,14 @@ extern "C"
 
 			// load all Reaper API functions in one go, byebye ugly IMPAPI macro!
 			int error_count = REAPERAPI_LoadAPI(rec->GetFunc);
-			if (error_count > 0) 
-			{ 
+			if (error_count > 0)
+			{
 				char errbuf[256];
 				sprintf(errbuf, "Failed to load %d expected API function(s)", error_count);
 				MessageBox(g_parent, errbuf, "MRP extension error", MB_OK);
 				return 0;
 			}
-			
+
 #ifndef WIN32
 			// Perhaps to get Reaper faders on OSX...
 			SWELL_RegisterCustomControlCreator((SWELL_ControlCreatorProc)rec->GetFunc("Mac_CustomControlCreator"));
@@ -121,17 +121,17 @@ extern "C"
 				std::string id = "EXAMPLE_ACTION_FROM_LOOP" + std::to_string(i);
 				add_action(desc, id, CannotToggle, actionfunction);
 			}
-			
+
 			// Add actions to show WinControl containing windows
 			add_action("MRP : Toggle simple example window", "MRP_SHOW_WINCONTROLSIMPLETEST", ToggleOff, [](action_entry&)
 			{
 				toggle_simple_example_window(g_parent);
 			});
 
-				add_action("MRP : Toggle slider bank window", "MRP_SHOW_WINCONTROLSLIDERBANK", ToggleOff, [](action_entry&)
+			add_action("MRP : Toggle slider bank window", "MRP_SHOW_WINCONTROLSLIDERBANK", ToggleOff, [](action_entry&)
 			{
 				toggle_sliderbank_window(g_parent);
-			}); 
+			});
 
 			add_action("MRP : Add WinControls test window", "MRP_SHOW_WINCONTROLSTEST", ToggleOff, [](action_entry&)
 			{
@@ -144,7 +144,12 @@ extern "C"
 			});
 #endif
 			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
-			
+
+			add_action("MRP : Play/Stop audio source", "MRP_TESTPCM_SOURCE", ToggleOff, [](action_entry&)
+			{
+				test_pcm_source(0);
+			});
+
 				// Add functions
 #define func(f) add_function(f, #f)
 			func(MRP_DoublePointer);
@@ -209,7 +214,7 @@ extern "C"
 			return 1; // our plugin registered, return success
 		}
 		else {
-			
+			test_pcm_source(1);
 			return 0;
 		}
 	}
