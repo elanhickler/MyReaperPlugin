@@ -461,3 +461,8 @@ int WinListBox::userIDfromIndex(int index)
 		return result;
 	return -1;
 }
+
+void WinListBox::clearItems()
+{
+	SendMessage(m_hwnd, LB_RESETCONTENT, 0, 0);
+}

@@ -47,11 +47,36 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 		}
 	};
 	add_control(m_but2);
+	
+	m_but3 = std::make_shared<WinButton>(this, "Refresh item list");
+	m_but3->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		populate_listbox();
+	};
+	add_control(m_but3);
+	
+	
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
 	m_listbox1 = std::make_shared<WinListBox>(this);
-	int numitems= CountMediaItems(nullptr);
-	std::unordered_map<int, MediaItem*> itemmap;
+	
+	m_listbox1->SelectedChangedCallback = [this](int index) mutable
+	{
+		int user_id = m_listbox1->userIDfromIndex(index);
+		MediaItem* itemfromlist = m_itemmap[user_id];
+		m_edit1->setText(std::string("You chose item with mem address " +
+									 std::to_string((uint64_t)itemfromlist) + " from the listbox"));
+	};
+	add_control(m_listbox1);
+	setSize(500, 500);
+}
+
+void SimpleExampleWindow::populate_listbox()
+{
+	m_listbox1->clearItems();
+	m_itemmap.clear();
+	int numitems = CountMediaItems(nullptr);
+	
 	for (int i=0;i<numitems;++i)
 	{
 		MediaItem* item = GetMediaItem(nullptr,i);
@@ -62,20 +87,11 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 			if (GetSetMediaItemTakeInfo_String(take,"P_NAME",namebuf,false))
 			{
 				m_listbox1->addItem(namebuf, i);
-				itemmap[i]=item;
+				m_itemmap[i]=item;
 			}
 			
 		}
 	}
-	m_listbox1->SelectedChangedCallback = [this,itemmap](int index) mutable
-	{
-		int user_id = m_listbox1->userIDfromIndex(index);
-		MediaItem* itemfromlist = itemmap[user_id];
-		m_edit1->setText(std::string("You chose item with mem address " +
-									 std::to_string((uint64_t)itemfromlist) + " from the listbox"));
-	};
-	add_control(m_listbox1);
-	setSize(500, 500);
 }
 
 void SimpleExampleWindow::resized()
@@ -84,6 +100,7 @@ void SimpleExampleWindow::resized()
 	m_edit1->setBounds({ 5,5,sz.getWidth() - 10,20 });
 	m_but1->setBounds({ 5, 30 , 100 , 20 });
 	m_but2->setBounds({ sz.getWidth()-105, 30 ,100,20 });
+	m_but3->setBounds({ 105, 30 ,120,20 });
 	m_listbox1->setBounds({ 5,sz.getHeight() - 150,sz.getWidth() - 10,145 });
 }
 

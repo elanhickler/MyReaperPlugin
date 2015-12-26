@@ -144,6 +144,7 @@ public:
 	WinListBox(MRPWindow* parent);
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	void addItem(std::string text, int user_id);
+	void clearItems();
 	int userIDfromIndex(int index);
 	std::function<void(int)> SelectedChangedCallback;
 };
