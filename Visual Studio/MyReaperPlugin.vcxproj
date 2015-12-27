@@ -111,20 +111,20 @@
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <IntDir>$(OutDir)</IntDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <IntDir>$(OutDir)</IntDir>
@@ -148,7 +148,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -178,7 +178,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
