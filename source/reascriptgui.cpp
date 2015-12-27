@@ -77,6 +77,7 @@ double ReaScriptWindow::getControlValueDouble(std::string obname, int which)
 	{
 		return c->getFloatingPointProperty(which);
 	}
+	return 0.0;
 }
 
 bool is_valid_reascriptwindow(ReaScriptWindow* w)
