@@ -10,9 +10,6 @@ function tick()
   end
   if reaper.time_precise()-t0>3.0 then
     reaper.MRP_WindowSetTitle(thewindow,"Timer fired")
-    --reaper.ShowConsoleMsg("lua : window was closed due to timer\n")
-    --reaper.MRP_DestroyWindow(thewindow)
-    --return
   end
   if reaper.MRP_WindowIsDirtyControl(thewindow,"OK") then
     reaper.ShowConsoleMsg("OK was pressed\n")
