@@ -124,7 +124,7 @@
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <IntDir>$(OutDir)</IntDir>
@@ -173,7 +173,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -242,6 +242,8 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER64_DIR)\Plugins\"</Command>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
