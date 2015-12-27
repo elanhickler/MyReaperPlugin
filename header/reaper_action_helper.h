@@ -19,6 +19,7 @@ public:
 	int m_ex_valhw = 0;
 	int m_ex_relmode = 0;
 	double m_ex_valhw_parsed = 0.0;
+	void* m_userdata = nullptr;
 };
 
 bool hookCommandProcEx(KbdSectionInfo *sec, int command, int val, int valhw, int relmode, HWND hwnd);

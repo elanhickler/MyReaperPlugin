@@ -135,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
+				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
 				C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */,
 				C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */,
@@ -143,7 +144,6 @@
 				C464FFCA1C2E1E910023C734 /* mrp_pcm_source.h */,
 				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
-				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -152,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
+				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 				C4A793C01C28F59900C60DC9 /* lice_control.cpp */,
 				C464FFCC1C2E1E9F0023C734 /* mrp_pcm_source.cpp */,
 				C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */,
@@ -160,7 +161,6 @@
 				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
-				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 			);
 			name = source;
 			sourceTree = "<group>";
