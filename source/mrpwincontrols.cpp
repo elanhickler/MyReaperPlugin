@@ -479,14 +479,14 @@ std::string WinListBox::getItemText(int index)
 	int textLen = SendMessage(m_hwnd, LB_GETTEXTLEN, index, 0);
 	if (textLen > 0)
 	{
-		std::string result(textLen*2+1, '\0');
+		std::vector<char> result(textLen+1);
 #ifdef WIN32
+		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
+		return std::string(result.data());
+#else
 		
 		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
-		return result;
-#else
-		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
-		return result;
+		return std::string(result.data());
 #endif
 		
 	}
