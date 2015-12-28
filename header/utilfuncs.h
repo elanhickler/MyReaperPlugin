@@ -6,10 +6,10 @@
 #include <memory>
 #include <type_traits>
 #include <string>
-
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
-
+#undef min
+#undef max
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
 {
