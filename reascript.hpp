@@ -432,7 +432,7 @@ function_entry MRP_SendCommandString("void", "MRP_Window*,const char*,const char
 	}
 	return_null;
 },
-"Set a text property associated with control. Meaning of 'which' depends on the control targeted."
+"Send a command message to control. Currently only the envelope control understands some messages."
 );
 
 function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
