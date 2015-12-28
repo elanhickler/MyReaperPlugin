@@ -11,13 +11,29 @@ extern HINSTANCE g_hInst;
 
 HFONT g_defaultwincontrolfont = NULL;
 
+// Incremented for each control added to get a dialog control identifier number.
+// Obviously not thread safe but GUI stuff doesn't work with multiple threads anyway.
 int g_control_counter = 0;
 
+// To observe WinControl creation/destruction counts
 int g_leak_counter = 0;
 
 int get_wincontrol_leak_count()
 {
 	return g_leak_counter;
+}
+
+// std::string data can't be used to for LB_GETTEXT etc calls, so have this instead
+// with some space already allocated
+std::vector<char> g_messagetextsbuffer(1024);
+
+void adjust_message_text_buffer(int size, bool fillzeros=false)
+{
+	if (g_messagetextsbuffer.size() < size)
+		// 10% more than requested so we don't have to reallocate if the next request is just tiny bit larger
+		g_messagetextsbuffer.resize(size*1.1); 
+	if (fillzeros == true)
+		std::fill(g_messagetextsbuffer.begin(), g_messagetextsbuffer.end(), 0);
 }
 
 WinControl::WinControl(MRPWindow* parent)
@@ -171,7 +187,7 @@ WinButton::WinButton(MRPWindow* parent, std::string text) :
 	ShowWindow(m_hwnd, SW_SHOW);
 	GenericNotifyCallback = [this](GenericNotifications)
 	{
-		readbg() << "button " << getText() << " clicked\n";
+		readbg() << "button " << getText() << " clicked. No custom click callback set yet!\n";
 	};
 }
 
@@ -479,16 +495,9 @@ std::string WinListBox::getItemText(int index)
 	int textLen = SendMessage(m_hwnd, LB_GETTEXTLEN, index, 0);
 	if (textLen > 0)
 	{
-		std::vector<char> result(textLen+1);
-#ifdef WIN32
-		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
-		return std::string(result.data());
-#else
-		
-		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)result.data());
-		return std::string(result.data());
-#endif
-		
+		adjust_message_text_buffer(textLen + 1);
+		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)g_messagetextsbuffer.data());
+		return std::string(g_messagetextsbuffer.data());
 	}
 	return std::string();
 }
