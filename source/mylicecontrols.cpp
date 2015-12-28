@@ -2,6 +2,7 @@
 #include "mylicecontrols.h"
 #include "utilfuncs.h"
 #include "WDL/WDL/lice/lice.h"
+#include "WDL/WDL/lineparse.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 #include <cmath>
 
@@ -799,6 +800,12 @@ int EnvelopeControl::getIntegerProperty(int which)
 		if (offsetted >= 0 && offsetted < m_envs.size())
 			return m_envs[offsetted]->get_num_points();
 	}
+	if (which >= 200 && which < 299)
+	{
+		int offsetted = which - 200;
+		if (offsetted >= 0 && offsetted < m_envs.size())
+			return m_envs[offsetted]->getColor();
+	}
 	return 0;
 }
 
@@ -816,6 +823,12 @@ void EnvelopeControl::setIntegerProperty(int which, int v)
 		else m_notify_on_point_move = true;
 		return;
 	}
+	if (which >= 200 && which < 299)
+	{
+		int offsetted = which - 200;
+		if (offsetted >= 0 && offsetted < m_envs.size())
+			m_envs[offsetted]->setColor(LICE_RGBA_FROMNATIVE(v));
+	}
 	repaint();
 }
 
@@ -824,6 +837,65 @@ void EnvelopeControl::setStringProperty(int which, std::string txt)
 	if (which == 0 && m_envs.size() > 0)
 		m_envs[0]->setName(txt);
 	repaint();
+}
+
+template<typename F>
+inline void for_lines_of_string(const std::string& msg, F&& f)
+{
+	size_t lastlinestart = 0;
+	for (size_t i = 0; i < msg.size(); ++i)
+	{
+		if (msg[i] == '\n' || i == msg.size() - 1)
+		{
+			std::string line;
+			size_t lastindex = i;
+			if (i == msg.size() - 1)
+				lastindex = i + 1;
+			for (size_t j = lastlinestart; j < lastindex; ++j)
+				if (j<msg.size())
+					line.push_back(msg[j]);
+			f(line);
+			lastlinestart = i + 1;
+		}
+	}
+}
+
+void EnvelopeControl::sendStringCommand(const std::string & msg)
+{
+	if (m_envs.size() > 0 && m_active_envelope>=0)
+	{
+		LineParser lp;
+		bool dosort = false;
+		for_lines_of_string(msg, [&lp,this,&dosort](const auto& line) 
+		{ 
+			lp.parse(line.c_str());
+			int numtoks = lp.getnumtokens();
+			if (numtoks == 1 && strcmp(lp.gettoken_str(0), "CLEAR") == 0)
+			{
+				m_envs[m_active_envelope]->remove_all_points();
+			}
+			else if (numtoks == 3 && strcmp(lp.gettoken_str(0), "ADDPT") == 0)
+			{
+				double ptx = lp.gettoken_float(1);
+				double pty = lp.gettoken_float(2);
+				m_envs[m_active_envelope]->add_point({ ptx,pty }, false);
+				dosort = true;
+			}
+			else if (numtoks == 3 && strcmp(lp.gettoken_str(0), "DELINTIMERANGE") == 0)
+			{
+				double t0 = lp.gettoken_float(1);
+				double t1 = lp.gettoken_float(2);
+				m_envs[m_active_envelope]->remove_points_conditionally([t0, t1](auto& pt)
+				{
+					return pt.get_x() >= t0 && pt.get_x() < t1;
+				});
+				
+			}
+		});
+		if (dosort==true)
+			m_envs[m_active_envelope]->sort_points();
+		repaint();
+	}
 }
 
 void EnvelopeControl::setEnabled(bool b)

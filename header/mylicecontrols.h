@@ -161,6 +161,7 @@ public:
 	int getIntegerProperty(int which) override;
 	void setIntegerProperty(int which, int v) override;
 	void setStringProperty(int which, std::string txt) override;
+	void sendStringCommand(const std::string& msg) override;
 	void setEnabled(bool b);
 
 protected:

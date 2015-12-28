@@ -353,6 +353,23 @@ function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int"
 "Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
+function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	double val = (in)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueDouble(cname, which, val);
+		return_null;
+	}
+	return_null;
+},
+"Set a floating point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+
 function_entry MRP_GetControlIntNumber("int", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -367,6 +384,22 @@ function_entry MRP_GetControlIntNumber("int", "MRP_Window*,const char*,int", "wi
 "Get an integer point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
+function_entry MRP_SetControlIntNumber("void", "MRP_Window*,const char*,int,int", 
+	"window,controlname,which,value", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	int val = (in)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueInt(cname, which, val);
+	}
+	return_null;
+},
+"Set an integer point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
 function_entry MRP_SetControlString("void", "MRP_Window*,const char*,int,const char*",
 	"window,controlname,which,text", [](params)
 {
@@ -377,6 +410,24 @@ function_entry MRP_SetControlString("void", "MRP_Window*,const char*,int,const c
 	if (w != nullptr && cname != nullptr)
 	{
 		w->setControlValueString(cname, which, newtext);
+		return_null;
+	}
+	return_null;
+},
+"Set a text property associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+
+
+function_entry MRP_SendCommandString("void", "MRP_Window*,const char*,const char*",
+	"window,controlname,commandtext", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	const char* cmdtext = (const char*)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->sendCommandString(cname, cmdtext);
 		return_null;
 	}
 	return_null;
@@ -467,21 +518,6 @@ function_entry MRP_SetControlText("void", "MRP_Window*,const char*,const char*",
 "Set main text associated with control"
 );
 
-function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	int which = (in)arg[2];
-	double val = (in)arg[3];
-	if (w != nullptr && cname != nullptr)
-	{
-		w->setControlValueDouble(cname, which, val);
-		return_null;
-	}
-	return_null;
-},
-"Set a floating point number associated with control. Meaning of 'which' depends on the control targeted."
-);
 
 function_entry MRP_WindowAddSlider("void", "MRP_Window*,const char*,int", "window,name,initialvalue", [](params)
 {

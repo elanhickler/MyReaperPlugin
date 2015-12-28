@@ -135,6 +135,33 @@ void ReaScriptWindow::setControlValueString(std::string obname, int which, std::
 	}
 }
 
+void ReaScriptWindow::setControlValueDouble(std::string obname, int which, double v)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		c->setFloatingPointProperty(which, v);
+	}
+}
+
+void ReaScriptWindow::setControlValueInt(std::string obname, int which, int v)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		c->setIntegerProperty(which, v);
+	}
+}
+
+void ReaScriptWindow::sendCommandString(const std::string & obname, const std::string & cmd)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		c->sendStringCommand(cmd);
+	}
+}
+
 bool is_valid_reascriptwindow(ReaScriptWindow* w)
 {
 	return g_reascriptwindows.count(w) == 1;

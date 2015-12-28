@@ -92,6 +92,7 @@ public:
 	virtual void setIntegerProperty(int which, int v) {}
 	virtual std::string getStringProperty(int which) { return ""; }
 	virtual void setStringProperty(int which, std::string v) {}
+	virtual void sendStringCommand(const std::string& message) {}
 
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
 	// Use this responsibly.
