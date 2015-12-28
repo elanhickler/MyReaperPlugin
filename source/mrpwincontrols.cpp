@@ -205,6 +205,12 @@ std::string WinButton::getText()
 	return std::string(buf);
 }
 
+void WinButton::setStringProperty(int which, std::string text)
+{
+	if (which == 0)
+		setText(text);
+}
+
 bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (msg == WM_COMMAND && LOWORD(wparam) == m_control_id
