@@ -13,6 +13,7 @@ extern reaper_plugin_info_t* g_plugin_info;
 // creates a plain child window (control).
 // wndProc will receive a WM_CREATE, but it will have lParam set to lParamContext rather than LPCREATESTRUCT
 // (lParam is passed directly on WM_CREATE in SWELL, this duplicates that behavior)
+
 HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, LPARAM lParamContext)
 {
 #ifdef _WIN32
