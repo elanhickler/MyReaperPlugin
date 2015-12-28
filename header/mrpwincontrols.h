@@ -177,7 +177,8 @@ public:
 	void setValue(double pos);
 	void setTickMarkPositionFromValue(double pos);
 	void setValueConverter(std::shared_ptr<IValueConverter> c);
-	double getFloatingPointProperty(int which);
+	double getFloatingPointProperty(int which) override;
+	void setFloatingPointProperty(int which, double v) override;
 private:
 	std::shared_ptr<IValueConverter> m_val_converter;
 };

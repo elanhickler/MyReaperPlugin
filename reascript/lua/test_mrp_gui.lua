@@ -25,9 +25,9 @@ function tick()
     --reaper.ShowConsoleMsg("window was resized ")
     local wid = reaper.MRP_GetWindowPosSizeValue(thewindow,2)
     local hei = reaper.MRP_GetWindowPosSizeValue(thewindow,3)
-    reaper.MRP_SetControlBounds(thewindow,"Slider 1",5,5,wid-10,20)
+    reaper.MRP_SetControlBounds(thewindow,"SlideR 1",5,5,wid-10,20)
     reaper.MRP_SetControlBounds(thewindow,"Slider 2",5,30,wid-10,20)
-    reaper.MRP_SetControlBounds(thewindow,"Envelope 1",5,hei-150,wid/2-10,145)
+    reaper.MRP_SetControlBounds(thewindow,"envelope 1",5,hei-150,wid/2-10,145)
     reaper.MRP_SetControlBounds(thewindow,"Envelope 2",wid/2+5,hei-150,wid/2-10,145)
     reaper.MRP_SetWindowDirty(thewindow,0,false)
   end
@@ -38,7 +38,7 @@ function tick()
     reaper.MRP_SendCommandString(thewindow,"Envelope 2", "ADDPT 0.5 0.5\nADDPT 0.4 0.2\nADDPT 0.05 1.0")
   end
   if reaper.MRP_WindowIsDirtyControl(thewindow,"Slider 1") then
-      local val = reaper.MRP_GetControlFloatNumber(thewindow,"Slider 1",0)
+      local val = reaper.MRP_GetControlFloatNumber(thewindow,"slider 1",0)
       -- Change point 1 x position of envelope 1
       reaper.MRP_SetControlFloatNumber(thewindow,"Envelope 1",1,val)
       -- Change point 1 y position of envelope 2

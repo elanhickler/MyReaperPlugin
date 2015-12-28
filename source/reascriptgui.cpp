@@ -1,6 +1,7 @@
 
 #include "reascriptgui.h"
 #include "mylicecontrols.h"
+#include <regex>
 
 extern HWND g_parent;
 
@@ -88,12 +89,26 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 	}
 }
 
+#ifdef WIN32
+#define USE_REG_EXP_CONTROL_SEARCH
+#endif
+
 WinControl* ReaScriptWindow::control_from_name(std::string name)
 {
+#ifdef USE_REG_EXP_CONTROL_SEARCH
+	std::regex re(name, std::regex_constants::ECMAScript | std::regex_constants::icase);
+	for (auto& e : m_controls)
+	{
+		if (std::regex_match(e->getObjectName(), re) == true)
+			return e.get();
+	}
+	return nullptr;
+#else
 	for (auto& e : m_controls)
 		if (e->getObjectName() == name)
 			return e.get();
 	return nullptr;
+#endif
 }
 
 bool ReaScriptWindow::isControlDirty(std::string name)

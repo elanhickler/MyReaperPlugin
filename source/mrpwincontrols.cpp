@@ -320,6 +320,14 @@ double ReaSlider::getFloatingPointProperty(int which)
 	return 0.0;
 }
 
+void ReaSlider::setFloatingPointProperty(int which, double v)
+{
+	if (which == 0)
+	{
+		setValue(v);
+	}
+}
+
 WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
