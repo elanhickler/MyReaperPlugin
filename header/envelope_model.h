@@ -7,21 +7,60 @@
 class envbreakpoint
 {
 public:
+	enum PointShape
+	{
+		Linear,
+		Abrupt,
+		Power
+	};
 	envbreakpoint() {}
-	envbreakpoint(double x, double y) : m_x(x), m_y(y) {}
+	envbreakpoint(double x, double y, PointShape sh=Linear, double p1=0.0, double p2=0.0 ) 
+		: m_x(x), m_y(y),m_shape(sh), m_p1(p1), m_p2(p2) {}
 	double get_x() const noexcept { return m_x; }
 	double get_y() const noexcept { return m_y; }
 	void set_x(double x) noexcept { m_x = x; }
 	void set_y(double y) noexcept { m_y = y; }
 	int get_status() const { return m_status; }
 	void set_status(int x) { m_status = x; }
+	double get_param1() const { return m_p1; }
+	double get_param2() const { return m_p2; }
+	void set_param1(double v) { m_p1 = v; }
+	void set_param2(double v) { m_p2 = v; }
+	PointShape get_shape() const { return m_shape;  }
+	void set_shape(PointShape sh) { m_shape = sh; }
 private:
 	double m_x = 0.0;
 	double m_y = 0.0;
+	PointShape m_shape = Linear;
 	double m_p1 = 0.0;
 	double m_p2 = 0.0;
 	int m_status = 0;
+	void* m_extradata = nullptr;
 };
+
+inline double get_shaped_value(double x, envbreakpoint::PointShape sh, double p1, double p2)
+{
+	if (sh == envbreakpoint::Linear)
+		return x;
+	if (sh == envbreakpoint::Power)
+	{
+		if (p1 < 0.5)
+		{
+			
+			double exponent = 4.0 - p1*6.0;
+			return pow(x, exponent);
+			
+		}
+		else
+		{
+			
+			
+			double exponent = 1.0 + ((p1 - 0.5)*6.0);
+			return 1.0 - pow(1.0 - x, exponent);
+		}
+	}
+	return x;
+}
 
 class breakpoint_envelope
 {
@@ -75,6 +114,9 @@ public:
 		
 		double x0 = it->get_x();
 		double y0 = it->get_y();
+		auto shape = it->get_shape();
+		double p0 = it->get_param1();
+		double p1 = it->get_param2();
 		double x1;
 		double y1;
 		
@@ -94,7 +136,7 @@ public:
 		if (timediff < 0.0001)
 			timediff = 0.0001;
 		double offset_x = t-x0;
-		return y0+valdiff*(1.0/timediff)*offset_x;
+		return y0+valdiff*get_shaped_value((1.0/timediff)*offset_x,shape,p0,p1);
 	}
 	auto begin() { return m_points.begin(); }
 	auto end() { return m_points.end(); }

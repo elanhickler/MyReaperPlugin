@@ -599,6 +599,7 @@ void EnvelopeControl::paint(PaintEvent& ev)
 		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, envnameycor, bm->getWidth(), 25);
 	}
 	const float linethickness = 0.75f;
+	const int subsegments = 30;
 	for (int j = 0; j < m_envs.size(); ++j)
 	{
 		breakpoint_envelope* m_env = m_envs[j].get();
@@ -619,7 +620,22 @@ void EnvelopeControl::paint(PaintEvent& ev)
 				pt1 = m_env->get_point(i + 1);
 				double xcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
 				double ycor1 = (double)getHeight() - map_value(pt1.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-				LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
+				for (int k = 0; k < subsegments; ++k)
+				{
+					double normt = 1.0 / subsegments*k;
+					double xcoroffset = (xcor1 - xcor)*normt;
+					double normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
+					double ycorrange = ycor1 - ycor;
+					double subxcor0 = xcor + xcoroffset;
+					double subycor0 = ycor + ycorrange*normv;
+					normt = 1.0 / subsegments*(k+1);
+					xcoroffset = (xcor1 - xcor)*normt;
+					normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
+					double subxcor1 = xcor + xcoroffset;
+					double subycor1 = ycor + ycorrange*normv;
+					LICE_Line(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
+				}
+				//LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
 			}
 			if (i == 0 && pt.get_x() >= 0.0)
 			{
@@ -643,8 +659,15 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		return;
 	if (ev.m_mb == MouseEvent::MBRight)
 		return;
+	m_mouse_xy_at_press = { ev.m_x,ev.m_y };
 	m_point_was_moved = false;
 	m_mouse_down = true;
+	m_segment_to_adjust = find_hot_envelope_segment(ev.m_x, ev.m_y);
+	if (m_segment_to_adjust.second >= 0 && ev.m_modkeys.isModifierKeyDown(ModifierKey::MKAlt) == true)
+	{
+		m_segment_p1_at_mouse_press = m_envs[m_segment_to_adjust.first]->get_point(m_segment_to_adjust.second).get_param1();
+		return;
+	}
 	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 	if (m_node_to_drag.second == -1)
 	{
@@ -663,7 +686,9 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 	{
 		m_envs[m_node_to_drag.first]->remove_point(m_node_to_drag.second);
 		m_node_to_drag = { -1,-1 };
-		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectRemoved);
+		if (GenericNotifyCallback) 
+			GenericNotifyCallback(GenericNotifications::ObjectRemoved);
+		
 		repaint();
 	}
 }
@@ -675,6 +700,16 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	
 	if (m_mouse_down == true)
 	{
+		if (ev.m_modkeys.isModifierKeyDown(ModifierKey::MKAlt) && m_segment_to_adjust.second >= 0)
+		{
+			double xdelta = m_mouse_xy_at_press.first-ev.m_x;
+			breakpoint_envelope* m_env = m_envs[m_segment_to_adjust.first].get();
+			envbreakpoint& pt = m_env->get_point(m_segment_to_adjust.second);
+			double newp1 = bound_value(0.0, m_segment_p1_at_mouse_press + xdelta*0.005, 1.0);
+			pt.set_param1(newp1);
+			repaint();
+			return;
+		}
 		if (m_node_to_drag.second >= 0)
 		{
 			breakpoint_envelope* m_env = m_envs[m_node_to_drag.first].get();
@@ -704,10 +739,16 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	}
 	else
 	{
-		auto oldindex = m_node_to_drag;
-		m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
-		if (oldindex != m_node_to_drag)
-			repaint();
+		m_segment_to_adjust = find_hot_envelope_segment(ev.m_x, ev.m_y);
+		//if (m_segment_to_adjust.second >= 0)
+		//	readbg() << "cursor at env segment " << m_segment_to_adjust.second << "\n";
+		if (m_segment_to_adjust.second < 0)
+		{
+			auto oldindex = m_node_to_drag;
+			m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
+			if (oldindex != m_node_to_drag)
+				repaint();
+		}
 	}
 }
 
@@ -918,6 +959,29 @@ std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double
 			double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
 			double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
 			if (is_point_in_rect(xcor, ycor, ptxcor - 6, ptycor - 6, 12, 12) == true)
+			{
+				return{ j,i };
+			}
+		}
+	}
+	return{ -1,-1 };
+}
+
+std::pair<int, int> EnvelopeControl::find_hot_envelope_segment(double xcor, double ycor)
+{
+	if (m_envs.empty() == true)
+		return{ -1,-1 };
+	for (int j = m_envs.size() - 1; j >= 0; --j)
+	{
+		breakpoint_envelope* m_env = m_envs[j].get();
+		for (int i = 0; i < m_env->get_num_points()-1; ++i)
+		{
+			const envbreakpoint& pt0 = m_env->get_point(i);
+			const envbreakpoint& pt1 = m_env->get_point(i+1);
+			double ptxcor0 = map_value(pt0.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			double ptxcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			
+			if (xcor>=ptxcor0+6.0 && xcor<ptxcor1-6.0)
 			{
 				return{ j,i };
 			}

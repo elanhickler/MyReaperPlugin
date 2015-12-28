@@ -359,14 +359,15 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_controls[0]->setVisible(!m_controls[0]->isVisible());
 	};
 	auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
-	env->add_point({ 0.0, 0.5 }, true);
+	env->add_point({ 0.0, 0.5 , envbreakpoint::Power, 0.5 }, true);
+	env->add_point({ 0.5, 0.0 , envbreakpoint::Power, 0.5 }, true);
 	env->add_point({ 1.0, 0.5 }, true);
 	m_envcontrol1->add_envelope(env);
 
 	m_envcontrol1->GenericNotifyCallback = [this, env](GenericNotifications reason)
 	{
-		if (reason == GenericNotifications::AfterManipulation)
-			generate_items_sequence(env, m_edit1->getText().c_str());
+		//if (reason == GenericNotifications::AfterManipulation)
+		//	generate_items_sequence(env, m_edit1->getText().c_str());
 	};
 
 	add_control(m_envcontrol1);
