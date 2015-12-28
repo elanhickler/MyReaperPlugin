@@ -274,7 +274,15 @@ namespace MRP
 		T getMiddleY() const noexcept { return m_y + m_h / 2; }
 		T getWidth() const noexcept { return m_w; }
 		T getHeight() const noexcept { return m_h; }
-
+		bool operator==(const GenericRectangle<T> rhs)
+		{
+			return m_x == rhs.m_x && m_y == rhs.m_y &&
+				m_w == rhs.m_w && m_h == rhs.m_h;
+		}
+		bool operator!=(const GenericRectangle<T> rhs)
+		{
+			return !((*this) == rhs);
+		}
 		GenericPoint<T> getTopLeft() const noexcept
 		{
 			return GenericPoint<T>(m_x, m_y);

@@ -121,6 +121,8 @@ void LiceControl::setBounds(MRP::Rectangle g)
 {
 	if (g.isValid() == false)
 		return;
+	if (getBounds() == g)
+		return;
 	m_bitmap->resize(g.getWidth(), g.getHeight());
 	SetWindowPos(m_hwnd, 0, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOZORDER | SWP_NOACTIVATE);
 }

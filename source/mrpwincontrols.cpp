@@ -145,6 +145,8 @@ void WinControl::setBounds(MRP::Rectangle g)
 {
 	if (g.isValid() == false)
 		return;
+	if (getBounds() == g)
+		return;
 	if (m_hwnd != NULL)
 	{
 		SetWindowPos(m_hwnd, NULL, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOACTIVATE | SWP_NOZORDER);
