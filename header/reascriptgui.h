@@ -19,7 +19,7 @@ class ReaScriptWindow : public MRPWindow
 public:
 	ReaScriptWindow(std::string title);
 	~ReaScriptWindow();
-	void addControlFromName(std::string cname, std::string objectname);
+	bool addControlFromName(std::string cname, std::string objectname);
 	void setControlBounds(std::string name, int x, int y, int w, int h);
 	bool isControlDirty(std::string name);
 	void clearDirtyControls();

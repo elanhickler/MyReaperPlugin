@@ -284,8 +284,11 @@ function_entry MRP_WindowAddControl("void", "MRP_Window*,const char*,const char*
 	const char* objectname = (const char*)arg[2];
 	if (w != nullptr && controltypename != nullptr && objectname!=nullptr)
 	{
-		w->addControlFromName(controltypename, objectname);
-		return_null;
+		if (w->addControlFromName(controltypename, objectname)==true)
+			return_null;
+		char errbuf[256];
+		sprintf(errbuf, "Could not create control %s", controltypename);
+		ReaScriptError(errbuf);
 	}
 	return_null;
 },
