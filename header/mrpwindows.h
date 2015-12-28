@@ -29,6 +29,7 @@ public:
 	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
+	MRP::Rectangle getBounds() const;
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
 	

@@ -24,6 +24,8 @@ public:
 	bool isControlDirty(std::string name);
 	void clearDirtyControls();
 	double getControlValueDouble(std::string obname, int which);
+	void resized() override { m_was_resized = true; }
+	bool m_was_resized = false;
 private:
 	std::vector<char> m_leak_test;
 	WinControl* control_from_name(std::string name);

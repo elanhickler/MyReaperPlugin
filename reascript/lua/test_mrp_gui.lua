@@ -11,6 +11,13 @@ function tick()
   if reaper.time_precise()-t0>3.0 then
     reaper.MRP_WindowSetTitle(thewindow,"Timer fired")
   end
+  if reaper.MRP_GetWindowDirty(thewindow,0) then
+    --reaper.ShowConsoleMsg("window was resized ")
+    local wid = reaper.MRP_GetWindowPosSizeValue(thewindow,2)
+    local hei = reaper.MRP_GetWindowPosSizeValue(thewindow,3)
+    reaper.MRP_SetControlBounds(thewindow,"Slider 1",5,5,wid-10,20)
+    reaper.MRP_SetWindowDirty(thewindow,0,false)
+  end
   if reaper.MRP_WindowIsDirtyControl(thewindow,"OK") then
     reaper.ShowConsoleMsg("OK was pressed\n")
   end

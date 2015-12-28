@@ -196,17 +196,13 @@ extern "C"
 			func(MRP_WindowIsDirtyControl);
 			func(MRP_WindowClearDirtyControls);
 			func(MRP_GetControlFloatNumber);
+			func(MRP_GetWindowDirty);
+			func(MRP_SetWindowDirty);
+			func(MRP_GetWindowPosSizeValue);
 #ifdef REASCRIPTGUIWORKS
-			
-			
 			func(MRP_GetControlText);
 			func(MRP_SetControlText);
-			
 			func(MRP_SetControlFloatNumber);
-			func(MRP_SetWindowDirty);
-			func(MRP_GetWindowDirty);
-			
-			func(MRP_GetWindowPosSizeValue);
 			func(MRP_WindowAddSlider);
 			func(MRP_WindowAddButton);
 			func(MRP_WindowAddLineEdit);

@@ -135,6 +135,17 @@ void MRPWindow::setSize(int w, int h)
 	}
 }
 
+MRP::Rectangle MRPWindow::getBounds() const
+{
+	if (m_hwnd == NULL)
+		return MRP::Rectangle();
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	int w = r.right - r.left;
+	int h = r.bottom - r.top;
+	return{ r.left, r.top, w,h };
+}
+
 MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 {
 	m_is_modal = true;
