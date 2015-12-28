@@ -74,6 +74,28 @@ void doChangeItemPitchesAction(action_entry& act)
 	UpdateArrange();
 }
 
+void test_track_range()
+{
+	int sanity = 0;
+	for (auto e : reaper_track_range())
+	{
+		if (e == nullptr)
+		{
+			readbg() << "should not get nullptr!\n";
+			break;
+		}
+		char buf[1024];
+		if (GetSetMediaTrackInfo_String(e, "P_NAME", buf, false))
+			readbg() << e << " " << buf << "\n";
+		++sanity;
+		if (sanity > 10)
+		{
+			readbg() << "sanity failed\n";
+			break;
+		}
+	}
+}
+
 extern "C"
 {
 	// this is the only function that needs to be exported by a Reaper extension plugin dll
@@ -148,6 +170,11 @@ extern "C"
 			add_action("MRP : Play/stop audio source", "MRP_TESTPCM_SOURCE", ToggleOff, [](action_entry&)
 			{
 				test_pcm_source(0);
+			});
+
+			add_action("MRP : Test track range class", "MRP_TESTTRACKRANGE", CannotToggle, [](action_entry&)
+			{
+				test_track_range();
 			});
 
 				// Add functions

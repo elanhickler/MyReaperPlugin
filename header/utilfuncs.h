@@ -7,10 +7,8 @@
 #include <type_traits>
 #include <string>
 
-class PCM_source;
-class MediaItem;
-class MediaItem_Take;
-class MediaTrack;
+#include "WDL/WDL/lice/lice.h"
+#include "reaper_plugin/reaper_plugin_functions.h"
 
 template <typename T>
 inline T bound_value(T lower, T n, T upper)
@@ -156,6 +154,65 @@ private:
 		if (m_x.unique() == false)
 			m_x = std::make_shared<T>(*m_x);
 	}
+};
+
+class reaper_track_range
+{
+public:
+	struct track_iterator
+	{
+		track_iterator(ReaProject* proj, bool last)
+			: m_proj(proj), m_last(last) 
+		{
+			m_proj_num_tracks = CountTracks(m_proj);
+			if (m_last == true)
+				m_cur_track = m_proj_num_tracks;
+		}
+		ReaProject* m_proj = nullptr;
+		int m_cur_track = 0;
+		bool m_last = false;
+		int m_proj_num_tracks = 0;
+		reaper_track_range* m_range = nullptr;
+		track_iterator& operator++()
+		{
+			++m_cur_track;
+			if (m_cur_track >= m_proj_num_tracks)
+			{
+				m_last = true;
+				m_cur_track = m_proj_num_tracks;
+			}
+			return *this;
+		}
+		bool operator==(const track_iterator& rhs)
+		{
+			return m_proj == rhs.m_proj && m_cur_track == rhs.m_cur_track && m_last == rhs.m_last;
+		}
+		bool operator!=(const track_iterator& rhs)
+		{
+			return !((*this) == rhs);
+		}
+		MediaTrack* operator*()
+		{
+			if (m_cur_track<m_proj_num_tracks)
+				return GetTrack(m_proj, m_cur_track);
+			return nullptr;
+		}
+	};
+	reaper_track_range(ReaProject* proj = nullptr) : m_proj(proj) 
+	{
+	}
+	track_iterator begin()
+	{
+		if (CountTracks(m_proj) > 0)
+			return track_iterator(m_proj,false);
+		return track_iterator(m_proj,true);
+	}
+	track_iterator end()
+	{
+		return track_iterator(m_proj,true);
+	}
+private:
+	ReaProject* m_proj = nullptr;
 };
 
 namespace MRP
