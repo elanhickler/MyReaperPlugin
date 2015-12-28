@@ -28,6 +28,8 @@ std::shared_ptr<LiceControl> create_licecontrol(ReaScriptWindow* w, std::string 
 		points->sort_points();
 		auto control = std::make_shared<EnvelopeControl>(w);
 		control->add_envelope(points);
+		// By default, don't set the control dirty on envelope point drag
+		control->setIntegerProperty(2, 0);
 		return control;
 	}
 	return nullptr;
@@ -112,6 +114,25 @@ double ReaScriptWindow::getControlValueDouble(std::string obname, int which)
 		return c->getFloatingPointProperty(which);
 	}
 	return 0.0;
+}
+
+int ReaScriptWindow::getControlValueInt(std::string obname, int which)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		return c->getIntegerProperty(which);
+	}
+	return 0;
+}
+
+void ReaScriptWindow::setControlValueString(std::string obname, int which, std::string text)
+{
+	WinControl* c = control_from_name(obname);
+	if (c != nullptr)
+	{
+		c->setStringProperty(which, text);
+	}
 }
 
 bool is_valid_reascriptwindow(ReaScriptWindow* w)
@@ -359,6 +380,8 @@ double ReaScriptWindow::getControlValueDouble(std::string cname, int which)
 	}
 	return 0.0;
 }
+
+
 
 void ReaScriptWindow::setControlValueDouble(std::string cname, int which, double v)
 {

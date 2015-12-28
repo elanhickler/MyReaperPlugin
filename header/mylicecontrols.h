@@ -160,7 +160,7 @@ public:
 	void setFloatingPointProperty(int index, double value) override;
 	int getIntegerProperty(int which) override;
 	void setIntegerProperty(int which, int v) override;
-
+	void setStringProperty(int which, std::string txt) override;
 	void setEnabled(bool b);
 
 protected:
@@ -185,6 +185,7 @@ protected:
 			std::swap(m_view_start_time, m_view_end_time);
 	}
 	bool m_enabled = true;
+	bool m_notify_on_point_move = true;
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl

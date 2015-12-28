@@ -586,14 +586,16 @@ void EnvelopeControl::paint(PaintEvent& ev)
 		}
 		
 	}
+	int envnameycor = 5;
 	if (m_text.empty() == false)
 	{
 		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), 25);
+		envnameycor = 30;
 	}
 	if (m_active_envelope >= 0)
 	{
 		std::string envname = m_envs[m_active_envelope]->getName();
-		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, 30, bm->getWidth(), 25);
+		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, envnameycor, bm->getWidth(), 25);
 	}
 	const float linethickness = 0.75f;
 	for (int j = 0; j < m_envs.size(); ++j)
@@ -690,7 +692,8 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 			pt.set_x(bound_value(left_bound + 0.001, normx, right_bound - 0.001));
 			pt.set_y(bound_value(0.0, normy, 1.0));
-			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectMoved);
+			if (m_notify_on_point_move == true && GenericNotifyCallback) 
+				GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			m_point_was_moved = true;
 			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
@@ -788,6 +791,8 @@ int EnvelopeControl::getIntegerProperty(int which)
 		return m_envs.size();
 	if (which == 1)
 		return m_active_envelope;
+	if (which == 2)
+		return m_notify_on_point_move;
 	if (which >= 100 && which < 199)
 	{
 		int offsetted = which - 100;
@@ -804,6 +809,20 @@ void EnvelopeControl::setIntegerProperty(int which, int v)
 		if (m_envs.size() > 0 && v >= 0 && v < m_envs.size())
 			m_active_envelope = v;
 	}
+	if (which == 2)
+	{
+		if (v == 0)
+			m_notify_on_point_move = false;
+		else m_notify_on_point_move = true;
+		return;
+	}
+	repaint();
+}
+
+void EnvelopeControl::setStringProperty(int which, std::string txt)
+{
+	if (which == 0 && m_envs.size() > 0)
+		m_envs[0]->setName(txt);
 	repaint();
 }
 

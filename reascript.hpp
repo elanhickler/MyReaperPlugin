@@ -353,6 +353,37 @@ function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int"
 "Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
 );
 
+function_entry MRP_GetControlIntNumber("int", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_int(w->getControlValueInt(cname, which));
+	}
+	return_int(0.0);
+},
+"Get an integer point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+function_entry MRP_SetControlString("void", "MRP_Window*,const char*,int,const char*",
+	"window,controlname,which,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	const char* newtext = (const char*)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueString(cname, which, newtext);
+		return_null;
+	}
+	return_null;
+},
+"Set a text property associated with control. Meaning of 'which' depends on the control targeted."
+);
+
 function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
@@ -408,9 +439,6 @@ function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which
 );
 
 #ifdef REASCRIPTGUIWORKS
-
-
-
 
 function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "window,controlname", [](params)
 {

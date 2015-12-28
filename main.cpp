@@ -196,6 +196,8 @@ extern "C"
 			func(MRP_WindowIsDirtyControl);
 			func(MRP_WindowClearDirtyControls);
 			func(MRP_GetControlFloatNumber);
+			func(MRP_GetControlIntNumber);
+			func(MRP_SetControlString);
 			func(MRP_GetWindowDirty);
 			func(MRP_SetWindowDirty);
 			func(MRP_GetWindowPosSizeValue);
