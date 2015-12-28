@@ -110,6 +110,7 @@ public:
 	WinButton(MRPWindow* parent, std::string text);
 	void setText(std::string text);
 	std::string getText();
+	void setStringProperty(int which, std::string text) override;
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
 
