@@ -44,18 +44,15 @@ inline double get_shaped_value(double x, envbreakpoint::PointShape sh, double p1
 		return x;
 	if (sh == envbreakpoint::Power)
 	{
+		const double max_exponent = 5.0;
 		if (p1 < 0.5)
 		{
-			
-			double exponent = 4.0 - p1*6.0;
+			double exponent = (max_exponent+1.0) - p1 * (max_exponent*2.0);
 			return pow(x, exponent);
-			
 		}
 		else
 		{
-			
-			
-			double exponent = 1.0 + ((p1 - 0.5)*6.0);
+			double exponent = 1.0 + ((p1 - 0.5)*(max_exponent*2.0));
 			return 1.0 - pow(1.0 - x, exponent);
 		}
 	}
