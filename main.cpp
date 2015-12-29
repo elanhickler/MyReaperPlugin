@@ -96,6 +96,141 @@ void test_track_range()
 	}
 }
 
+struct irp_task : public NoCopyNoMove
+{
+	irp_task(MediaItem* item, int id) : m_item(item), m_id(id)
+	{
+		MediaItem_Take* take = GetActiveTake(m_item);
+		if (take != nullptr)
+		{
+			PCM_source* src = GetMediaItemTake_Source(take);
+			if (src != nullptr)
+			{
+				m_src = src->Duplicate();
+				m_shifter = ReaperGetPitchShiftAPI(REAPER_PITCHSHIFT_API_VER);
+				char cfg[] = { 'e','v','a','w', 32, 0 };
+				int nch = src->GetNumChannels();
+				int sr = src->GetSampleRate();
+				std::string outfn = std::string("C:/MusicAudio/batchtesti/irptest/out_") + std::to_string(id) + ".wav";
+				m_sink = PCM_Sink_Create(outfn.c_str(), cfg, sizeof(cfg), nch, sr, false);
+				if (m_sink == nullptr)
+				{
+					readbg() << "failed to create sink\n";
+					return;
+				}
+				m_shifteroutbuf.resize(nch*m_bufsize);
+				m_sinkbuf.resize(nch*m_bufsize);
+				m_sinkbufpointers.resize(nch);
+				for (int i = 0; i < nch; ++i)
+					m_sinkbufpointers[i] = &m_sinkbuf[i*m_bufsize];
+			}
+		}
+	}
+	~irp_task()
+	{
+		delete m_sink;
+		delete m_shifter;
+		delete m_src;
+		readbg() << "irp task dtor " << m_id << "\n";
+	}
+	void run()
+	{
+		if (m_shifter == nullptr || m_src == nullptr || m_sink == nullptr)
+			return;
+		double prate = 0.5;
+		m_shifter->SetQualityParameter(-1);
+		m_shifter->set_nch(m_src->GetNumChannels());
+		m_shifter->set_srate(m_src->GetSampleRate());
+		m_shifter->set_tempo(prate);
+		m_shifter->set_shift(1.0);
+		
+		int64_t srclenframes = m_src->GetLength()*m_src->GetSampleRate();
+		int64_t incounter = 0;
+		while (incounter < srclenframes)
+		{
+			ReaSample* shifter_in_buf = m_shifter->GetBuffer(m_bufsize*prate);
+			PCM_source_transfer_t transfer = { 0 };
+			transfer.length = m_bufsize*prate;
+			transfer.nch = m_src->GetNumChannels();
+			transfer.time_s = (double)incounter / m_src->GetSampleRate();
+			transfer.samplerate = m_src->GetSampleRate();
+			transfer.samples = shifter_in_buf;
+			m_src->GetSamples(&transfer);
+			int shifted_output = 0;
+			int sanity = 0;
+			while (shifted_output < m_bufsize)
+			{
+				
+				m_shifter->BufferDone(m_bufsize*prate);
+				shifted_output += m_shifter->GetSamples(m_bufsize, m_shifteroutbuf.data());
+				
+				++sanity;
+				if (sanity > 100)
+				{
+					//readbg() << "sanity failed";
+					break;
+				}
+			}
+			int nch = m_src->GetNumChannels();
+			for (int i = 0; i < m_bufsize; ++i)
+			{
+				for (int j = 0; j < nch; ++j)
+				{
+					m_sinkbufpointers[j][i] = m_shifteroutbuf[i*nch + j];
+				}
+			}
+			m_sink->WriteDoubles(m_sinkbufpointers.data(), m_bufsize, m_src->GetNumChannels(), 0, 1);
+			incounter += m_bufsize*prate;
+		}
+	}
+	MediaItem* m_item = nullptr;
+	IReaperPitchShift* m_shifter = nullptr;
+	PCM_source* m_src = nullptr;
+	PCM_sink* m_sink = nullptr;
+	int m_bufsize = 16384;
+	std::vector<double> m_shifteroutbuf;
+	std::vector<double> m_sinkbuf;
+	std::vector<double*> m_sinkbufpointers;
+	int m_id = 0;
+};
+
+void test_irp_render(bool multithreaded)
+{
+	int numselitems = CountSelectedMediaItems(nullptr);
+	if (numselitems < 1)
+		return;
+	std::vector<std::shared_ptr<irp_task>> tasks;
+	for (int i = 0; i < numselitems; ++i)
+	{
+		MediaItem* item = GetSelectedMediaItem(nullptr, i);
+		auto task = std::make_shared<irp_task>(item,i);
+		tasks.push_back(task);
+	}
+	if (multithreaded == false)
+	{
+		double t0 = time_precise();
+		for (int i = 0; i < tasks.size();++i)
+		{
+			tasks[i]->run();
+			//readbg() << i << " done\n";
+		}
+		double t1 = time_precise();
+		readbg() << "all done in " << t1 - t0 << " seconds\n";
+	}
+	else
+	{
+		double t0 = time_precise();
+#ifdef WIN32
+		Concurrency::parallel_for_each(tasks.begin(), tasks.end(), [](auto t) { t->run(); });
+#else
+		// for OS-X Grand Central Dispatch stuff here...
+#endif
+		double t1 = time_precise();
+		readbg() << "all done in " << t1 - t0 << " seconds\n";
+	}
+
+}
+
 extern "C"
 {
 	// this is the only function that needs to be exported by a Reaper extension plugin dll
@@ -175,6 +310,18 @@ extern "C"
 			add_action("MRP : Test track range class", "MRP_TESTTRACKRANGE", CannotToggle, [](action_entry&)
 			{
 				test_track_range();
+			});
+
+			add_action("MRP : Render selected items with IReaperPitchShift (single threaded)", 
+				"MRP_TESTRENDER_IRP_SINGLETHREADED", CannotToggle, [](action_entry&)
+			{
+				test_irp_render(false);
+			});
+
+			add_action("MRP : Render selected items with IReaperPitchShift (multi threaded)",
+				"MRP_TESTRENDER_IRP_MULTITHREADED", CannotToggle, [](action_entry&)
+			{
+				test_irp_render(true);
 			});
 
 				// Add functions

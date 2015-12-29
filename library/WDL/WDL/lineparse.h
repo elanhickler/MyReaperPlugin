@@ -243,7 +243,7 @@ class LineParserInt // version which does not have any temporary space for buffe
       if (*tt) while (*strlist)
       {
 #ifdef _WIN32
-        if (!stricmp(tt,strlist)) return x;
+        if (!_stricmp(tt,strlist)) return x;
 #else
         if (!strcasecmp(tt,strlist)) return x;
 #endif
