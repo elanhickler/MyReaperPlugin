@@ -1246,3 +1246,85 @@ EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(MRPWindow* pa
 	};
 }
 
+ZoomScrollBar::ZoomScrollBar(MRPWindow* parent) : LiceControl(parent)
+{
+
+}
+
+void ZoomScrollBar::paint(PaintEvent& ev)
+{
+	LICE_FillRect(ev.bm, 0, 0, getWidth(), getHeight(), LICE_RGBA(100, 100, 100, 255), 1.0f);
+	int x0 = getWidth()*m_start;
+	int x1 = getWidth()*m_end;
+	LICE_FillRect(ev.bm, x0, 0, x1-x0, getHeight(), LICE_RGBA(200, 200, 200, 255), 1.0f);
+	if (m_hot_area == ha_left_edge)
+		LICE_FillRect(ev.bm, x0, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
+	if (m_hot_area == ha_right_edge)
+		LICE_FillRect(ev.bm, x1-10, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
+}
+
+void ZoomScrollBar::mousePressed(const MouseEvent & ev)
+{
+	m_mouse_down = true;
+	m_drag_start_x = ev.m_x;
+}
+
+void ZoomScrollBar::mouseMoved(const MouseEvent & ev)
+{
+	if (m_mouse_down == false)
+	{
+		auto temp = get_hot_area(ev.m_x, ev.m_y);
+		if (temp != m_hot_area)
+		{
+			m_hot_area = temp;
+			repaint();
+		}
+	}
+	else
+	{
+		if (m_hot_area == ha_left_edge)
+		{
+			double new_left_edge = 1.0 / getWidth()*ev.m_x;
+			m_start = bound_value(0.0, new_left_edge, m_end - 0.01);
+			repaint();
+		}
+		if (m_hot_area == ha_right_edge)
+		{
+			double new_right_edge = 1.0 / getWidth()*ev.m_x;
+			m_end = bound_value(m_start + 0.01, new_right_edge, 1.0);
+			repaint();
+		}
+		if (m_hot_area == ha_handle)
+		{
+			double delta = 1.0 / getWidth()*(ev.m_x - m_drag_start_x);
+			double old_start = m_start;
+			double old_end = m_end;
+			double old_len = m_end - m_start;
+			m_start = bound_value(0.0, m_start + delta, 1.0 - old_len);
+			m_end = bound_value(old_len, m_end + delta, m_start + old_len);
+			m_drag_start_x = ev.m_x;
+			repaint();
+		}
+		if (RangeChangedCallback)
+			RangeChangedCallback(m_start, m_end);
+	}
+}
+
+void ZoomScrollBar::mouseReleased(const MouseEvent & ev)
+{
+	m_mouse_down = false;
+}
+
+ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)
+{
+	int x0 = getWidth()*m_start;
+	int x1 = getWidth()*m_end;
+	if (is_in_range(x, x0 - 5, x0 + 5))
+		return ha_left_edge;
+	if (is_in_range(x, x1 - 5, x1 + 5))
+		return ha_right_edge;
+	if (is_in_range(x, x0 + 5, x1 - 5))
+		return ha_handle;
+	return ha_none;
+
+}

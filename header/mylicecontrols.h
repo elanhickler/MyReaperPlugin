@@ -217,3 +217,29 @@ public:
 	
 };
 
+class ZoomScrollBar : public LiceControl
+{
+public:
+	enum hot_area
+	{
+		ha_none,
+		ha_left_edge,
+		ha_right_edge,
+		ha_handle
+	};
+	ZoomScrollBar(MRPWindow* parent);
+	void paint(PaintEvent& ev) override;
+	void mousePressed(const MouseEvent& ev) override;
+	void mouseMoved(const MouseEvent& ev) override;
+	void mouseReleased(const MouseEvent& ev) override;
+	std::string getType() const override { return "ZoomScrollBar"; }
+	std::function<void(double, double)> RangeChangedCallback;
+private:
+	double m_start = 0.0;
+	double m_end = 1.0;
+	hot_area m_hot_area = ha_none;
+	hot_area get_hot_area(int x, int y);
+	int m_drag_start_x = 0;
+	bool m_mouse_down = false;
+};
+

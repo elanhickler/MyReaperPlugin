@@ -434,6 +434,12 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_label1->setText(std::to_string(x));
 	};
 	add_control(m_slider1);
+	m_zoomscroll1 = std::make_shared<ZoomScrollBar>(this);
+	add_control(m_zoomscroll1);
+	m_zoomscroll1->RangeChangedCallback = [this](double t0, double t1)
+	{
+		m_envcontrol1->setViewTimeRange(t0, t1);
+	};
 }
 
 void TestMRPPWindow::resized()
@@ -451,7 +457,7 @@ void TestMRPPWindow::resized()
 	}
 	m_slider1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 0, 16, 1));
 	m_envcontrol1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 1, 16, 10));
-	m_label1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 10, 16, 11));
+	m_zoomscroll1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 10, 16, 11));
 	m_edit1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 11, 16, 12));
 	m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
 	m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));

@@ -36,6 +36,13 @@ inline bool is_point_in_rect(int px, int py, int rx, int ry, int rw, int rh)
 	return px>=rx && px<rx+rw && py>=ry && py<ry+rh;
 }
 
+template<typename T>
+inline bool is_in_range(T val, T start, T end)
+{
+	return val >= start && val <= end;
+}
+
+
 inline bool is_alphaspacenumeric(char c)
 {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c < 'Z') || c == ' ';
