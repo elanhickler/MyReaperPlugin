@@ -76,7 +76,11 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 	{
 		if (index >= 0)
 		{
-			readbg() << "you chose " << m_listbox1->getItemText(index) << " from the listbox\n";
+			std::string temp = m_listbox1->getItemText(index);
+			char poopbuf[1024];
+			sprintf(poopbuf,"you chose %s from the listbox\n",temp.c_str());
+			ShowConsoleMsg(poopbuf);
+			//readbg() << "you chose " << temp << " from the listbox\n";
 			int user_id = m_listbox1->userIDfromIndex(index);
 			MediaItem* itemfromlist = m_itemmap[user_id];
 			if (ValidatePtr((void*)itemfromlist, "MediaItem*") == true)

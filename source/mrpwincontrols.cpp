@@ -27,7 +27,7 @@ int get_wincontrol_leak_count()
 // with some space already allocated
 std::vector<char> g_messagetextsbuffer(1024);
 
-void adjust_message_text_buffer(int size, bool fillzeros=false)
+void adjust_message_text_buffer(int size, bool fillzeros=true)
 {
 	if (g_messagetextsbuffer.size() < size)
 		// 10% more than requested so we don't have to reallocate if the next request is just tiny bit larger
@@ -510,6 +510,8 @@ int WinListBox::numItems()
 
 std::string WinListBox::getItemText(int index)
 {
+	if (index<0)
+		return std::string();
 	int textLen = SendMessage(m_hwnd, LB_GETTEXTLEN, index, 0);
 	if (textLen > 0)
 	{
