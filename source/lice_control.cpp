@@ -314,13 +314,13 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	{
 		
 	}
-#ifdef WIN32
+//#ifdef WIN32
 	if (Message == WM_MOUSELEAVE)
 	{
 		c->mouseLeave();
 		return 0;
 	}
-#endif
+//#endif
 	if (Message == WM_DESTROY)
 	{
 		//ShowConsoleMsg("lice control window destroy\n");
