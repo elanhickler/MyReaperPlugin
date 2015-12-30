@@ -83,7 +83,20 @@ public:
 	
 	std::function<void(GenericNotifications)> GenericNotifyCallback;
 
+	// These are mainly for use with functions exported to be used with
+	// ReaScript. However, perhaps sometimes a nice hacky use case can be found 
+	// in C++ code too...
+	virtual double getFloatingPointProperty(int which) { return 0.0; }
+	virtual void setFloatingPointProperty(int which, double v) {}
+	virtual int getIntegerProperty(int which) { return 0; }
+	virtual void setIntegerProperty(int which, int v) {}
+	virtual std::string getStringProperty(int which) { return ""; }
+	virtual void setStringProperty(int which, std::string v) {}
+	virtual void sendStringCommand(const std::string& message) {}
+
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
+	// Use this responsibly.
+	HWND getWindowHandle() const { return m_hwnd; }
 protected:
 	HWND m_hwnd = NULL;
 	MRPWindow* m_parent = nullptr;
@@ -97,6 +110,7 @@ public:
 	WinButton(MRPWindow* parent, std::string text);
 	void setText(std::string text);
 	std::string getText();
+	void setStringProperty(int which, std::string text) override;
 	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
 
@@ -136,6 +150,24 @@ private:
 	
 };
 
+// Just a single column listbox. Probably best to do a separate subclass for multicolumn listview as
+// that's pretty complicated to deal with...
+class WinListBox : public WinControl
+{
+public:
+	WinListBox(MRPWindow* parent);
+	bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	void addItem(std::string text, int user_id);
+	void clearItems();
+	void removeItem(int index);
+	int userIDfromIndex(int index);
+	std::function<void(int)> SelectedChangedCallback;
+	int numItems();
+	std::string getItemText(int index);
+	int getSelectedIndex();
+	void setSelectedIndex(int index);
+};
+
 class ReaSlider : public WinControl
 {
 public:
@@ -146,6 +178,8 @@ public:
 	void setValue(double pos);
 	void setTickMarkPositionFromValue(double pos);
 	void setValueConverter(std::shared_ptr<IValueConverter> c);
+	double getFloatingPointProperty(int which) override;
+	void setFloatingPointProperty(int which, double v) override;
 private:
 	std::shared_ptr<IValueConverter> m_val_converter;
 };

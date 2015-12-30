@@ -16,6 +16,7 @@ HWND toggle_simple_example_window(HWND parent)
 
 SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWindow(parent,title)
 {
+	m_last_project_change_count = GetProjectStateChangeCount(nullptr);
 	m_but1 = std::make_shared<WinButton>(this, "Get take name");
 	m_but1->GenericNotifyCallback = [this](GenericNotifications)
 	{
@@ -47,10 +48,90 @@ SimpleExampleWindow::SimpleExampleWindow(HWND parent, std::string title) : MRPWi
 		}
 	};
 	add_control(m_but2);
+	
+	m_but3 = std::make_shared<WinButton>(this, "Refresh item list");
+	m_but3->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		populate_listbox();
+	};
+	add_control(m_but3);
+	
+	m_but4 = std::make_shared<WinButton>(this, "Rem sel listbox item");
+	m_but4->GenericNotifyCallback = [this](GenericNotifications)
+	{
+		int selindex = m_listbox1->getSelectedIndex();
+		if (selindex >= 0)
+		{
+			m_listbox1->removeItem(selindex);
+			m_itemmap.erase(m_listbox1->userIDfromIndex(selindex));
+		}
+	};
+	add_control(m_but4);
+	
 	m_edit1 = std::make_shared<WinLineEdit>(this, "No take name yet");
 	add_control(m_edit1);
-	m_doodlecontrol1 = std::make_shared<DoodleControl>(this);
+	m_listbox1 = std::make_shared<WinListBox>(this);
+	
+	m_listbox1->SelectedChangedCallback = [this](int index) mutable
+	{
+		if (index >= 0)
+		{
+			readbg() << "you chose " << m_listbox1->getItemText(index) << " from the listbox\n";
+			int user_id = m_listbox1->userIDfromIndex(index);
+			MediaItem* itemfromlist = m_itemmap[user_id];
+			if (ValidatePtr((void*)itemfromlist, "MediaItem*") == true)
+			{
+				m_edit1->setText(std::string("You chose item with mem address " +
+					std::to_string((uint64_t)itemfromlist) + " from the listbox"));
+			}
+			else m_edit1->setText(("You chose an item from listbox that's no longer valid!"));
+		}
+		else readbg() << "you managed to choose no item from the listbox\n";
+	};
+	add_control(m_listbox1);
+	add_control(m_listbox1);
 	setSize(500, 500);
+}
+
+void SimpleExampleWindow::populate_listbox()
+{
+	int old_index = m_listbox1->getSelectedIndex();
+	m_listbox1->clearItems();
+	m_itemmap.clear();
+	int numitems = CountMediaItems(nullptr);
+	
+	for (int i=0;i<numitems;++i)
+	{
+		MediaItem* item = GetMediaItem(nullptr,i);
+		MediaItem_Take* take = GetActiveTake(item);
+		if (item!=nullptr)
+		{
+			char namebuf[1024];
+			if (GetSetMediaItemTakeInfo_String(take,"P_NAME",namebuf,false))
+			{
+				m_listbox1->addItem(namebuf, i);
+				// Note that the item pointers stored into this map
+				// may easily become invalid if the items are removed by the user etc...
+				// It doesn't matter in this code as we don't dereference the pointers in any way yet.
+				// Note how the validation can be done in the button3 handler lambda!
+				m_itemmap[i]=item;
+			}
+			
+		}
+	}
+	//readbg() << "listbox has " << m_listbox1->numItems() << " items\n";
+}
+
+void SimpleExampleWindow::onRefreshTimer()
+{
+	return;
+	int new_count = GetProjectStateChangeCount(nullptr);
+	if (m_last_project_change_count != new_count)
+	{
+		m_last_project_change_count = new_count;
+		populate_listbox();
+		//readbg() << "project has changed! " << m_last_project_change_count << "\n";
+	}
 }
 
 void SimpleExampleWindow::resized()
@@ -59,7 +140,9 @@ void SimpleExampleWindow::resized()
 	m_edit1->setBounds({ 5,5,sz.getWidth() - 10,20 });
 	m_but1->setBounds({ 5, 30 , 100 , 20 });
 	m_but2->setBounds({ sz.getWidth()-105, 30 ,100,20 });
-	m_doodlecontrol1->setBounds({ 0,55, sz.getWidth(),sz.getHeight() - 55 });
+	m_but3->setBounds({ 105, 30 ,120,20 });
+	m_but4->setBounds({ 230, 30 ,120,20 });
+	m_listbox1->setBounds({ 5, 55, sz.getWidth() - 10, sz.getHeight()-60 });
 }
 
 SliderBankWindow::SliderBankWindow(HWND parent) : MRPWindow(parent,"MRP Slider bank")
@@ -276,14 +359,15 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_controls[0]->setVisible(!m_controls[0]->isVisible());
 	};
 	auto env = std::make_shared<breakpoint_envelope>("foo", LICE_RGBA(255, 255, 255, 255));
-	env->add_point({ 0.0, 0.5 }, true);
+	env->add_point({ 0.0, 0.5 , envbreakpoint::Power, 0.5 }, true);
+	env->add_point({ 0.5, 0.0 , envbreakpoint::Power, 0.5 }, true);
 	env->add_point({ 1.0, 0.5 }, true);
 	m_envcontrol1->add_envelope(env);
 
 	m_envcontrol1->GenericNotifyCallback = [this, env](GenericNotifications reason)
 	{
-		if (reason == GenericNotifications::AfterManipulation)
-			generate_items_sequence(env, m_edit1->getText().c_str());
+		//if (reason == GenericNotifications::AfterManipulation)
+		//	generate_items_sequence(env, m_edit1->getText().c_str());
 	};
 
 	add_control(m_envcontrol1);
@@ -350,6 +434,12 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_label1->setText(std::to_string(x));
 	};
 	add_control(m_slider1);
+	m_zoomscroll1 = std::make_shared<ZoomScrollBar>(this);
+	add_control(m_zoomscroll1);
+	m_zoomscroll1->RangeChangedCallback = [this](double t0, double t1)
+	{
+		m_envcontrol1->setViewTimeRange(t0, t1);
+	};
 }
 
 void TestMRPPWindow::resized()
@@ -367,7 +457,7 @@ void TestMRPPWindow::resized()
 	}
 	m_slider1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 0, 16, 1));
 	m_envcontrol1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 1, 16, 10));
-	m_label1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 10, 16, 11));
+	m_zoomscroll1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 10, 16, 11));
 	m_edit1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 11, 16, 12));
 	m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
 	m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));

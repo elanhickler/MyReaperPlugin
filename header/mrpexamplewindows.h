@@ -7,12 +7,18 @@ class SimpleExampleWindow : public MRPWindow
 public:
 	SimpleExampleWindow(HWND parent, std::string title);
 	void resized() override;
+	void populate_listbox();
+	void onRefreshTimer() override;
 private:
 	std::shared_ptr<WinLineEdit> m_edit1;
 	std::shared_ptr<WinLineEdit> m_edit2;
 	std::shared_ptr<WinButton> m_but1;
 	std::shared_ptr<WinButton> m_but2;
-	std::shared_ptr<DoodleControl> m_doodlecontrol1;
+	std::shared_ptr<WinButton> m_but3;
+	std::shared_ptr<WinButton> m_but4;
+	std::shared_ptr<WinListBox> m_listbox1;
+	std::unordered_map<int, MediaItem*> m_itemmap;
+	int m_last_project_change_count = 0;
 };
 
 HWND toggle_simple_example_window(HWND parent);
@@ -55,6 +61,7 @@ private:
 	std::shared_ptr<WinComboBox> m_combo2;
 	std::shared_ptr<ReaSlider> m_slider1;
 	std::shared_ptr<EnvelopeControl> m_envcontrol1;
+	std::shared_ptr<ZoomScrollBar> m_zoomscroll1;
 	std::shared_ptr<WinLabel> m_label1;
 	std::shared_ptr<WinLineEdit> m_edit1;
 };

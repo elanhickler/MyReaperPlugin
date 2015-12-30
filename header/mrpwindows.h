@@ -19,17 +19,17 @@ public:
 	MRPWindow() {}
 	MRPWindow(HWND parent, std::string title = "Untitled");
 	virtual ~MRPWindow();
-	void add_control(std::shared_ptr<WinControl> c)
-	{
-		m_controls.push_back(c);
-	}
+	void add_control(std::shared_ptr<WinControl> c);
 	virtual void resized() {};
 	virtual void closeRequested();
 	bool isVisible() const;
 	void setVisible(bool b);
+	bool isClosed() { return m_is_closed; }
+	void setWindowTitle(std::string title);
 	MRP::Size getSize();
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
+	MRP::Rectangle getBounds() const;
 	void setDestroyOnClose(bool b) { m_destroy_on_close = b; }
 	HWND getWindowHandle() const { return m_hwnd; }
 	
@@ -55,6 +55,7 @@ public:
 				EndDialog(m_hwnd, 2);
 		}
 	}
+	virtual void onRefreshTimer() {}
 protected:
 	HWND m_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
@@ -63,6 +64,8 @@ protected:
 	bool m_is_modal = false;
 	bool m_modal_should_end = false;
 	ModalResult m_modal_result = Rejected;
+	UINT_PTR m_helper_timer = 0;
+	bool m_is_closed = true;
 };
 
 void shutdown_windows();

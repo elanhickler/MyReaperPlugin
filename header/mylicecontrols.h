@@ -160,7 +160,8 @@ public:
 	void setFloatingPointProperty(int index, double value) override;
 	int getIntegerProperty(int which) override;
 	void setIntegerProperty(int which, int v) override;
-
+	void setStringProperty(int which, std::string txt) override;
+	void sendStringCommand(const std::string& msg) override;
 	void setEnabled(bool b);
 
 protected:
@@ -168,8 +169,12 @@ protected:
 	std::shared_ptr<WaveformPainter> m_wave_painter;
 	LICE_CachedFont m_font;
 	bool m_mouse_down = false;
+	std::pair<int, int> m_mouse_xy_at_press{ 0,0 };
+	double m_segment_p1_at_mouse_press = 0.0;
 	std::pair<int, int> m_node_to_drag{ -1,-1 };
 	std::pair<int, int> find_hot_envelope_point(double xcor, double ycor);
+	std::pair<int, int> m_segment_to_adjust{ -1,-1 };
+	std::pair<int, int> find_hot_envelope_segment(double xcor, double ycor);
 	double m_view_start_time = 0.0;
 	double m_view_end_time = 1.0;
 	double m_view_start_value = 0.0;
@@ -185,6 +190,7 @@ protected:
 			std::swap(m_view_start_time, m_view_end_time);
 	}
 	bool m_enabled = true;
+	bool m_notify_on_point_move = true;
 };
 
 class PitchBenderEnvelopeControl : public EnvelopeControl
@@ -211,102 +217,30 @@ public:
 	
 };
 
-class licebitmaphandle
+class ZoomScrollBar : public LiceControl
 {
 public:
-	licebitmaphandle() {}
-	~licebitmaphandle()
+	enum hot_area
 	{
-		delete m_bm;
-	}
-	licebitmaphandle(int w, int h)
-	{
-		m_bm = new LICE_MemBitmap(w, h);
-	}
-	licebitmaphandle(const licebitmaphandle& other)
-	{
-		m_bm = new LICE_MemBitmap(other.m_bm->getWidth(),other.m_bm->getHeight());
-		LICE_Copy(m_bm, other.m_bm);
-	}
-	licebitmaphandle(licebitmaphandle&& other)
-	{
-		m_bm = other.m_bm;
-		other.m_bm = nullptr;
-	}
-	/*
-	licebitmaphandle& operator = (const licebitmaphandle& other)
-	{
-		delete m_bm;
-		m_bm = new LICE_MemBitmap(other.m_bm->getWidth(), other.m_bm->getHeight());
-		LICE_Copy(m_bm, other.m_bm);
-	}
-	*/
-	licebitmaphandle& operator = (licebitmaphandle&& other)
-	{
-		std::swap(other.m_bm, m_bm);
-		return *this;
-	}
-	LICE_MemBitmap* get() const { return m_bm; }
-private:
-	LICE_MemBitmap* m_bm = nullptr;
-};
-
-class DoodleControl : public LiceControl
-{
-public:
-	DoodleControl(MRPWindow* parent);
+		ha_none,
+		ha_left_edge,
+		ha_right_edge,
+		ha_handle
+	};
+	ZoomScrollBar(MRPWindow* parent);
 	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(const MouseEvent& ev) override;
-	bool keyPressed(const ModifierKeys& modkeys, int keycode) override;
-	std::string getType() const override { return "DoodleControl"; }
+	std::string getType() const override { return "ZoomScrollBar"; }
+	std::function<void(double, double)> RangeChangedCallback;
 private:
-	struct document_t
-	{
-		document_t() {}
-		document_t(LICE_MemBitmap* srcbm, int tilesize) 
-		{
-			m_tilesize = tilesize;
-			int horztiles = srcbm->getWidth() / tilesize;
-			int verttiles = srcbm->getHeight() / tilesize;
-			m_tiles.resize(horztiles*verttiles);
-			for (int i = 0; i < horztiles; ++i)
-			{
-				for (int j = 0; j < verttiles; ++j)
-				{
-					licebitmaphandle bmh(tilesize, tilesize);
-					int srcx = i*tilesize;
-					int srcy = j*tilesize;
-					LICE_Blit(bmh.get(), srcbm, 0, 0, srcx, srcy, tilesize, tilesize, 1.0f, 0);
-					m_tiles[i * horztiles + j] = copy_on_write<licebitmaphandle>(bmh);
-				}
-			}
-		}
-		void stitch(LICE_MemBitmap* destbm)
-		{
-			int horztiles = destbm->getWidth() / m_tilesize;
-			int verttiles = destbm->getHeight() / m_tilesize;
-			for (int i = 0; i < horztiles; ++i)
-			{
-				for (int j = 0; j < verttiles; ++j)
-				{
-					
-					LICE_MemBitmap* srcbm = m_tiles[i * horztiles + j].read().get();
-					int destx = i*m_tilesize;
-					int desty = j*m_tilesize;
-					LICE_Blit(destbm, srcbm, destx, desty, 0, 0, m_tilesize, m_tilesize, 1.0f, 0);
-				}
-			}
-		}
-		std::vector<copy_on_write<licebitmaphandle>> m_tiles;
-		int m_tilesize = 0;
-	};
-	std::vector<document_t> m_dochistory;
-	std::vector<std::pair<int,int>> m_dirty_tiles;
-	std::shared_ptr<LICE_MemBitmap> m_current_bitmap;
-	bool m_mousedown = false;
-	int m_undo_level = -1;
-	int m_tile_size = 128;
-	void add_undo_state();
+	double m_start = 0.0;
+	double m_end = 1.0;
+	hot_area m_hot_area = ha_none;
+	hot_area get_hot_area(int x, int y);
+	int m_drag_start_x = 0;
+	bool m_mouse_down = false;
 };
+
+

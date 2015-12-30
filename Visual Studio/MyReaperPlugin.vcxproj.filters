@@ -47,6 +47,9 @@
     <ClCompile Include="..\source\mrp_pcm_source.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\doodlecontrol.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -89,6 +92,9 @@
       <Filter>header</Filter>
     </ClInclude>
     <ClInclude Include="..\header\mrp_pcm_source.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\doodlecontrol.h">
       <Filter>header</Filter>
     </ClInclude>
   </ItemGroup>

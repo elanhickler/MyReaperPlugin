@@ -81,17 +81,31 @@ MRPWindow::MRPWindow(HWND parent, std::string title)
 	SetWindowText(m_hwnd, title.c_str());
 	SetWindowPos(m_hwnd, NULL, 20, 60, 100, 100, SWP_NOACTIVATE | SWP_NOZORDER);
 	ShowWindow(m_hwnd, SW_SHOW);
+	m_is_closed = false;
 }
 
 MRPWindow::~MRPWindow()
 {
 	readbg() << "MRPWindow dtor\n";
+	m_is_closed = true; 
 	m_controls.clear();
 	if (m_hwnd != NULL)
 	{
 		DestroyWindow(m_hwnd);
 		g_mrpwindowsmap.erase(m_hwnd);
 	}
+}
+
+void MRPWindow::add_control(std::shared_ptr<WinControl> c)
+{
+	auto it = std::find(m_controls.begin(), m_controls.end(), c);
+	if (it == m_controls.end())
+		m_controls.push_back(c);
+}
+
+void MRPWindow::setWindowTitle(std::string title)
+{
+	SetWindowText(m_hwnd, title.c_str());
 }
 
 MRP::Size MRPWindow::getSize()
@@ -121,6 +135,17 @@ void MRPWindow::setSize(int w, int h)
 	}
 }
 
+MRP::Rectangle MRPWindow::getBounds() const
+{
+	if (m_hwnd == NULL)
+		return MRP::Rectangle();
+	RECT r;
+	GetClientRect(m_hwnd, &r);
+	int w = r.right - r.left;
+	int h = r.bottom - r.top;
+	return{ r.left, r.top, w,h };
+}
+
 MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 {
 	m_is_modal = true;
@@ -139,6 +164,7 @@ MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 void MRPWindow::closeRequested()
 {
 	readbg() << "close requested...\n";
+	m_is_closed = true;
 	if (m_hwnd != NULL && m_destroy_on_close == false)
 	{
 		readbg() << "only hiding this window...\n";
@@ -178,6 +204,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			g_mrpwindowsmap[hwnd] = mrpw;
 			if (mrpw->m_is_modal == true)
 				mrpw->init_modal_dialog();
+			mrpw->m_helper_timer = SetTimer(hwnd, 0, 2000, nullptr);
 		}
 		return TRUE;
 	}
@@ -226,6 +253,18 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			}
 			return TRUE;
 		}
+	}
+	if (msg == WM_TIMER)
+	{
+		if (mptr != nullptr)
+			mptr->onRefreshTimer();
+		//readbg() << "MRPWindow 2 second timer\n";
+		return TRUE;
+	}
+	if (msg == WM_DESTROY)
+	{
+		if (mptr != nullptr)
+			KillTimer(hwnd, mptr->m_helper_timer);
 	}
 	return FALSE;
 }

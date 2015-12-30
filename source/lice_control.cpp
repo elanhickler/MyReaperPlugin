@@ -13,6 +13,7 @@ extern reaper_plugin_info_t* g_plugin_info;
 // creates a plain child window (control).
 // wndProc will receive a WM_CREATE, but it will have lParam set to lParamContext rather than LPCREATESTRUCT
 // (lParam is passed directly on WM_CREATE in SWELL, this duplicates that behavior)
+
 HWND SWELL_CreatePlainWindow(HINSTANCE hInstance, HWND parent, WNDPROC wndProc, LPARAM lParamContext)
 {
 #ifdef _WIN32
@@ -119,6 +120,8 @@ void LiceControl::setSize(int w, int h)
 void LiceControl::setBounds(MRP::Rectangle g)
 {
 	if (g.isValid() == false)
+		return;
+	if (getBounds() == g)
 		return;
 	m_bitmap->resize(g.getWidth(), g.getHeight());
 	SetWindowPos(m_hwnd, 0, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOZORDER | SWP_NOACTIVATE);

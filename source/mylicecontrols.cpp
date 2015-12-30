@@ -2,6 +2,7 @@
 #include "mylicecontrols.h"
 #include "utilfuncs.h"
 #include "WDL/WDL/lice/lice.h"
+#include "WDL/WDL/lineparse.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
 #include <cmath>
 
@@ -586,16 +587,19 @@ void EnvelopeControl::paint(PaintEvent& ev)
 		}
 		
 	}
+	int envnameycor = 5;
 	if (m_text.empty() == false)
 	{
 		MRP_DrawTextHelper(bm, &m_font, m_text.c_str(), 5, 5, bm->getWidth(), 25);
+		envnameycor = 30;
 	}
 	if (m_active_envelope >= 0)
 	{
 		std::string envname = m_envs[m_active_envelope]->getName();
-		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, 30, bm->getWidth(), 25);
+		MRP_DrawTextHelper(bm, &m_font, envname.c_str(), 5, envnameycor, bm->getWidth(), 25);
 	}
 	const float linethickness = 0.75f;
+	const int subsegments = 30;
 	for (int j = 0; j < m_envs.size(); ++j)
 	{
 		breakpoint_envelope* m_env = m_envs[j].get();
@@ -616,7 +620,22 @@ void EnvelopeControl::paint(PaintEvent& ev)
 				pt1 = m_env->get_point(i + 1);
 				double xcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
 				double ycor1 = (double)getHeight() - map_value(pt1.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
-				LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
+				for (int k = 0; k < subsegments; ++k)
+				{
+					double normt = 1.0 / subsegments*k;
+					double xcoroffset = (xcor1 - xcor)*normt;
+					double normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
+					double ycorrange = ycor1 - ycor;
+					double subxcor0 = xcor + xcoroffset;
+					double subycor0 = ycor + ycorrange*normv;
+					normt = 1.0 / subsegments*(k+1);
+					xcoroffset = (xcor1 - xcor)*normt;
+					normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
+					double subxcor1 = xcor + xcoroffset;
+					double subycor1 = ycor + ycorrange*normv;
+					LICE_Line(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
+				}
+				//LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
 			}
 			if (i == 0 && pt.get_x() >= 0.0)
 			{
@@ -640,8 +659,15 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		return;
 	if (ev.m_mb == MouseEvent::MBRight)
 		return;
+	m_mouse_xy_at_press = { ev.m_x,ev.m_y };
 	m_point_was_moved = false;
 	m_mouse_down = true;
+	m_segment_to_adjust = find_hot_envelope_segment(ev.m_x, ev.m_y);
+	if (m_segment_to_adjust.second >= 0 && ev.m_modkeys.isModifierKeyDown(ModifierKey::MKAlt) == true)
+	{
+		m_segment_p1_at_mouse_press = m_envs[m_segment_to_adjust.first]->get_point(m_segment_to_adjust.second).get_param1();
+		return;
+	}
 	m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 	if (m_node_to_drag.second == -1)
 	{
@@ -649,7 +675,7 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 		if (m_active_envelope >= 0)
 		{
-			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
+			m_envs[m_active_envelope]->add_point({ normx,normy,envbreakpoint::Power }, true);
 			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectAdded);
 			m_mouse_down = false;
 			repaint();
@@ -660,7 +686,9 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 	{
 		m_envs[m_node_to_drag.first]->remove_point(m_node_to_drag.second);
 		m_node_to_drag = { -1,-1 };
-		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectRemoved);
+		if (GenericNotifyCallback) 
+			GenericNotifyCallback(GenericNotifications::ObjectRemoved);
+		
 		repaint();
 	}
 }
@@ -672,6 +700,16 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	
 	if (m_mouse_down == true)
 	{
+		if (ev.m_modkeys.isModifierKeyDown(ModifierKey::MKAlt) && m_segment_to_adjust.second >= 0)
+		{
+			double xdelta = m_mouse_xy_at_press.first-ev.m_x;
+			breakpoint_envelope* m_env = m_envs[m_segment_to_adjust.first].get();
+			envbreakpoint& pt = m_env->get_point(m_segment_to_adjust.second);
+			double newp1 = bound_value(0.0, m_segment_p1_at_mouse_press + xdelta*0.005, 1.0);
+			pt.set_param1(newp1);
+			repaint();
+			return;
+		}
 		if (m_node_to_drag.second >= 0)
 		{
 			breakpoint_envelope* m_env = m_envs[m_node_to_drag.first].get();
@@ -690,7 +728,8 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 			pt.set_x(bound_value(left_bound + 0.001, normx, right_bound - 0.001));
 			pt.set_y(bound_value(0.0, normy, 1.0));
-			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectMoved);
+			if (m_notify_on_point_move == true && GenericNotifyCallback) 
+				GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			m_point_was_moved = true;
 			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
@@ -700,10 +739,16 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 	}
 	else
 	{
-		auto oldindex = m_node_to_drag;
-		m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
-		if (oldindex != m_node_to_drag)
-			repaint();
+		m_segment_to_adjust = find_hot_envelope_segment(ev.m_x, ev.m_y);
+		//if (m_segment_to_adjust.second >= 0)
+		//	readbg() << "cursor at env segment " << m_segment_to_adjust.second << "\n";
+		if (m_segment_to_adjust.second < 0)
+		{
+			auto oldindex = m_node_to_drag;
+			m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
+			if (oldindex != m_node_to_drag)
+				repaint();
+		}
 	}
 }
 
@@ -788,11 +833,19 @@ int EnvelopeControl::getIntegerProperty(int which)
 		return m_envs.size();
 	if (which == 1)
 		return m_active_envelope;
+	if (which == 2)
+		return m_notify_on_point_move;
 	if (which >= 100 && which < 199)
 	{
 		int offsetted = which - 100;
 		if (offsetted >= 0 && offsetted < m_envs.size())
 			return m_envs[offsetted]->get_num_points();
+	}
+	if (which >= 200 && which < 299)
+	{
+		int offsetted = which - 200;
+		if (offsetted >= 0 && offsetted < m_envs.size())
+			return m_envs[offsetted]->getColor();
 	}
 	return 0;
 }
@@ -804,7 +857,86 @@ void EnvelopeControl::setIntegerProperty(int which, int v)
 		if (m_envs.size() > 0 && v >= 0 && v < m_envs.size())
 			m_active_envelope = v;
 	}
+	if (which == 2)
+	{
+		if (v == 0)
+			m_notify_on_point_move = false;
+		else m_notify_on_point_move = true;
+		return;
+	}
+	if (which >= 200 && which < 299)
+	{
+		int offsetted = which - 200;
+		if (offsetted >= 0 && offsetted < m_envs.size())
+			m_envs[offsetted]->setColor(LICE_RGBA_FROMNATIVE(v));
+	}
 	repaint();
+}
+
+void EnvelopeControl::setStringProperty(int which, std::string txt)
+{
+	if (which == 0 && m_envs.size() > 0)
+		m_envs[0]->setName(txt);
+	repaint();
+}
+
+template<typename F>
+inline void for_lines_of_string(const std::string& msg, F&& f)
+{
+	size_t lastlinestart = 0;
+	for (size_t i = 0; i < msg.size(); ++i)
+	{
+		if (msg[i] == '\n' || i == msg.size() - 1)
+		{
+			std::string line;
+			size_t lastindex = i;
+			if (i == msg.size() - 1)
+				lastindex = i + 1;
+			for (size_t j = lastlinestart; j < lastindex; ++j)
+				if (j<msg.size())
+					line.push_back(msg[j]);
+			f(line);
+			lastlinestart = i + 1;
+		}
+	}
+}
+
+void EnvelopeControl::sendStringCommand(const std::string & msg)
+{
+	if (m_envs.size() > 0 && m_active_envelope>=0)
+	{
+		LineParser lp;
+		bool dosort = false;
+		for_lines_of_string(msg, [&lp,this,&dosort](const auto& line) 
+		{ 
+			lp.parse(line.c_str());
+			int numtoks = lp.getnumtokens();
+			if (numtoks == 1 && strcmp(lp.gettoken_str(0), "CLEAR") == 0)
+			{
+				m_envs[m_active_envelope]->remove_all_points();
+			}
+			else if (numtoks == 3 && strcmp(lp.gettoken_str(0), "ADDPT") == 0)
+			{
+				double ptx = lp.gettoken_float(1);
+				double pty = lp.gettoken_float(2);
+				m_envs[m_active_envelope]->add_point({ ptx,pty }, false);
+				dosort = true;
+			}
+			else if (numtoks == 3 && strcmp(lp.gettoken_str(0), "DELINTIMERANGE") == 0)
+			{
+				double t0 = lp.gettoken_float(1);
+				double t1 = lp.gettoken_float(2);
+				m_envs[m_active_envelope]->remove_points_conditionally([t0, t1](auto& pt)
+				{
+					return pt.get_x() >= t0 && pt.get_x() < t1;
+				});
+				
+			}
+		});
+		if (dosort==true)
+			m_envs[m_active_envelope]->sort_points();
+		repaint();
+	}
 }
 
 void EnvelopeControl::setEnabled(bool b)
@@ -827,6 +959,29 @@ std::pair<int, int> EnvelopeControl::find_hot_envelope_point(double xcor, double
 			double ptxcor = map_value(pt.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
 			double ptycor = (double)getHeight() - map_value(pt.get_y(), m_view_start_value, m_view_end_value, 0.0, (double)getHeight());
 			if (is_point_in_rect(xcor, ycor, ptxcor - 6, ptycor - 6, 12, 12) == true)
+			{
+				return{ j,i };
+			}
+		}
+	}
+	return{ -1,-1 };
+}
+
+std::pair<int, int> EnvelopeControl::find_hot_envelope_segment(double xcor, double ycor)
+{
+	if (m_envs.empty() == true)
+		return{ -1,-1 };
+	for (int j = m_envs.size() - 1; j >= 0; --j)
+	{
+		breakpoint_envelope* m_env = m_envs[j].get();
+		for (int i = 0; i < m_env->get_num_points()-1; ++i)
+		{
+			const envbreakpoint& pt0 = m_env->get_point(i);
+			const envbreakpoint& pt1 = m_env->get_point(i+1);
+			double ptxcor0 = map_value(pt0.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			double ptxcor1 = map_value(pt1.get_x(), m_view_start_time, m_view_end_time, 0.0, (double)getWidth());
+			
+			if (xcor>=ptxcor0+6.0 && xcor<ptxcor1-6.0)
 			{
 				return{ j,i };
 			}
@@ -1091,90 +1246,86 @@ EnvelopeGeneratorEnvelopeControl::EnvelopeGeneratorEnvelopeControl(MRPWindow* pa
 	};
 }
 
-DoodleControl::DoodleControl(MRPWindow * parent) : LiceControl(parent)
+ZoomScrollBar::ZoomScrollBar(MRPWindow* parent) : LiceControl(parent)
 {
-	m_current_bitmap = std::make_shared<LICE_MemBitmap>(1000, 1000);
-	LICE_FillRect(m_current_bitmap.get(), 0, 0, 1000, 1000, 0);
-	add_undo_state();
+
 }
 
-void DoodleControl::add_undo_state()
+void ZoomScrollBar::paint(PaintEvent& ev)
 {
-	m_dochistory.emplace_back(m_current_bitmap.get(),m_tile_size);
-	++m_undo_level;
+	LICE_FillRect(ev.bm, 0, 0, getWidth(), getHeight(), LICE_RGBA(100, 100, 100, 255), 1.0f);
+	int x0 = getWidth()*m_start;
+	int x1 = getWidth()*m_end;
+	LICE_FillRect(ev.bm, x0, 0, x1 - x0, getHeight(), LICE_RGBA(200, 200, 200, 255), 1.0f);
+	if (m_hot_area == ha_left_edge)
+		LICE_FillRect(ev.bm, x0, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
+	if (m_hot_area == ha_right_edge)
+		LICE_FillRect(ev.bm, x1 - 10, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
 }
 
-void DoodleControl::paint(PaintEvent & ev)
+void ZoomScrollBar::mousePressed(const MouseEvent & ev)
 {
-	LICE_Blit(ev.bm, m_current_bitmap.get(), 0, 0, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), 1.0f, 0);
-	for (int i=0;i<m_dirty_tiles.size();++i)
+	m_mouse_down = true;
+	m_drag_start_x = ev.m_x;
+}
+
+void ZoomScrollBar::mouseMoved(const MouseEvent & ev)
+{
+	if (m_mouse_down == false)
 	{
-		int xcor = m_dirty_tiles[i].first*m_tile_size;
-		int ycor = m_dirty_tiles[i].second*m_tile_size;
-		LICE_FillRect(ev.bm, xcor, ycor, m_tile_size, m_tile_size, LICE_RGBA(255,0,0,255),0.5f,0);
-		
-	}
-}
-
-void DoodleControl::mousePressed(const MouseEvent & ev)
-{
-	m_dirty_tiles.clear();
-	m_mousedown = true;
-}
-
-void DoodleControl::mouseMoved(const MouseEvent & ev)
-{
-	if (m_mousedown == true)
-	{
-		LICE_FillCircle(m_current_bitmap.get(), ev.m_x, ev.m_y, 10.0f, LICE_RGBA(0, 255, 0, 255), 1.0f, true);
-		int tile_x = ev.m_x/m_tile_size;
-		int tile_y = ev.m_y/m_tile_size;
-		bool found = false;
-		for (auto& e: m_dirty_tiles)
-			if (e.first==tile_x && e.second==tile_y)
-			{
-				found = true;
-				break;
-			}
-		if (found==false)
-			m_dirty_tiles.emplace_back(tile_x,tile_y);
-		repaint();
-	}
-}
-
-void DoodleControl::mouseReleased(const MouseEvent & ev)
-{
-	m_mousedown = false;
-	add_undo_state();
-	readbg() << "now at undo level " << m_undo_level << "\n";
-}
-
-bool DoodleControl::keyPressed(const ModifierKeys & modkeys, int keycode)
-{
-	if (keycode == 'Z')
-	{
-		if (modkeys.areModifiersDown({ ModifierKey::MKControl,ModifierKey::MKShift }))
+		auto temp = get_hot_area(ev.m_x, ev.m_y);
+		if (temp != m_hot_area)
 		{
-			++m_undo_level;
-			if (m_undo_level == m_dochistory.size())
-				m_undo_level = m_dochistory.size() - 1;
-			readbg() << "redo : now at undo level " << m_undo_level << "\n";
-			m_dochistory[m_undo_level].stitch(m_current_bitmap.get());
+			m_hot_area = temp;
 			repaint();
-			return true;
 		}
-		if (modkeys.areModifiersDown({ ModifierKey::MKControl }))
-		{
-			--m_undo_level;
-			if (m_undo_level < 0)
-				m_undo_level = 0;
-			readbg() << "undo : now at undo level " << m_undo_level << "\n";
-			m_dochistory[m_undo_level].stitch(m_current_bitmap.get());
-			repaint();
-			return true;
-		}
-		
-		return true;
 	}
-	return false;
+	else
+	{
+		if (m_hot_area == ha_left_edge)
+		{
+			double new_left_edge = 1.0 / getWidth()*ev.m_x;
+			m_start = bound_value(0.0, new_left_edge, m_end - 0.01);
+			repaint();
+		}
+		if (m_hot_area == ha_right_edge)
+		{
+			double new_right_edge = 1.0 / getWidth()*ev.m_x;
+			m_end = bound_value(m_start + 0.01, new_right_edge, 1.0);
+			repaint();
+		}
+		if (m_hot_area == ha_handle)
+		{
+			double delta = 1.0 / getWidth()*(ev.m_x - m_drag_start_x);
+			double old_start = m_start;
+			double old_end = m_end;
+			double old_len = m_end - m_start;
+			m_start = bound_value(0.0, m_start + delta, 1.0 - old_len);
+			m_end = bound_value(old_len, m_end + delta, m_start + old_len);
+			m_drag_start_x = ev.m_x;
+			repaint();
+		}
+		if (RangeChangedCallback)
+			RangeChangedCallback(m_start, m_end);
+	}
 }
+
+void ZoomScrollBar::mouseReleased(const MouseEvent & ev)
+{
+	m_mouse_down = false;
+}
+
+ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)
+{
+	int x0 = getWidth()*m_start;
+	int x1 = getWidth()*m_end;
+	if (is_in_range(x, x0 - 5, x0 + 5))
+		return ha_left_edge;
+	if (is_in_range(x, x1 - 5, x1 + 5))
+		return ha_right_edge;
+	if (is_in_range(x, x0 + 5, x1 - 5))
+		return ha_handle;
+	return ha_none;
+
+}
+

@@ -9,13 +9,31 @@
 
 extern HINSTANCE g_hInst;
 
+HFONT g_defaultwincontrolfont = NULL;
+
+// Incremented for each control added to get a dialog control identifier number.
+// Obviously not thread safe but GUI stuff doesn't work with multiple threads anyway.
 int g_control_counter = 0;
 
+// To observe WinControl creation/destruction counts
 int g_leak_counter = 0;
 
 int get_wincontrol_leak_count()
 {
 	return g_leak_counter;
+}
+
+// std::string data can't be used to for LB_GETTEXT etc calls, so have this instead
+// with some space already allocated
+std::vector<char> g_messagetextsbuffer(1024);
+
+void adjust_message_text_buffer(int size, bool fillzeros=false)
+{
+	if (g_messagetextsbuffer.size() < size)
+		// 10% more than requested so we don't have to reallocate if the next request is just tiny bit larger
+		g_messagetextsbuffer.resize(size*1.1); 
+	if (fillzeros == true)
+		std::fill(g_messagetextsbuffer.begin(), g_messagetextsbuffer.end(), 0);
 }
 
 WinControl::WinControl(MRPWindow* parent)
@@ -24,6 +42,12 @@ WinControl::WinControl(MRPWindow* parent)
 	++g_control_counter;
 	m_control_id = g_control_counter;
 	++g_leak_counter;
+	if (g_defaultwincontrolfont == NULL)
+	{
+		g_defaultwincontrolfont = CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial");
+	}
+
 }
 
 WinControl::~WinControl()
@@ -121,6 +145,8 @@ void WinControl::setBounds(MRP::Rectangle g)
 {
 	if (g.isValid() == false)
 		return;
+	if (getBounds() == g)
+		return;
 	if (m_hwnd != NULL)
 	{
 		SetWindowPos(m_hwnd, NULL, g.getX(), g.getY(), g.getWidth(), g.getHeight(), SWP_NOACTIVATE | SWP_NOZORDER);
@@ -158,11 +184,12 @@ WinButton::WinButton(MRPWindow* parent, std::string text) :
 	m_hwnd = SWELL_MakeButton(0, text.c_str(), g_control_counter, 0, 0, 20, 20, WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 	GenericNotifyCallback = [this](GenericNotifications)
 	{
-		readbg() << "button " << getText() << " clicked\n";
+		readbg() << "button " << getText() << " clicked. No custom click callback set yet!\n";
 	};
 }
 
@@ -176,6 +203,12 @@ std::string WinButton::getText()
 	char buf[1024];
 	GetWindowText(m_hwnd, buf, 1024);
 	return std::string(buf);
+}
+
+void WinButton::setStringProperty(int which, std::string text)
+{
+	if (which == 0)
+		setText(text);
 }
 
 bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -286,6 +319,21 @@ void ReaSlider::setValueConverter(std::shared_ptr<IValueConverter> c)
 	setValue(m_val_converter->fromNormalizedToValue(oldnormalized));
 }
 
+double ReaSlider::getFloatingPointProperty(int which)
+{
+	if (which == 0)
+		return getValue();
+	return 0.0;
+}
+
+void ReaSlider::setFloatingPointProperty(int which, double v)
+{
+	if (which == 0)
+	{
+		setValue(v);
+	}
+}
+
 WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(parent)
 {
 #ifdef WIN32
@@ -295,6 +343,7 @@ WinLineEdit::WinLineEdit(MRPWindow* parent, std::string text) : WinControl(paren
 	m_hwnd = SWELL_MakeEditField(g_control_counter, 0, 0, 50, 20, WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	setText(text);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
@@ -339,7 +388,8 @@ WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
 	if (m_hwnd == NULL)
-		readbg() << "yngh";
+		readbg() << "ComboBox could not be created\n";
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	ShowWindow(m_hwnd, SW_SHOW);
 }
 
@@ -407,4 +457,89 @@ bool WinComboBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 		return true;
 	}
 	return false;
+}
+
+WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
+{
+#ifdef WIN32
+	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_VSCROLL | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
+		(HMENU)g_control_counter, g_hInst, 0);
+#else
+	m_hwnd = SWELL_MakeListBox(g_control_counter, 0, 0, 20, 20, LVS_SINGLESEL | WS_CHILD | WS_TABSTOP);
+	SetParent(m_hwnd, parent->getWindowHandle());
+#endif
+	if (m_hwnd == NULL)
+		readbg() << "ListBox could not be created\n";
+	
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
+	ShowWindow(m_hwnd, SW_SHOW);
+}
+
+bool WinListBox::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	if (msg == WM_COMMAND && (HWND)lparam == m_hwnd && HIWORD(wparam) == LBN_SELCHANGE &&
+		SelectedChangedCallback)
+	{
+		auto index = SendMessage((HWND)lparam, LB_GETCURSEL, 0, 0);
+		SelectedChangedCallback(index);
+		return true;
+	}
+	return false;
+}
+
+void WinListBox::addItem(std::string text, int user_id)
+{
+	int pos = (int)SendMessage(m_hwnd, LB_ADDSTRING, 0, (LPARAM)text.c_str());
+	SendMessage(m_hwnd, LB_SETITEMDATA, pos, (LPARAM)user_id);
+}
+
+int WinListBox::userIDfromIndex(int index)
+{
+	auto result = SendMessage(m_hwnd, LB_GETITEMDATA, index, 0);
+	if (result != LB_ERR)
+		return result;
+	return -1;
+}
+
+int WinListBox::numItems()
+{
+	return SendMessage(m_hwnd, LB_GETCOUNT, 0, 0);
+}
+
+std::string WinListBox::getItemText(int index)
+{
+	int textLen = SendMessage(m_hwnd, LB_GETTEXTLEN, index, 0);
+	if (textLen > 0)
+	{
+		adjust_message_text_buffer(textLen + 1);
+		SendMessage(m_hwnd, LB_GETTEXT, index, (LPARAM)g_messagetextsbuffer.data());
+		return std::string(g_messagetextsbuffer.data());
+	}
+	return std::string();
+}
+
+int WinListBox::getSelectedIndex()
+{
+	return SendMessage(m_hwnd, LB_GETCURSEL, 0, 0);
+}
+
+void WinListBox::setSelectedIndex(int index)
+{
+	SendMessage(m_hwnd, LB_SETCURSEL, index, 0);
+}
+
+
+
+void WinListBox::clearItems()
+{
+	SendMessage(m_hwnd, LB_RESETCONTENT, 0, 0);
+}
+
+void WinListBox::removeItem(int index)
+{
+	if (index >= 0 && index < numItems())
+	{
+		SendMessage(m_hwnd, LB_DELETESTRING, index, 0);
+	}
+	
 }

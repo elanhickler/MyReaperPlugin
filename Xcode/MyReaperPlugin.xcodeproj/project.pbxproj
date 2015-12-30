@@ -14,8 +14,8 @@
 		C43CE9AD1C2CDB5500315BC9 /* mrpexamplewindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */; };
 		C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */; };
 		C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */; };
-		C464FFCF1C2E351F0023C734 /* mrp_pcm_source.h in Headers */ = {isa = PBXBuildFile; fileRef = C464FFCE1C2E351F0023C734 /* mrp_pcm_source.h */; };
-		C464FFD11C2E35290023C734 /* mrp_pcm_source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C464FFD01C2E35290023C734 /* mrp_pcm_source.cpp */; };
+		C464FFCB1C2E1E910023C734 /* mrp_pcm_source.h in Headers */ = {isa = PBXBuildFile; fileRef = C464FFCA1C2E1E910023C734 /* mrp_pcm_source.h */; };
+		C464FFCD1C2E1E9F0023C734 /* mrp_pcm_source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C464FFCC1C2E1E9F0023C734 /* mrp_pcm_source.cpp */; };
 		C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */ = {isa = PBXBuildFile; fileRef = C477BA3D1C2AC74500113894 /* mrpwindows.h */; };
 		C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6851C1BAD49005C6CCC /* swell-dlg.mm */; };
 		C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */ = {isa = PBXBuildFile; fileRef = C484E6861C1BAD49005C6CCC /* swell-gdi.mm */; };
@@ -36,6 +36,7 @@
 		C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C01C28F59900C60DC9 /* lice_control.cpp */; };
 		C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */; };
 		C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C574201C1F87D900A1CE31 /* lice_control.h */; };
+		C4C79FAD1C2EA84300D83955 /* mrpwincontrols.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */; };
 		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
 		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
 		C4DED3B71C20E16B00275B4A /* utilfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */; };
@@ -54,8 +55,8 @@
 		C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpexamplewindows.cpp; path = ../source/mrpexamplewindows.cpp; sourceTree = "<group>"; };
 		C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reaper_function_helper.cpp; path = ../source/reaper_function_helper.cpp; sourceTree = "<group>"; };
 		C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_function_helper.h; path = ../header/reaper_function_helper.h; sourceTree = "<group>"; };
-		C464FFCE1C2E351F0023C734 /* mrp_pcm_source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrp_pcm_source.h; path = ../header/mrp_pcm_source.h; sourceTree = "<group>"; };
-		C464FFD01C2E35290023C734 /* mrp_pcm_source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrp_pcm_source.cpp; path = ../source/mrp_pcm_source.cpp; sourceTree = "<group>"; };
+		C464FFCA1C2E1E910023C734 /* mrp_pcm_source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrp_pcm_source.h; path = ../header/mrp_pcm_source.h; sourceTree = "<group>"; };
+		C464FFCC1C2E1E9F0023C734 /* mrp_pcm_source.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrp_pcm_source.cpp; path = ../source/mrp_pcm_source.cpp; sourceTree = "<group>"; };
 		C477BA3D1C2AC74500113894 /* mrpwindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpwindows.h; path = ../header/mrpwindows.h; sourceTree = "<group>"; };
 		C484E6851C1BAD49005C6CCC /* swell-dlg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-dlg.mm"; path = "../library/WDL/WDL/swell/swell-dlg.mm"; sourceTree = "<group>"; };
 		C484E6861C1BAD49005C6CCC /* swell-gdi.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-gdi.mm"; path = "../library/WDL/WDL/swell/swell-gdi.mm"; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 		C4A793C01C28F59900C60DC9 /* lice_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_control.cpp; path = ../source/lice_control.cpp; sourceTree = "<group>"; };
 		C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mylicecontrols.cpp; path = ../source/mylicecontrols.cpp; sourceTree = "<group>"; };
 		C4C574201C1F87D900A1CE31 /* lice_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lice_control.h; path = ../header/lice_control.h; sourceTree = "<group>"; };
+		C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpwincontrols.h; path = ../header/mrpwincontrols.h; sourceTree = "<group>"; };
 		C4D434B81C1A41E3005DFFD3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C4DED3B61C20E16B00275B4A /* utilfuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utilfuncs.cpp; path = ../source/utilfuncs.cpp; sourceTree = "<group>"; };
@@ -133,14 +135,15 @@
 			isa = PBXGroup;
 			children = (
 				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
+				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
 				C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */,
-				C464FFCE1C2E351F0023C734 /* mrp_pcm_source.h */,
+				C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */,
 				C477BA3D1C2AC74500113894 /* mrpwindows.h */,
 				C43CE9AA1C2CDB4B00315BC9 /* mrpexamplewindows.h */,
+				C464FFCA1C2E1E910023C734 /* mrp_pcm_source.h */,
 				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
-				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -148,16 +151,16 @@
 		E3EAC6771C1C989700F619AA /* source */ = {
 			isa = PBXGroup;
 			children = (
-				C464FFD01C2E35290023C734 /* mrp_pcm_source.cpp */,
 				C442007D1C2139AD00CFE1B2 /* reaper_function_helper.cpp */,
+				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 				C4A793C01C28F59900C60DC9 /* lice_control.cpp */,
+				C464FFCC1C2E1E9F0023C734 /* mrp_pcm_source.cpp */,
 				C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */,
+				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */,
 				C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */,
-				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */,
 				E3EAC67D1C1C99D800F619AA /* MyFirstClass.cpp */,
-				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 			);
 			name = source;
 			sourceTree = "<group>";
@@ -222,7 +225,8 @@
 			files = (
 				C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */,
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
-				C464FFCF1C2E351F0023C734 /* mrp_pcm_source.h in Headers */,
+				C464FFCB1C2E1E910023C734 /* mrp_pcm_source.h in Headers */,
+				C4C79FAD1C2EA84300D83955 /* mrpwincontrols.h in Headers */,
 				C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */,
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
@@ -294,7 +298,7 @@
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
 				C43CE9AD1C2CDB5500315BC9 /* mrpexamplewindows.cpp in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
-				C464FFD11C2E35290023C734 /* mrp_pcm_source.cpp in Sources */,
+				C464FFCD1C2E1E9F0023C734 /* mrp_pcm_source.cpp in Sources */,
 				C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
 				C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */,

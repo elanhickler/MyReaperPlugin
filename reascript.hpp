@@ -77,7 +77,7 @@ function_entry MRP_CreateArray("MRP_Array*", "int", "size", [](params) {
 "Create an array of 64 bit floating point numbers. Note that these will leak memory if they are not later destroyed with MRP_DestroyArray!"
 );
 
-function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
+function_entry MRP_DestroyArray("void", "MRP_Array*", "array", [](params) {
 	std::vector<double>* vecptr = (std::vector<double>*)arg[0];
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
@@ -94,7 +94,7 @@ function_entry MRP_DestroyArray("", "MRP_Array*", "array", [](params) {
 "Destroy a previously created MRP_Array"
 );
 
-function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerate,frequency", [](params) {
+function_entry MRP_GenerateSine("void", "MRP_Array*,double,double", "array,samplerate,frequency", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
 		ReaScriptError("MRP_GenerateSine : passed in invalid MRP_Array");
@@ -111,51 +111,55 @@ function_entry MRP_GenerateSine("", "MRP_Array*,double,double", "array,samplerat
 "Generate a sine wave into a MRP_Array"
 );
 
-function_entry MRP_MultiplyArrays("", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
-	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+function_entry MRP_MultiplyArrays("void", "MRP_Array*,MRP_Array*,MRP_Array*", "array1, array2, array3", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0
+		|| g_active_mrp_arrays.count(arg[2]) == 0)
 	{
 		ReaScriptError("MRP_MultiplyArrays : passed in invalid MRP_Array(s)");
 		return (void*)nullptr;
 	}
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
-	if (vecref0.size() != vecref1.size())
+	std::vector<double>& vecref2 = *(std::vector<double>*)arg[2];
+	if ((vecref0.size()==vecref1.size() && vecref1.size()==vecref2.size())==false)
 	{
 		ReaScriptError("MRP_MultiplyArrays : incompatible array lengths");
 		return (void*)nullptr;
 	}
 	for (size_t i = 0; i < vecref0.size(); ++i)
-		vecref0[i] = vecref0[i] * vecref1[i];
+		vecref2[i] = vecref0[i] * vecref1[i];
 	return (void*)nullptr;
 },
-"Multiply 2 MRP_Arrays of same length. First array is overwritten with result!"
+"Multiply 2 MRP_Arrays of same length. Result is written to 3rd array."
 );
 #ifdef WIN32
-function_entry MRP_MultiplyArraysMT("", "MRP_Array*,MRP_Array*", "array1, array2", [](params) {
-	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0)
+function_entry MRP_MultiplyArraysMT("void", "MRP_Array*,MRP_Array*,MRP_Array*", "array1, array2,array3", [](params) {
+	if (g_active_mrp_arrays.count(arg[0]) == 0 || g_active_mrp_arrays.count(arg[1]) == 0
+		|| g_active_mrp_arrays.count(arg[2]) == 0)
 	{
 		ReaScriptError("MRP_MultiplyArraysMT : passed in invalid MRP_Array(s)");
 		return (void*)nullptr;
 	}
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	std::vector<double>& vecref1 = *(std::vector<double>*)arg[1];
-	if (vecref0.size() != vecref1.size())
+	std::vector<double>& vecref2 = *(std::vector<double>*)arg[2];
+	if ((vecref0.size() == vecref1.size() && vecref1.size() == vecref2.size()) == false)
 	{
 		ReaScriptError("MRP_MultiplyArraysMT : incompatible array lengths");
 		return (void*)nullptr;
 	}
-	Concurrency::parallel_for((size_t)0, vecref0.size(), [&vecref0, &vecref1](size_t index) 
+	Concurrency::parallel_for((size_t)0, vecref0.size(), (size_t)1, [&vecref0, &vecref1, &vecref2](size_t index) 
 	{
-		vecref0[index] = vecref0[index] * vecref1[index];
-	},Concurrency::static_partitioner());
+		vecref2[index] = vecref0[index] * vecref1[index];
+	});
 	return (void*)nullptr;
 },
-"Multiply 2 MRP_Arrays of same length. First array is overwritten with result! Uses multiple threads."
+"Multiply 2 MRP_Arrays of same length. Result is written to 3rd array. Uses multiple threads."
 );
 #else
 
 #endif
-function_entry MRP_SetArrayValue("", "MRP_Array*,int,double", "array, index, value", [](params) {
+function_entry MRP_SetArrayValue("void", "MRP_Array*,int,double", "array, index, value", [](params) {
 	std::vector<double>& vecref0 = *(std::vector<double>*)arg[0];
 	int index = (in)arg[1];
 	double v = *(double*)arg[2];
@@ -174,7 +178,7 @@ function_entry MRP_GetArrayValue("double", "MRP_Array*,int", "array, index", [](
 "Get MRP_Array element value. No safety checks done for array or index validity, so use at your own peril!"
 );
 
-function_entry MRP_WriteArrayToFile("", "MRP_Array*,const char*,double", "array,filename,samplerate", [](params) {
+function_entry MRP_WriteArrayToFile("void", "MRP_Array*,const char*,double", "array,filename,samplerate", [](params) {
 	if (g_active_mrp_arrays.count(arg[0]) == 0)
 	{
 		ReaScriptError("MRP_WriteArrayToFile : passed in invalid MRP_Array");
@@ -225,23 +229,29 @@ function_entry MRP_CalculateEnvelopeHash("int", "TrackEnvelope*", "env", [](para
 "It comes down to how size_t is of different size between the 32 and 64 bit "
 "architectures."
 );
-#ifdef REASCRIPTGUIWORKS
+
 function_entry MRP_CreateWindow("MRP_Window*", "const char*", "title", [](params)
 {
 	const char* wtitle = (const char*)arg[0];
 	ReaScriptWindow* w = new ReaScriptWindow(wtitle);
+	//w->setDestroyOnClose(true);
+	w->setSize(400, 400);
 	return_obj(w);
 },
-"Create test window"
+"Create window"
 );
 
-function_entry MRP_DestroyWindow("", "MRP_Window*", "window", [](params)
+function_entry MRP_DestroyWindow("void", "MRP_Window*", "window", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	delete w;
+	if (is_valid_reascriptwindow(w) == true)
+	{
+		delete w;
+	}
+	else ReaScriptError("Passed in MRP_Window has already been destroyed");
 	return_null;
 },
-"Destroy test window"
+"Destroy window"
 );
 
 function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
@@ -249,14 +259,14 @@ function_entry MRP_WindowIsClosed("bool", "MRP_Window*", "window", [](params)
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	if (w == nullptr)
 		return_int(0);
-	if (w->m_was_closed == true)
+	if (w->isClosed() == true)
 		return_int(1);
 	return_int(0);
 },
-"Destroy test window"
+"Returns if the window has been closed and the ReaScript defer loop should likely be exited"
 );
 
-function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title", [](params)
+function_entry MRP_WindowSetTitle("void", "MRP_Window*,const char*", "window,title", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* wtitle = (const char*)arg[1];
@@ -267,42 +277,219 @@ function_entry MRP_WindowSetTitle("", "MRP_Window*,const char*", "window,title",
 "Set window title"
 );
 
+function_entry MRP_WindowAddControl("void", "MRP_Window*,const char*,const char*", "window,controltypename,objectname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* controltypename = (const char*)arg[1];
+	const char* objectname = (const char*)arg[2];
+	if (w != nullptr && controltypename != nullptr && objectname!=nullptr)
+	{
+		if (w->addControlFromName(controltypename, objectname)==true)
+			return_null;
+		char errbuf[256];
+		sprintf(errbuf, "Could not create control %s", controltypename);
+		ReaScriptError(errbuf);
+	}
+	return_null;
+},
+"Add a control to window. Controltypename is the type of control to create. Objectname must be a unique id"
+);
+
+function_entry MRP_SetControlBounds("void", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
+{
+	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	double x = (in)arg[2];
+	double y = (in)arg[3];
+	double w = (in)arg[4];
+	double h = (in)arg[5];
+	if (wptr != nullptr && cname != nullptr)
+	{
+		wptr->setControlBounds(cname, x, y, w, h);
+	}
+	return_null;
+},
+"Set MRP control position and size"
+);
+
+function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (in)arg[1];
+	if (w != nullptr)
+	{
+		bool isdirty = w->isControlDirty(cname);
+		if (isdirty == true)
+			return_int(1);
+	}
+	return_int(0);
+},
+"Returns true if control was manipulated"
+);
+
+function_entry MRP_WindowClearDirtyControls("void", "MRP_Window*", "window", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	if (w != nullptr)
+	{
+		w->clearDirtyControls();
+	}
+	return_null;
+},
+"Clears the dirty states of the controls in a window."
+);
+
+function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_double(w->getControlValueDouble(cname, which));
+	}
+	return_double(0.0);
+},
+"Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	double val = (in)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueDouble(cname, which, val);
+		return_null;
+	}
+	return_null;
+},
+"Set a floating point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+
+function_entry MRP_GetControlIntNumber("int", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		return_int(w->getControlValueInt(cname, which));
+	}
+	return_int(0.0);
+},
+"Get an integer point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+function_entry MRP_SetControlIntNumber("void", "MRP_Window*,const char*,int,int", 
+	"window,controlname,which,value", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	int val = (in)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueInt(cname, which, val);
+	}
+	return_null;
+},
+"Set an integer point number associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+function_entry MRP_SetControlString("void", "MRP_Window*,const char*,int,const char*",
+	"window,controlname,which,text", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	int which = (in)arg[2];
+	const char* newtext = (const char*)arg[3];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->setControlValueString(cname, which, newtext);
+		return_null;
+	}
+	return_null;
+},
+"Set a text property associated with control. Meaning of 'which' depends on the control targeted."
+);
+
+
+
+function_entry MRP_SendCommandString("void", "MRP_Window*,const char*,const char*",
+	"window,controlname,commandtext", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	const char* cname = (const char*)arg[1];
+	const char* cmdtext = (const char*)arg[2];
+	if (w != nullptr && cname != nullptr)
+	{
+		w->sendCommandString(cname, cmdtext);
+		return_null;
+	}
+	return_null;
+},
+"Send a command message to control. Currently only the envelope control understands some messages."
+);
+
 function_entry MRP_GetWindowDirty("bool", "MRP_Window*,int", "window,whichdirty", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	int which = in(arg[1]);
 	if (w != nullptr)
 	{
-		if (which == 0 && w->m_window_dirty == true)
-			return_int(1);
-		if (which == 1 && w->m_was_resized == true)
+		if (which == 0 && w->m_was_resized == true)
 			return_int(1);
 	}
 	return_int(0);
 },
-"Get window dirty state (ie, if something was changed in the window). which : 0 child controls, 1 window size"
+"Get window dirty state (ie, if something was changed in the window). which : 0 window size"
 );
 
-function_entry MRP_SetWindowDirty("", "MRP_Window*,bool,int", "window,isdirty,which", [](params)
+function_entry MRP_SetWindowDirty("void", "MRP_Window*,int,bool", "window,which,state", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	int state = in(arg[1]);
-	int which = in(arg[2]);
+	int which = in(arg[1]);
+	int state = in(arg[2]);
+	bool bstate = false;
+	if (state == 1)
+		bstate = true;
 	if (w != nullptr)
 	{
-		if (state == 0 && which == 0)
-			w->m_window_dirty = false;
-		if (state == 1 && which == 0)
-			w->m_window_dirty = true;
-		if (state == 0 && which == 1)
-			w->m_was_resized = false;
-		if (state == 1 && which == 1)
-			w->m_was_resized = true;
+		if (which == 0)
+			w->m_was_resized = bstate;
 	}
 	return_null;
 },
 "Set window dirty state (ie, if something was changed in the controls)"
 );
+
+function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which", [](params)
+{
+	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
+	int which = in(arg[1]);
+	if (w != nullptr)
+	{
+		int retval = 0;
+		MRP::Rectangle rect = w->getBounds();
+		if (which == 0)
+			return_int(rect.getX());
+		if (which == 1)
+			return_int(rect.getY());
+		if (which == 2)
+			return_int(rect.getWidth());
+		if (which == 3)
+			return_int(rect.getHeight());
+	}
+	return_int(0);
+},
+"Get window geometry values. which : 0 x, 1 y, 2 w, 3 h"
+);
+
+#ifdef REASCRIPTGUIWORKS
 
 function_entry MRP_GetControlText("const char*", "MRP_Window*,const char*", "window,controlname", [](params)
 {
@@ -331,50 +518,8 @@ function_entry MRP_SetControlText("void", "MRP_Window*,const char*,const char*",
 "Set main text associated with control"
 );
 
-function_entry MRP_GetWindowPosSizeValue("int", "MRP_Window*,int", "window,which", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	int which = in(arg[1]);
-	if (w != nullptr)
-	{
-		return_int(w->getBoundsValue(which));
-	}
-	return_int(0);
-},
-"Get window geometry values. which : 0 x, 1 y, 2 w, 3 h"
-);
 
-function_entry MRP_GetControlFloatNumber("double", "MRP_Window*,const char*,int", "window,controlname,which", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	int which = (in)arg[2];
-	if (w != nullptr && cname != nullptr)
-	{
-		return_double(w->getControlValueDouble(cname,which));
-	}
-	return_double(0.0);
-},
-"Get a floating point number associated with control. Meaning of 'which' depends on the control targeted."
-);
-
-function_entry MRP_SetControlFloatNumber("void", "MRP_Window*,const char*,int,double", "window,controlname,which,value", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	int which = (in)arg[2];
-	double val = (in)arg[3];
-	if (w != nullptr && cname != nullptr)
-	{
-		w->setControlValueDouble(cname, which, val);
-		return_null;
-	}
-	return_null;
-},
-"Set a floating point number associated with control. Meaning of 'which' depends on the control targeted."
-);
-
-function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,name,initialvalue", [](params)
+function_entry MRP_WindowAddSlider("void", "MRP_Window*,const char*,int", "window,name,initialvalue", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* slidname = (const char*)arg[1];
@@ -390,7 +535,7 @@ function_entry MRP_WindowAddSlider("", "MRP_Window*,const char*,int", "window,na
 );
 
 
-function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+function_entry MRP_WindowAddButton("void", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* butname = (const char*)arg[1];
@@ -405,7 +550,7 @@ function_entry MRP_WindowAddButton("", "MRP_Window*,const char*,const char*", "w
 "Add a button to window"
 );
 
-function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+function_entry MRP_WindowAddLineEdit("void", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* butname = (const char*)arg[1];
@@ -420,7 +565,7 @@ function_entry MRP_WindowAddLineEdit("", "MRP_Window*,const char*,const char*", 
 "Add a (single line) text edit to window"
 );
 
-function_entry MRP_WindowAddLabel("", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
+function_entry MRP_WindowAddLabel("void", "MRP_Window*,const char*,const char*", "window,name,text", [](params)
 {
 	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
 	const char* butname = (const char*)arg[1];
@@ -432,7 +577,7 @@ function_entry MRP_WindowAddLabel("", "MRP_Window*,const char*,const char*", "wi
 	}
 	return_null;
 },
-"Add a (single line) text edit to window"
+"Add a label to window"
 );
 
 function_entry MRP_WindowAddLiceControl("void", "MRP_Window*,const char*,const char*", "window,classname,name", [](params)
@@ -451,49 +596,9 @@ function_entry MRP_WindowAddLiceControl("void", "MRP_Window*,const char*,const c
 								  );
 
 
-function_entry MRP_WindowIsDirtyControl("bool", "MRP_Window*,const char*", "window,controlname", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	const char* cname = (in)arg[1];
-	if (w != nullptr)
-	{
-		bool isdirty=w->m_last_used_controls.count(cname);
-		if (isdirty==true)
-			return_int(1);
-	}
-	return_int(0);
-},
-"Returns true if control was manipulated"
-);
 
-function_entry MRP_WindowClearDirtyControls("", "MRP_Window*", "window", [](params)
-{
-	ReaScriptWindow* w = (ReaScriptWindow*)arg[0];
-	if (w != nullptr)
-	{
-		w->m_last_used_controls.clear();
-	}
-	return_null;
-},
-"Clear the last clicked button name of the window"
-);
 
-function_entry MRP_SetControlBounds("", "MRP_Window*,const char*,double,double,double,double", "window,name,x,y,w,h", [](params)
-{
-	ReaScriptWindow* wptr = (ReaScriptWindow*)arg[0];
-	const char* cname = (const char*)arg[1];
-	double x = (in)arg[2];
-	double y = (in)arg[3];
-	double w = (in)arg[4];
-	double h = (in)arg[5];
-	if (wptr != nullptr && cname != nullptr)
-	{
-		wptr->setControlBounds(cname, x, y, w, h);
-	}
-	return_null;
-},
-"Set MRP control position and size"
-);
+
 
 #endif
 
@@ -503,7 +608,7 @@ function_entry MRP_ReturnMediaItem("MediaItem*", "", "", [](params) {
 "return media item"
 );
 
-function_entry MRP_DoNothing("", "", "", [](params) {
+function_entry MRP_DoNothing("void", "", "", [](params) {
 	return_null;
 },
 "do nothing, return null"

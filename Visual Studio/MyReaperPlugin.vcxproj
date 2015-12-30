@@ -24,6 +24,7 @@
     <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_textnew.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\source\doodlecontrol.cpp" />
     <ClCompile Include="..\source\lice_control.cpp" />
     <ClCompile Include="..\source\mrpexamplewindows.cpp" />
     <ClCompile Include="..\source\mrpwincontrols.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="..\source\utilfuncs.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\doodlecontrol.h" />
     <ClInclude Include="..\header\lice_control.h" />
     <ClInclude Include="..\header\mrpexamplewindows.h" />
     <ClInclude Include="..\header\mrpwincontrols.h" />
@@ -111,14 +113,14 @@
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <IntDir>$(OutDir)</IntDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(VisualStudioDir)\Projects\$(SolutionName)\$(MSBuildProjectDefaultTargets)\$(PlatformTarget) $(Configuration)\</OutDir>
     <TargetName>reaper_MyReaperPlugin_x$(PlatformArchitecture)</TargetName>
     <IntDir>$(OutDir)</IntDir>
@@ -148,7 +150,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -173,12 +175,12 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -193,7 +195,7 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;REAPERAPI_NO_LICE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>..\source;..\header;..\library;$(BOOST_ROOT)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
@@ -203,7 +205,8 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER_DIR)\UserPlugins\"</Command>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -242,6 +245,8 @@ xcopy /y "$(OutDir)$(TargetFileName)" "$(REAPER64_DIR)\Plugins\"</Command>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
