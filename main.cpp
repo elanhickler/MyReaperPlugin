@@ -96,8 +96,17 @@ void test_track_range()
 	}
 }
 
-struct irp_task : public NoCopyNoMove
+class IParallelTask : public NoCopyNoMove
 {
+public:
+	virtual ~IParallelTask() {}
+	virtual void run() = 0;
+};
+
+class irp_task : public IParallelTask
+{
+public:
+	// Have to initialize stuff in GUI thread
 	irp_task(MediaItem* item, int id) : m_item(item), m_id(id)
 	{
 		MediaItem_Take* take = GetActiveTake(m_item);
@@ -126,6 +135,7 @@ struct irp_task : public NoCopyNoMove
 			}
 		}
 	}
+	// Have to destroy stuff in GUI thread
 	~irp_task()
 	{
 		delete m_sink;
@@ -133,7 +143,9 @@ struct irp_task : public NoCopyNoMove
 		delete m_src;
 		readbg() << "irp task dtor " << m_id << "\n";
 	}
-	void run()
+	// Multithreading compatible code put in this method
+	// Stuff like ShowConsoleMsg, Main_OnCommand, Reaper object creation functions etc can't be used here
+	void run() override
 	{
 		if (m_shifter == nullptr || m_src == nullptr || m_sink == nullptr)
 			return;
@@ -194,41 +206,39 @@ struct irp_task : public NoCopyNoMove
 	int m_id = 0;
 };
 
+inline void execute_parallel_tasks(std::vector<std::shared_ptr<IParallelTask>> tasks, bool multithreaded=true)
+{
+	if (multithreaded == true)
+	{
+#ifdef WIN32
+		Concurrency::parallel_for_each(tasks.begin(), tasks.end(), [](auto t) { t->run(); });
+#else
+		// Implementation with Grand Central Dispatch needs to be put here for OS-X
+#endif
+	}
+	else
+	{
+		for (auto& e : tasks)
+			e->run();
+	}
+}
+
 void test_irp_render(bool multithreaded)
 {
 	int numselitems = CountSelectedMediaItems(nullptr);
 	if (numselitems < 1)
 		return;
-	std::vector<std::shared_ptr<irp_task>> tasks;
+	std::vector<std::shared_ptr<IParallelTask>> tasks;
 	for (int i = 0; i < numselitems; ++i)
 	{
 		MediaItem* item = GetSelectedMediaItem(nullptr, i);
 		auto task = std::make_shared<irp_task>(item,i);
 		tasks.push_back(task);
 	}
-	if (multithreaded == false)
-	{
-		double t0 = time_precise();
-		for (int i = 0; i < tasks.size();++i)
-		{
-			tasks[i]->run();
-			//readbg() << i << " done\n";
-		}
-		double t1 = time_precise();
-		readbg() << "all done in " << t1 - t0 << " seconds\n";
-	}
-	else
-	{
-		double t0 = time_precise();
-#ifdef WIN32
-		Concurrency::parallel_for_each(tasks.begin(), tasks.end(), [](auto t) { t->run(); });
-#else
-		// for OS-X Grand Central Dispatch stuff here...
-#endif
-		double t1 = time_precise();
-		readbg() << "all done in " << t1 - t0 << " seconds\n";
-	}
-
+	double t0 = time_precise();
+	execute_parallel_tasks(tasks, multithreaded);
+	double t1 = time_precise();
+	readbg() << "all done in " << t1 - t0 << " seconds\n";
 }
 
 extern "C"
