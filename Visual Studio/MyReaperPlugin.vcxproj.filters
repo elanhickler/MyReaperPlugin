@@ -47,6 +47,9 @@
     <ClCompile Include="..\source\mrp_pcm_source.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\win32_utf8.c">
+      <Filter>library\WDL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />

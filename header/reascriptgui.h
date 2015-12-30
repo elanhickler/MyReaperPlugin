@@ -4,6 +4,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include "WDL/WDL/win32_utf8.h"
 #else
 #include "WDL/WDL/swell/swell.h"
 #endif
