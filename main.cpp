@@ -120,7 +120,10 @@ public:
 				char cfg[] = { 'e','v','a','w', 32, 0 };
 				int nch = src->GetNumChannels();
 				int sr = src->GetSampleRate();
-				std::string outfn = std::string("C:/MusicAudio/batchtesti/irptest/out_") + std::to_string(id) + ".wav";
+				char buf[2048];
+				GetProjectPath(buf, 2048);
+				std::string outfn = std::string(buf)+"out_" + std::to_string(id) + ".wav";
+				readbg() << "sink fn : " << outfn << "\n";
 				m_sink = PCM_Sink_Create(outfn.c_str(), cfg, sizeof(cfg), nch, sr, false);
 				if (m_sink == nullptr)
 				{
