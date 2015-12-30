@@ -1,0 +1,3 @@
+﻿reaper.ShowConsoleMsg("きょ とフ")
+
+
