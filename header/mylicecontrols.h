@@ -232,6 +232,7 @@ public:
 	void mousePressed(const MouseEvent& ev) override;
 	void mouseMoved(const MouseEvent& ev) override;
 	void mouseReleased(const MouseEvent& ev) override;
+	void mouseLeave() override;
 	std::string getType() const override { return "ZoomScrollBar"; }
 	std::function<void(double, double)> RangeChangedCallback;
 private:

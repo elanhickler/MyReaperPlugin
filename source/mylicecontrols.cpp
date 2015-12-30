@@ -1256,11 +1256,15 @@ void ZoomScrollBar::paint(PaintEvent& ev)
 	LICE_FillRect(ev.bm, 0, 0, getWidth(), getHeight(), LICE_RGBA(100, 100, 100, 255), 1.0f);
 	int x0 = getWidth()*m_start;
 	int x1 = getWidth()*m_end;
-	LICE_FillRect(ev.bm, x0, 0, x1-x0, getHeight(), LICE_RGBA(200, 200, 200, 255), 1.0f);
+	int thumbcolor = LICE_RGBA(200, 200, 200, 255);
+	if (m_hot_area == ha_handle)
+		thumbcolor = LICE_RGBA(220, 220, 220, 255);
+	LICE_FillRect(ev.bm, x0, 0, x1-x0, getHeight(), thumbcolor, 1.0f);
 	if (m_hot_area == ha_left_edge)
 		LICE_FillRect(ev.bm, x0, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
 	if (m_hot_area == ha_right_edge)
 		LICE_FillRect(ev.bm, x1-10, 0, 10, getHeight(), LICE_RGBA(255, 255, 255, 255), 1.0f);
+	
 }
 
 void ZoomScrollBar::mousePressed(const MouseEvent & ev)
@@ -1313,6 +1317,16 @@ void ZoomScrollBar::mouseMoved(const MouseEvent & ev)
 void ZoomScrollBar::mouseReleased(const MouseEvent & ev)
 {
 	m_mouse_down = false;
+}
+
+void ZoomScrollBar::mouseLeave()
+{
+	if (m_mouse_down == false)
+	{
+		m_hot_area = ha_none;
+		repaint();
+	}
+	//readbg() << "the mouse has left ZoomScrollBar " << this << "\n";
 }
 
 ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)

@@ -213,6 +213,12 @@ bool map_mouse_message(LiceControl* c, HWND hwnd, UINT msg, WPARAM wParam, LPARA
 		}
 		if (msg == WM_MOUSEMOVE)
 		{
+			TRACKMOUSEEVENT tme;
+			tme.cbSize = sizeof(TRACKMOUSEEVENT);
+			tme.dwFlags = TME_LEAVE;
+			tme.dwHoverTime = 0;
+			tme.hwndTrack = hwnd;
+			TrackMouseEvent(&tme);
 			MouseEvent::MouseButton but(MouseEvent::MBLeft);
 			if (wParam & MK_RBUTTON)
 				but = MouseEvent::MBRight;
@@ -306,7 +312,11 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	{
 		
 	}
-
+	if (Message == WM_MOUSELEAVE)
+	{
+		c->mouseLeave();
+		return 0;
+	}
 	if (Message == WM_DESTROY)
 	{
 		//ShowConsoleMsg("lice control window destroy\n");
