@@ -675,7 +675,7 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		double normy = map_value((double)getHeight() - ev.m_y, 0.0, (double)getHeight(), m_view_start_value, m_view_end_value);
 		if (m_active_envelope >= 0)
 		{
-			m_envs[m_active_envelope]->add_point({ normx,normy }, true);
+			m_envs[m_active_envelope]->add_point({ normx,normy,envbreakpoint::Power }, true);
 			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectAdded);
 			m_mouse_down = false;
 			repaint();

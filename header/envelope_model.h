@@ -15,7 +15,7 @@ public:
 		Power
 	};
 	envbreakpoint() {}
-	envbreakpoint(double x, double y, PointShape sh=Linear, double p1=0.0, double p2=0.0 ) 
+	envbreakpoint(double x, double y, PointShape sh=Linear, double p1=0.5, double p2=0.5 )
 		: m_x(x), m_y(y),m_shape(sh), m_p1(p1), m_p2(p2) {}
 	double get_x() const noexcept { return m_x; }
 	double get_y() const noexcept { return m_y; }
