@@ -383,6 +383,7 @@ WinComboBox::WinComboBox(MRPWindow* parent) : WinControl(parent)
 #ifdef WIN32
 	m_hwnd = CreateWindow("COMBOBOX", "combo", CBS_DROPDOWNLIST	| WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
+	WDL_UTF8_HookComboBox(m_hwnd);
 #else
 	m_hwnd = SWELL_MakeCombo(g_control_counter,0,0,20,20, WS_CHILD | WS_TABSTOP | CBS_DROPDOWNLIST);
 	SetParent(m_hwnd, parent->getWindowHandle());
@@ -464,6 +465,7 @@ WinListBox::WinListBox(MRPWindow* parent) : WinControl(parent)
 #ifdef WIN32
 	m_hwnd = CreateWindow("LISTBOX", "list", LBS_NOTIFY | WS_VSCROLL | WS_CHILD | WS_TABSTOP, 5, 5, 30, 20, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
+	WDL_UTF8_HookListBox(m_hwnd);
 #else
 	m_hwnd = SWELL_MakeListBox(g_control_counter, 0, 0, 20, 20, LVS_SINGLESEL | WS_CHILD | WS_TABSTOP);
 	SetParent(m_hwnd, parent->getWindowHandle());
