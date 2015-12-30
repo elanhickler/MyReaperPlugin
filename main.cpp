@@ -208,6 +208,9 @@ public:
 
 inline void execute_parallel_tasks(std::vector<std::shared_ptr<IParallelTask>> tasks, bool multithreaded=true)
 {
+	// No use in firing up the concurrency stuff if only one task
+	if (tasks.size() < 2)
+		multithreaded = false;
 	if (multithreaded == true)
 	{
 #ifdef WIN32
