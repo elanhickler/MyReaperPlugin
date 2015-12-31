@@ -1217,11 +1217,6 @@ static int DelegateMouseMove(NSView *view, NSEvent *theEvent)
     SWELL_SendMouseMessage(self,WM_MOUSEHWHEEL,theEvent);
   }
 }
-- (void)mouseExited:(NSEvent *)theEvent
-{
-	
-  SWELL_SendMouseMessage(self,WM_MOUSELEAVE,theEvent);
-}
 - (void)mouseDown:(NSEvent *)theEvent
 {
   SWELL_FinishDragDrop();

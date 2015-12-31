@@ -204,7 +204,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			g_mrpwindowsmap[hwnd] = mrpw;
 			if (mrpw->m_is_modal == true)
 				mrpw->init_modal_dialog();
-			mrpw->m_helper_timer = SetTimer(hwnd, 0, 1000, nullptr);
+			mrpw->m_helper_timer = SetTimer(hwnd, 25000, 1000, nullptr);
 		}
 		return TRUE;
 	}
@@ -270,6 +270,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 void MRPWindow::onTimer()
 {
+	//readbg() << "MRPWindow onTimer\n";
 	for (auto& e : m_controls)
 		e->onRefreshTimer();
 	onRefreshTimer();

@@ -151,6 +151,7 @@ void LiceControl::setFocused()
 
 bool LiceControl::isCursorOver()
 {
+	// Swell does something weird with getting the cursor position. But I'll let this be for now...
 	POINT pt;
 	GetCursorPos(&pt);
 	RECT r;
