@@ -149,6 +149,19 @@ void LiceControl::setFocused()
 	}
 }
 
+bool LiceControl::isCursorOver()
+{
+	POINT pt;
+	GetCursorPos(&pt);
+	RECT r;
+	GetWindowRect(m_hwnd, &r);
+	if (pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom)
+	{
+		return true;
+	}
+	return false;
+}
+
 void update_modifiers_state(ModifierKeys& keys, WPARAM wParam)
 {
 #ifdef WIN32

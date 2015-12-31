@@ -196,6 +196,8 @@ public:
 
 	virtual bool keyPressed(const ModifierKeys& modkeys, int keycode) { return false; }
 
+	bool isCursorOver();
+
 	virtual std::string getType() const = 0;
 
 private:

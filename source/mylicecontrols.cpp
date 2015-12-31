@@ -1331,11 +1331,7 @@ void ZoomScrollBar::mouseLeave()
 
 void ZoomScrollBar::onRefreshTimer()
 {
-	POINT pt;
-	GetCursorPos(&pt);
-	RECT r;
-	GetWindowRect(m_hwnd, &r);
-	if (!(pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom))
+	if (isCursorOver()==false)
 	{
 		if (m_hot_area != ha_none)
 		{
