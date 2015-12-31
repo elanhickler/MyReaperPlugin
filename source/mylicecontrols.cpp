@@ -1329,6 +1329,22 @@ void ZoomScrollBar::mouseLeave()
 	//readbg() << "the mouse has left ZoomScrollBar " << this << "\n";
 }
 
+void ZoomScrollBar::onRefreshTimer()
+{
+	POINT pt;
+	GetCursorPos(&pt);
+	RECT r;
+	GetWindowRect(m_hwnd, &r);
+	if (!(pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom))
+	{
+		if (m_hot_area != ha_none)
+		{
+			m_hot_area = ha_none;
+			repaint();
+		}
+	}
+}
+
 ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)
 {
 	int x0 = getWidth()*m_start;

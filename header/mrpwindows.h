@@ -67,6 +67,7 @@ protected:
 	ModalResult m_modal_result = Rejected;
 	UINT_PTR m_helper_timer = 0;
 	bool m_is_closed = true;
+	void onTimer();
 };
 
 void shutdown_windows();

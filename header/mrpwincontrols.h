@@ -95,6 +95,8 @@ public:
 	virtual void setStringProperty(int which, std::string v) {}
 	virtual void sendStringCommand(const std::string& message) {}
 
+	virtual void onRefreshTimer() {}
+	
 	virtual bool handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) { return false; }
 	// Use this responsibly.
 	HWND getWindowHandle() const { return m_hwnd; }

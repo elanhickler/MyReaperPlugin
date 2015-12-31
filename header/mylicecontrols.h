@@ -235,6 +235,7 @@ public:
 	void mouseLeave() override;
 	std::string getType() const override { return "ZoomScrollBar"; }
 	std::function<void(double, double)> RangeChangedCallback;
+	void onRefreshTimer() override;
 private:
 	double m_start = 0.0;
 	double m_end = 1.0;
