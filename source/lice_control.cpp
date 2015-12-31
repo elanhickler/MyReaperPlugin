@@ -151,12 +151,12 @@ void LiceControl::setFocused()
 
 bool LiceControl::isCursorOver()
 {
-	// Swell does something weird with getting the cursor position. But I'll let this be for now...
 	POINT pt;
 	GetCursorPos(&pt);
 	RECT r;
-	GetWindowRect(m_hwnd, &r);
-	if (pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom)
+	GetClientRect(m_hwnd, &r);
+	ScreenToClient(m_hwnd, &pt);
+	if (PtInRect(&r,pt))
 	{
 		return true;
 	}
