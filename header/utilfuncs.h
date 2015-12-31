@@ -80,7 +80,7 @@ struct create_item_result
 };
 
 create_item_result create_item_with_take_and_source(MediaTrack* track, const char* fn);
-
+#ifdef OLDDBGSTREAM
 class readbgbuf : public std::streambuf
 {
 public:
@@ -94,6 +94,27 @@ class readbg : public std::ostream
 public:
 	readbg() :std::ostream(&buf) { }
 };
+#else
+class readbg
+{
+public:
+	readbg() {}
+	~readbg();
+	std::string m_buf;
+private:
+	
+};
+
+readbg& operator<<(readbg& stream, int x);
+readbg& operator<<(readbg& stream, size_t x);
+readbg& operator<<(readbg& stream, double x);
+readbg& operator<<(readbg& stream, const char* x);
+readbg& operator<<(readbg& stream, const std::string& x);
+readbg& operator<<(readbg& stream, void* x);
+
+void set_readbg_decimals(int decims);
+
+#endif
 
 class IValueConverter
 {

@@ -187,6 +187,7 @@ void SliderBankWindow::resized()
 
 void SliderBankWindow::on_slider_value_changed(int slidindex, double v)
 {
+	set_readbg_decimals(3);
 	readbg() << slidindex << " moved to " << v << "\n";
 }
 
