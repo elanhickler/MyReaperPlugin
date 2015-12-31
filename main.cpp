@@ -97,13 +97,6 @@ void test_track_range()
 	}
 }
 
-class IParallelTask : public NoCopyNoMove
-{
-public:
-	virtual ~IParallelTask() {}
-	virtual void run() = 0;
-};
-
 class irp_task : public IParallelTask
 {
 public:
@@ -209,26 +202,6 @@ public:
 	std::vector<double*> m_sinkbufpointers;
 	int m_id = 0;
 };
-
-inline void execute_parallel_tasks(std::vector<std::shared_ptr<IParallelTask>> tasks, bool multithreaded=true)
-{
-	// No use in firing up the concurrency stuff if only one task
-	if (tasks.size() < 2)
-		multithreaded = false;
-	if (multithreaded == true)
-	{
-#ifdef WIN32
-		Concurrency::parallel_for_each(tasks.begin(), tasks.end(), [](auto t) { t->run(); });
-#else
-		// Implementation with Grand Central Dispatch needs to be put here for OS-X
-#endif
-	}
-	else
-	{
-		for (auto& e : tasks)
-			e->run();
-	}
-}
 
 void test_irp_render(bool multithreaded)
 {
