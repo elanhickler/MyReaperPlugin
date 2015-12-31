@@ -1,23 +1,7 @@
 #include "utilfuncs.h"
 #include "WDL/WDL/lice/lice.h"
 #include "reaper_plugin/reaper_plugin_functions.h"
-#ifdef OLDDBGSTREAM
-int readbgbuf::overflow(int c)
-{
-	if (c != traits_type::eof()) {
-		char ch[2] = { traits_type::to_char_type(c), 0 };
-		ShowConsoleMsg(ch);
-	}
-	return c;
-}
 
-std::streamsize readbgbuf::xsputn(const char *buffer, std::streamsize n)
-{
-	std::string buf(buffer, buffer + n);
-	ShowConsoleMsg(buf.c_str());
-	return n;
-}
-#else
 readbg::~readbg()
 {
 	ShowConsoleMsg(m_buf.c_str());
@@ -32,8 +16,6 @@ void set_readbg_decimals(int decims)
 	// might wanna check if the secure version of sprintf can be used...
 	sprintf(g_d_format_str, "%%.%df", decims);
 }
-
-#endif
 
 std::string is_source_audio(PCM_source* src)
 {
