@@ -254,7 +254,7 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			return TRUE;
 		}
 	}
-	if (msg == WM_TIMER)
+	if (msg == WM_TIMER && wp==25000)
 	{
 		if (mptr != nullptr)
 			mptr->onTimer();
