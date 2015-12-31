@@ -93,24 +93,53 @@ class readbg : public std::ostream
 	readbgbuf buf;
 public:
 	readbg() :std::ostream(&buf) { }
+	
 };
 #else
 class readbg
 {
 public:
+	
 	readbg() {}
 	~readbg();
+	readbg& operator << (const char* x)
+	{
+		m_buf.append(x);
+		return *this;
+	}
+	readbg& operator << (int x)
+	{
+		m_buf.append(std::to_string(x));
+		return *this;
+	}
+	readbg& operator << (size_t x)
+	{
+		m_buf.append(std::to_string(x));
+		return *this;
+	}
+	readbg& operator << (double x)
+	{
+		char buf[64];
+		sprintf(buf,"%.2f",x);
+		m_buf.append(buf);
+		return *this;
+	}
+	readbg& operator << (void* x)
+	{
+		char buf[16];
+		sprintf(buf,"%p",x);
+		m_buf.append(buf);
+		return *this;
+	}
+	readbg& operator << (const std::string& x)
+	{
+		m_buf.append(x);
+		return *this;
+	}
 	std::string m_buf;
-private:
+
 	
 };
-
-readbg& operator<<(readbg& stream, int x);
-readbg& operator<<(readbg& stream, size_t x);
-readbg& operator<<(readbg& stream, double x);
-readbg& operator<<(readbg& stream, const char* x);
-readbg& operator<<(readbg& stream, const std::string& x);
-readbg& operator<<(readbg& stream, void* x);
 
 void set_readbg_decimals(int decims);
 
