@@ -458,7 +458,13 @@ inline void execute_parallel_tasks(std::vector<std::shared_ptr<IParallelTask>> t
 #ifdef WIN32
 		Concurrency::parallel_for_each(tasks.begin(), tasks.end(), [](auto t) { t->run(); });
 #else
-		// Implementation with Grand Central Dispatch needs to be put here for OS-X
+		dispatch_queue_t the_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+		void* ctx=(void*)&tasks;
+		dispatch_apply_f(tasks.size(),the_queue,ctx,[](void* thectx,size_t index)
+		{
+			auto ptrtasks=(std::vector<std::shared_ptr<IParallelTask>>*)thectx;
+			(*ptrtasks)[index]->run();
+		});
 #endif
 	}
 	else
