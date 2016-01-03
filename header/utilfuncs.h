@@ -52,7 +52,7 @@ inline bool is_in_range(T val, T start, T end)
 
 inline bool is_alphaspacenumeric(char c)
 {
-	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c < 'Z') || c == ' ';
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ';
 }
 
 template<typename T>
