@@ -70,4 +70,6 @@ protected:
 	void onTimer();
 };
 
+bool is_valid_mrp_window(MRPWindow* w);
+
 void shutdown_windows();

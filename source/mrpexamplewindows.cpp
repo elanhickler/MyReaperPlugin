@@ -192,6 +192,8 @@ SliderBankWindow* g_sliderbankwindow = nullptr;
 
 HWND toggle_sliderbank_window(HWND parent)
 {
+	if (is_valid_mrp_window(g_sliderbankwindow)==false)
+		g_sliderbankwindow=nullptr;
 	if (g_sliderbankwindow == nullptr)
 	{
 		g_sliderbankwindow = new SliderBankWindow(parent);

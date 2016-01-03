@@ -276,6 +276,13 @@ void MRPWindow::onTimer()
 	onRefreshTimer();
 }
 
+bool is_valid_mrp_window(MRPWindow* w)
+{
+	for (auto& e : g_mrpwindowsmap)
+		if (e.second==w)
+			return true;
+	return false;
+}
 
 void shutdown_windows()
 {
