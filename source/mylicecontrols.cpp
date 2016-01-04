@@ -503,6 +503,24 @@ void WaveformControl::setSource(PCM_source* src)
 	repaint();
 }
 
+void WaveformControl::setAudioAccessor(std::shared_ptr<AudioAccessor> accessor)
+{
+	if (accessor != nullptr)
+		m_src = nullptr;
+	m_accessor = accessor;
+	double time = GetAudioAccessorStartTime(m_accessor.get());
+	double endtime = GetAudioAccessorEndTime(m_accessor.get());
+	int blocksize = 16384;
+	int sr = 44100;
+	int numchans = 2;
+	std::vector<double> buffer(blocksize*numchans);
+	while (time < endtime)
+	{
+		GetAudioAccessorSamples(m_accessor.get(), sr, numchans, time, blocksize, buffer.data());
+		time += (double)blocksize / sr;
+	}
+}
+
 void WaveformControl::setFloatingPointProperty(int which, double val)
 {
 	if (which == 0)

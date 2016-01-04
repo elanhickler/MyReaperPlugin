@@ -98,7 +98,7 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 #define USE_REG_EXP_CONTROL_SEARCH
 #endif
 
-WinControl* ReaScriptWindow::control_from_name(std::string name)
+WinControl* ReaScriptWindow::control_from_name(const std::string& name)
 {
 #ifdef USE_REG_EXP_CONTROL_SEARCH
 	std::regex re(name, std::regex_constants::ECMAScript | std::regex_constants::icase);
@@ -126,7 +126,7 @@ void ReaScriptWindow::clearDirtyControls()
 	m_dirty_controls.clear();
 }
 
-double ReaScriptWindow::getControlValueDouble(std::string obname, int which)
+double ReaScriptWindow::getControlValueDouble(const std::string& obname, int which)
 {
 	WinControl* c = control_from_name(obname);
 	if (c != nullptr)
@@ -136,7 +136,7 @@ double ReaScriptWindow::getControlValueDouble(std::string obname, int which)
 	return 0.0;
 }
 
-int ReaScriptWindow::getControlValueInt(std::string obname, int which)
+int ReaScriptWindow::getControlValueInt(const std::string& obname, int which)
 {
 	WinControl* c = control_from_name(obname);
 	if (c != nullptr)
@@ -146,7 +146,7 @@ int ReaScriptWindow::getControlValueInt(std::string obname, int which)
 	return 0;
 }
 
-void ReaScriptWindow::setControlValueString(std::string obname, int which, std::string text)
+void ReaScriptWindow::setControlValueString(const std::string& obname, int which, std::string text)
 {
 	WinControl* c = control_from_name(obname);
 	if (c != nullptr)
@@ -155,7 +155,7 @@ void ReaScriptWindow::setControlValueString(std::string obname, int which, std::
 	}
 }
 
-void ReaScriptWindow::setControlValueDouble(std::string obname, int which, double v)
+void ReaScriptWindow::setControlValueDouble(const std::string& obname, int which, double v)
 {
 	WinControl* c = control_from_name(obname);
 	if (c != nullptr)
@@ -164,7 +164,7 @@ void ReaScriptWindow::setControlValueDouble(std::string obname, int which, doubl
 	}
 }
 
-void ReaScriptWindow::setControlValueInt(std::string obname, int which, int v)
+void ReaScriptWindow::setControlValueInt(const std::string& obname, int which, int v)
 {
 	WinControl* c = control_from_name(obname);
 	if (c != nullptr)

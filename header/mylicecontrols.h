@@ -102,6 +102,7 @@ class WaveformControl : public LiceControl
 public:
 	WaveformControl(MRPWindow* parent);
 	void setSource(PCM_source* src);
+	void setAudioAccessor(std::shared_ptr<AudioAccessor> accessor);
 	PCM_source* getSource() { return m_src.get(); }
 	void paint(PaintEvent& ev) override;
 	void mousePressed(const MouseEvent& ev) override;
@@ -115,6 +116,7 @@ public:
 	
 private:
 	std::shared_ptr<PCM_source> m_src;
+	std::shared_ptr<AudioAccessor> m_accessor;
 	std::vector<double> m_minpeaks;
 	std::vector<double> m_maxpeaks;
 	double m_peaks_gain = 1.0;
