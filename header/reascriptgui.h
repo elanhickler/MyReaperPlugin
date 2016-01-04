@@ -24,11 +24,11 @@ public:
 	void setControlBounds(std::string name, int x, int y, int w, int h);
 	bool isControlDirty(std::string name);
 	void clearDirtyControls();
-	double getControlValueDouble(std::string obname, int which);
-	void setControlValueDouble(std::string obname, int which, double v);
-	int getControlValueInt(std::string obname, int which);
-	void setControlValueString(std::string obname, int which, std::string text);
-	void setControlValueInt(std::string obname, int which, int v);
+	double getControlValueDouble(const std::string& obname, int which);
+	void setControlValueDouble(const std::string& obname, int which, double v);
+	int getControlValueInt(const std::string& obname, int which);
+	void setControlValueString(const std::string& obname, int which, std::string text);
+	void setControlValueInt(const std::string& obname, int which, int v);
 	void sendCommandString(const std::string& obname, const std::string& cmd);
 	void resized() override { m_was_resized = true; }
 	bool m_was_resized = false;
