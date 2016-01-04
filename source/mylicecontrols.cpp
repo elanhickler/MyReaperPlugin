@@ -675,8 +675,9 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		if (m_active_envelope >= 0)
 		{
 			m_envs[m_active_envelope]->add_point({ normx,normy,envbreakpoint::Power }, true);
-			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectAdded);
-			m_mouse_down = false;
+			if (GenericNotifyCallback) 
+				GenericNotifyCallback(GenericNotifications::ObjectAdded);
+			m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 			repaint();
 			return;
 		}
