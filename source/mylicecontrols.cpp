@@ -633,17 +633,16 @@ void EnvelopeControl::paint(PaintEvent& ev)
 					normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
 					double subxcor1 = xcor + xcoroffset;
 					double subycor1 = ycor + ycorrange*normv;
-					LICE_Line(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
+					LICE_FLine(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
 				}
-				//LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
 			}
 			if (i == 0 && pt.get_x() >= 0.0)
 			{
-				LICE_Line(bm, 0.0, ycor, xcor, ycor, envlinecolor, 1.0f);
+				LICE_FLine(bm, 0.0, ycor, xcor, ycor, envlinecolor, 1.0f);
 			}
 			if (i == m_env->get_num_points() - 1 && pt.get_x() < 1.0)
 			{
-				LICE_Line(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
+				LICE_FLine(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
 			}
 		}
 	}
