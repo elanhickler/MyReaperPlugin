@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C406994E1C39B33800E445F7 /* reaper_plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = C406994D1C39B33800E445F7 /* reaper_plugin.h */; };
+		C40699501C39B34300E445F7 /* reaper_plugin_functions.h in Headers */ = {isa = PBXBuildFile; fileRef = C406994F1C39B34300E445F7 /* reaper_plugin_functions.h */; };
 		C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */ = {isa = PBXBuildFile; fileRef = C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */; };
 		C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */; };
 		C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */; };
@@ -48,6 +50,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C406994D1C39B33800E445F7 /* reaper_plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_plugin.h; path = ../library/reaper_plugin/reaper_plugin.h; sourceTree = "<group>"; };
+		C406994F1C39B34300E445F7 /* reaper_plugin_functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reaper_plugin_functions.h; path = ../library/reaper_plugin/reaper_plugin_functions.h; sourceTree = "<group>"; };
 		C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reascriptgui.h; path = ../header/reascriptgui.h; sourceTree = "<group>"; };
 		C42AC6D01C274B7500FAE97E /* reascriptgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = reascriptgui.cpp; path = ../source/reascriptgui.cpp; sourceTree = "<group>"; };
 		C42AC6D21C27AB1D00FAE97E /* lice_textnew.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_textnew.cpp; path = ../library/WDL/WDL/lice/lice_textnew.cpp; sourceTree = "<group>"; };
@@ -212,6 +216,8 @@
 		E3EAC6861C1C9C5A00F619AA /* reaper_plugin */ = {
 			isa = PBXGroup;
 			children = (
+				C406994F1C39B34300E445F7 /* reaper_plugin_functions.h */,
+				C406994D1C39B33800E445F7 /* reaper_plugin.h */,
 			);
 			name = reaper_plugin;
 			sourceTree = "<group>";
@@ -225,11 +231,13 @@
 			files = (
 				C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */,
 				C486064D1C1A3C4000186D68 /* resource.h in Headers */,
+				C406994E1C39B33800E445F7 /* reaper_plugin.h in Headers */,
 				C464FFCB1C2E1E910023C734 /* mrp_pcm_source.h in Headers */,
 				C4C79FAD1C2EA84300D83955 /* mrpwincontrols.h in Headers */,
 				C42AC6CF1C274B6A00FAE97E /* reascriptgui.h in Headers */,
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
+				C40699501C39B34300E445F7 /* reaper_plugin_functions.h in Headers */,
 				C43CE9AB1C2CDB4B00315BC9 /* mrpexamplewindows.h in Headers */,
 				C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
