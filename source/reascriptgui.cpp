@@ -98,7 +98,7 @@ void ReaScriptWindow::setControlBounds(std::string name, int x, int y, int w, in
 #define USE_REG_EXP_CONTROL_SEARCH
 #endif
 
-WinControl* ReaScriptWindow::control_from_name(std::string name)
+WinControl* ReaScriptWindow::control_from_name(const std::string& name)
 {
 #ifdef USE_REG_EXP_CONTROL_SEARCH
 	std::regex re(name, std::regex_constants::ECMAScript | std::regex_constants::icase);

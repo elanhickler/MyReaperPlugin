@@ -34,7 +34,7 @@ public:
 	bool m_was_resized = false;
 private:
 	std::vector<char> m_leak_test;
-	WinControl* control_from_name(std::string name);
+	WinControl* control_from_name(const std::string& name);
 	std::unordered_set<std::string> m_dirty_controls;
 };
 
