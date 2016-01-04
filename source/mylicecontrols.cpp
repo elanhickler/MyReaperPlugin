@@ -1311,6 +1311,8 @@ void ZoomScrollBar::mouseMoved(const MouseEvent & ev)
 		}
 		if (RangeChangedCallback)
 			RangeChangedCallback(m_start, m_end);
+		if (GenericNotifyCallback)
+			GenericNotifyCallback(GenericNotifications::TimeRange);
 	}
 }
 
@@ -1339,6 +1341,26 @@ void ZoomScrollBar::onRefreshTimer()
 			repaint();
 		}
 	}
+}
+
+double ZoomScrollBar::getFloatingPointProperty(int index)
+{
+	if (index == 0)
+		return m_start;
+	if (index == 1)
+		return m_end;
+	return 0.0;
+}
+
+void ZoomScrollBar::setFloatingPointProperty(int index, double v)
+{
+	if (index == 0)
+		m_start = bound_value(0.0, v, 1.0);
+	if (index == 1)
+		m_end = bound_value(0.0, v, 1.0);
+	if (m_start > m_end)
+		std::swap(m_start, m_end);
+	repaint();
 }
 
 ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)

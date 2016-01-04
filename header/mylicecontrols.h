@@ -236,6 +236,8 @@ public:
 	std::string getType() const override { return "ZoomScrollBar"; }
 	std::function<void(double, double)> RangeChangedCallback;
 	void onRefreshTimer() override;
+	double getFloatingPointProperty(int index) override;
+	void setFloatingPointProperty(int index, double v) override;
 private:
 	double m_start = 0.0;
 	double m_end = 1.0;

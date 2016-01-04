@@ -33,6 +33,11 @@ std::shared_ptr<LiceControl> create_licecontrol(ReaScriptWindow* w, std::string 
 		control->setIntegerProperty(2, 0);
 		return control;
 	}
+	if (classname == "ZoomScrollBar")
+	{
+		auto zsb = std::make_shared<ZoomScrollBar>(w);
+		return zsb;
+	}
 	return nullptr;
 }
 
