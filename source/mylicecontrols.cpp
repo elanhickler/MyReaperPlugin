@@ -633,17 +633,16 @@ void EnvelopeControl::paint(PaintEvent& ev)
 					normv = get_shaped_value(normt, pt.get_shape(), pt.get_param1(), pt.get_param2());
 					double subxcor1 = xcor + xcoroffset;
 					double subycor1 = ycor + ycorrange*normv;
-					LICE_Line(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
+					LICE_FLine(bm, subxcor0, subycor0, subxcor1, subycor1, envlinecolor, 1.0f);
 				}
-				//LICE_Line(bm, xcor, ycor, xcor1, ycor1, envlinecolor, 1.0f);
 			}
 			if (i == 0 && pt.get_x() >= 0.0)
 			{
-				LICE_Line(bm, 0.0, ycor, xcor, ycor, envlinecolor, 1.0f);
+				LICE_FLine(bm, 0.0, ycor, xcor, ycor, envlinecolor, 1.0f);
 			}
 			if (i == m_env->get_num_points() - 1 && pt.get_x() < 1.0)
 			{
-				LICE_Line(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
+				LICE_FLine(bm, xcor, ycor, getWidth(), ycor, envlinecolor, 1.0f);
 			}
 		}
 	}
@@ -676,8 +675,9 @@ void EnvelopeControl::mousePressed(const MouseEvent& ev)
 		if (m_active_envelope >= 0)
 		{
 			m_envs[m_active_envelope]->add_point({ normx,normy,envbreakpoint::Power }, true);
-			if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::ObjectAdded);
-			m_mouse_down = false;
+			if (GenericNotifyCallback) 
+				GenericNotifyCallback(GenericNotifications::ObjectAdded);
+			m_node_to_drag = find_hot_envelope_point(ev.m_x, ev.m_y);
 			repaint();
 			return;
 		}
@@ -1311,6 +1311,8 @@ void ZoomScrollBar::mouseMoved(const MouseEvent & ev)
 		}
 		if (RangeChangedCallback)
 			RangeChangedCallback(m_start, m_end);
+		if (GenericNotifyCallback)
+			GenericNotifyCallback(GenericNotifications::TimeRange);
 	}
 }
 
@@ -1339,6 +1341,26 @@ void ZoomScrollBar::onRefreshTimer()
 			repaint();
 		}
 	}
+}
+
+double ZoomScrollBar::getFloatingPointProperty(int index)
+{
+	if (index == 0)
+		return m_start;
+	if (index == 1)
+		return m_end;
+	return 0.0;
+}
+
+void ZoomScrollBar::setFloatingPointProperty(int index, double v)
+{
+	if (index == 0)
+		m_start = bound_value(0.0, v, 1.0);
+	if (index == 1)
+		m_end = bound_value(0.0, v, 1.0);
+	if (m_start > m_end)
+		std::swap(m_start, m_end);
+	repaint();
 }
 
 ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)

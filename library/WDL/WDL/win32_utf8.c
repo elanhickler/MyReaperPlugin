@@ -1120,7 +1120,7 @@ void WDL_UTF8_ListViewConvertDispInfoToW(void *_di)
     char *src = di->item.pszText;
 
     if (strlen(src) < 1024) strcpy(tmp,src);
-    else tmp = strdup(src);
+    else tmp = _strdup(src);
 
     if (!MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,tmp,-1,(LPWSTR)di->item.pszText,di->item.cchTextMax))
     {
