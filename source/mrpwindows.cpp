@@ -86,7 +86,7 @@ MRPWindow::MRPWindow(HWND parent, std::string title)
 
 MRPWindow::~MRPWindow()
 {
-	readbg() << "MRPWindow dtor\n";
+	//readbg() << "MRPWindow dtor\n";
 	m_is_closed = true; 
 	m_controls.clear();
 	if (m_hwnd != NULL)
@@ -172,6 +172,7 @@ void MRPWindow::finishModal(ModalResult result)
 	if (m_is_modal == true && m_hwnd != NULL)
 	{
 		m_modal_result = result;
+		m_hwnd = NULL;
 		onModalClose();
 	}
 }
