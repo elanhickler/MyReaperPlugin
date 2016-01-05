@@ -527,6 +527,8 @@ void show_modal_dialog(HWND parent)
 		if (r == MRPWindow::Accepted)
 			readbg() << "Dialog was accepted : " << dlg.getText(0) << "\n";
 		else readbg() << "Dialog was cancelled\n";
+		//if (is_valid_mrp_window(&dlg) == true)
+		//	readbg() << "MRPWindow still valid when it should not be\n";
 	}
 	//readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";
 }

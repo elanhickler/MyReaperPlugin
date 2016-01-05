@@ -172,6 +172,7 @@ void MRPWindow::finishModal(ModalResult result)
 	if (m_is_modal == true && m_hwnd != NULL)
 	{
 		m_modal_result = result;
+		g_mrpwindowsmap.erase(m_hwnd);
 		m_hwnd = NULL;
 		onModalClose();
 	}
