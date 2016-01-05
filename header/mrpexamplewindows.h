@@ -39,12 +39,16 @@ private:
 	std::vector<slider_controls> m_sliders;
 };
 
-class TestMRPModalWindow : public MRPWindow
+class TestMRPModalWindow : public MRPModalDialog
 {
 public:
+	TestMRPModalWindow(HWND parent, std::string title);
 	void init_modal_dialog();
+	void onModalClose() override;
+	std::string getText(int which);
+private:
 	std::shared_ptr<WinLineEdit> m_line_edit;
-
+	std::string m_line_edit_cached_text;
 };
 
 class TestMRPPWindow : public MRPWindow

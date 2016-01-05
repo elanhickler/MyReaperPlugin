@@ -146,7 +146,13 @@ MRP::Rectangle MRPWindow::getBounds() const
 	return{ r.left, r.top, w,h };
 }
 
-MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
+MRPModalDialog::MRPModalDialog(HWND parent, std::string title)
+{
+	m_parent_hwnd = parent;
+	m_modal_title = title;
+}
+
+MRPWindow::ModalResult MRPModalDialog::runModally()
 {
 	m_is_modal = true;
 #ifdef WIN32
@@ -154,11 +160,20 @@ MRPWindow::ModalResult MRPWindow::runModally(HWND parent)
 	t.style = DS_SETFONT | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU;
 	t.cx = 200;
 	t.cy = 100;
-	DialogBoxIndirectParam(g_hInst, &t, parent, dlgproc, (LPARAM)this);
+	DialogBoxIndirectParam(g_hInst, &t, m_parent_hwnd, dlgproc, (LPARAM)this);
 #else
 	DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, dlgproc, (LPARAM)this);
 #endif
 	return m_modal_result;
+}
+
+void MRPWindow::finishModal(ModalResult result)
+{
+	if (m_is_modal == true && m_hwnd != NULL)
+	{
+		m_modal_result = result;
+		onModalClose();
+	}
 }
 
 void MRPWindow::closeRequested()
@@ -203,19 +218,15 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			mrpw->m_hwnd = hwnd;
 			g_mrpwindowsmap[hwnd] = mrpw;
 			if (mrpw->m_is_modal == true)
+			{
 				mrpw->init_modal_dialog();
+				SetWindowText(hwnd, mrpw->m_modal_title.c_str());
+			}
 			mrpw->m_helper_timer = SetTimer(hwnd, 25000, 1000, nullptr);
 		}
 		return TRUE;
 	}
 	MRPWindow* mptr = get_from_map(g_mrpwindowsmap, hwnd);
-	if (mptr != nullptr && mptr->m_modal_should_end == true)
-	{
-		mptr->m_modal_should_end = false;
-		EndDialog(hwnd, 0);
-		return TRUE;
-	}
-		
 	if (msg == WM_COMMAND || msg == WM_HSCROLL || msg == WM_VSCROLL)
 	{
 		
@@ -224,8 +235,13 @@ INT_PTR MRPWindow::dlgproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			for (auto& e : mptr->m_controls)
 				if (e!=nullptr && e->handleMessage(hwnd, msg, wp, lp) == true)
 				{
+					if (mptr->m_is_modal == true && mptr->m_modal_result != MRPWindow::Undefined)
+					{
+						EndDialog(hwnd, 0);
+					}
 					return TRUE;
 				}
+			
 		}
 	}
 	if (msg == WM_SIZE)

@@ -231,6 +231,7 @@ WinLabel::WinLabel(MRPWindow* parent, std::string text) : WinControl(parent)
 	m_hwnd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
 	SetParent(m_hwnd, parent->getWindowHandle());
 #endif
+	SendMessage(m_hwnd, WM_SETFONT, (WPARAM)g_defaultwincontrolfont, TRUE);
 	SetWindowText(m_hwnd, text.c_str());
 	ShowWindow(m_hwnd, SW_SHOW);
 }
@@ -355,7 +356,7 @@ std::string WinLineEdit::getText()
 	char buf[1024];
 	if (GetWindowText(m_hwnd, buf, 1024) == 0)
 	{
-		//readbg() << "GetWindowText error : " << GetLastError();
+		readbg() << "GetWindowText error : " << (int)GetLastError() << "\n";
 	}
 	return std::string(buf);
 }
