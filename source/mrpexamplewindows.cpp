@@ -468,6 +468,16 @@ void TestMRPPWindow::resized()
 
 }
 
+std::string TestMRPModalWindow::getText(int which)
+{
+	return m_line_edit_cached_text;
+}
+
+void TestMRPModalWindow::onModalClose()
+{
+	m_line_edit_cached_text = m_line_edit->getText();
+}
+
 void TestMRPModalWindow::init_modal_dialog()
 {
 	add_control(std::make_shared<WinButton>(this, "OK"));
@@ -504,13 +514,18 @@ HWND open_win_controls_window(HWND parent)
 	return w->getWindowHandle();
 }
 
+TestMRPModalWindow::TestMRPModalWindow(HWND parent, std::string title) : MRPModalDialog(parent, title)
+{
+
+}
+
 void show_modal_dialog(HWND parent)
 {
 	{
-		TestMRPModalWindow dlg;
-		MRPWindow::ModalResult r = dlg.runModally(parent);
+		TestMRPModalWindow dlg(parent,"Test Modal Dialog");
+		MRPWindow::ModalResult r = dlg.runModally();
 		if (r == MRPWindow::Accepted)
-			readbg() << "Dialog was accepted : " << dlg.m_line_edit->getText();
+			readbg() << "Dialog was accepted : " << dlg.getText(0) << "\n";
 		else readbg() << "Dialog was cancelled\n";
 	}
 	//readbg() << g_mrpwindowsmap.size() << " entries in mrpwindowsmap\n";

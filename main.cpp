@@ -284,12 +284,12 @@ extern "C"
 			{
 				open_win_controls_window(g_parent);
 			});
-#ifdef MODALWINDOWSWORKPROPERLY
+//#ifdef MODALWINDOWSWORKPROPERLY
 			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
 			{
 				show_modal_dialog(g_parent);
 			});
-#endif
+//#endif
 			add_action("MRP : Test mousewheel/MIDI CC action", "MRP_TESTWHEELMIDICC", ToggleOff, doChangeItemPitchesAction);
 
 			add_action("MRP : Play/stop audio source", "MRP_TESTPCM_SOURCE", ToggleOff, [](action_entry&)

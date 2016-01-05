@@ -41,33 +41,51 @@ public:
 		Accepted,
 		Rejected
 	};
-	ModalResult runModally(HWND parent);
+	virtual void onModalClose() {}
 	
-	void finishModal(ModalResult result)
-	{
-		if (m_is_modal == true && m_hwnd!=NULL)
-		{
-			m_modal_result = result;
-			m_modal_should_end = true;
-			return;
-			if (result == Accepted)
-				EndDialog(m_hwnd, 1);
-			if (result == Rejected)
-				EndDialog(m_hwnd, 2);
-		}
-	}
 	virtual void onRefreshTimer() {}
 protected:
 	HWND m_hwnd = NULL;
+	HWND m_parent_hwnd = NULL;
 	std::vector<std::shared_ptr<WinControl>> m_controls;
 	static INT_PTR CALLBACK dlgproc(HWND, UINT, WPARAM, LPARAM);
 	bool m_destroy_on_close = false;
 	bool m_is_modal = false;
-	bool m_modal_should_end = false;
-	ModalResult m_modal_result = Rejected;
+	ModalResult m_modal_result = Undefined;
 	UINT_PTR m_helper_timer = 0;
 	bool m_is_closed = true;
 	void onTimer();
+	void finishModal(ModalResult result);
+	std::string m_modal_title;
+};
+
+/*
+OK, so WinAPI modal dialogs are a complete pain to abstract into C++...
+MRPModalDialog attempts to do some abstraction but it's still tricky :
+1) Subclass MRPModalDialog
+2) Don't do anything like add new WinControls in the constructor. There's no parent window
+yet to which they could be parented.
+3) Override the init_modal_dialog method. Do your control adding and initing there.
+4) Override the onModalClose method. Here you have the last chance to gather any data from the WinControls that 
+the modal dialog is supposed to hand back. DO NOT attempt that after the runModally method returns. The child 
+WinControls are already gone at that point and things like GetWindowText etc won't work. You need to have copies
+of the desired data cached in member variables. 
+
+TestMRPModalWindow and show_modal_dialog in mrpexamplewindows.h/.cpp attempt to demonstrate how this all 
+should be put together.
+
+Aren't modal dialogs such fun? 
+
+*/
+
+class MRPModalDialog : public MRPWindow
+{
+public:
+	MRPModalDialog(HWND parent, std::string title = "Untitled");
+	ModalResult runModally();
+	
+private:
+	
 };
 
 bool is_valid_mrp_window(MRPWindow* w);
