@@ -356,7 +356,7 @@ std::string WinLineEdit::getText()
 	char buf[1024];
 	if (GetWindowText(m_hwnd, buf, 1024) == 0)
 	{
-		readbg() << "GetWindowText error : " << (int)GetLastError() << "\n";
+		//readbg() << "GetWindowText error : " << (int)GetLastError() << "\n";
 	}
 	return std::string(buf);
 }

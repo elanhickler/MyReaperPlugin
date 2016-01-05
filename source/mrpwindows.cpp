@@ -162,7 +162,7 @@ MRPWindow::ModalResult MRPModalDialog::runModally()
 	t.cy = 100;
 	DialogBoxIndirectParam(g_hInst, &t, m_parent_hwnd, dlgproc, (LPARAM)this);
 #else
-	DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), parent, dlgproc, (LPARAM)this);
+	DialogBoxParam(g_hInst, MAKEINTRESOURCE(IDD_EMPTYDIALOG), m_parent_hwnd, dlgproc, (LPARAM)this);
 #endif
 	return m_modal_result;
 }
