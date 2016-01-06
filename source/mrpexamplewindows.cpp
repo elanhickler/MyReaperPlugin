@@ -1,4 +1,5 @@
 #include "mrpexamplewindows.h"
+#include <random>
 
 SimpleExampleWindow* g_simple_example_window=nullptr;
 
@@ -391,12 +392,32 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_label1->setText(txt);
 	};
-	// Button 6 reverses text of line edit :-)
+	// Button 6 launches bogus work in another thread to demo progress bar
 	m_controls[6]->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		std::string txt = m_edit1->getText();
-		std::reverse(txt.begin(), txt.end());
-		m_edit1->setText(txt);
+		m_progressbar1->setVisible(true);
+		// we don't deal with multiple background tasks now, so disable the button to start the task
+		m_controls[6]->setEnabled(false);
+		static int rseed = 0;
+		auto task = [this](int randseed)
+		{
+			std::mt19937 randgen(randseed);
+			std::uniform_real_distribution<double> randdist(0.0, 1.0);
+			double accum = 0.0;
+			const int iterations = 50000000;
+			double t0 = time_precise();
+			for (int i = 0; i < iterations; ++i)
+			{
+				accum += randdist(randgen);
+				// real code should not do this at this granularity, because setProgressValue deals with
+				// an atomic value. but this is just a demo...
+				m_progressbar1->setProgressValue(1.0 / iterations*i);
+			}
+			double t1 = time_precise();
+			return std::make_pair(accum,t1 - t0);
+		};
+		m_future1 = std::async(std::launch::async, task, rseed);
+		++rseed;
 	};
 	// Button 4 removes envelope points with value over 0.5
 	m_controls[4]->GenericNotifyCallback = [this, env](GenericNotifications)
@@ -447,6 +468,7 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	};
 
 	m_progressbar1 = std::make_shared<ProgressControl>(this);
+	m_progressbar1->setVisible(false);
 }
 
 void TestMRPPWindow::resized()
@@ -469,6 +491,21 @@ void TestMRPPWindow::resized()
 	//m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
 	//m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));
 	m_progressbar1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 16, 16));
+}
+
+void TestMRPPWindow::onRefreshTimer()
+{
+	if (m_future1.valid() == true && 
+		m_future1.wait_for(std::chrono::milliseconds(1)) == std::future_status::ready)
+	{
+		auto thepair = m_future1.get();
+		double v = thepair.first;
+		double elapsed = thepair.second;
+		m_edit1->setText(std::to_string(v)+ " elapsed time "+std::to_string(elapsed));
+		m_progressbar1->setProgressValue(0.0);
+		m_progressbar1->setVisible(false);
+		m_controls[6]->setEnabled(true);
+	}
 }
 
 std::string TestMRPModalWindow::getText(int which)

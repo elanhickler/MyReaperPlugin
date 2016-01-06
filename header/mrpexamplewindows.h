@@ -2,6 +2,8 @@
 
 #include "mrpwindows.h"
 
+#include <future>
+
 class SimpleExampleWindow : public MRPWindow
 {
 public:
@@ -60,6 +62,7 @@ public:
 		readbg() << "TestMRPWindow dtor\n";
 	}
 	void resized() override;
+	void onRefreshTimer() override;
 private:
 	std::shared_ptr<WinComboBox> m_combo1;
 	std::shared_ptr<WinComboBox> m_combo2;
@@ -69,6 +72,7 @@ private:
 	std::shared_ptr<WinLabel> m_label1;
 	std::shared_ptr<WinLineEdit> m_edit1;
 	std::shared_ptr<ProgressControl> m_progressbar1;
+	std::future<std::pair<double,double>> m_future1;
 };
 
 void show_modal_dialog(HWND parent);
