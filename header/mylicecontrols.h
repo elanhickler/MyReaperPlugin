@@ -260,7 +260,7 @@ public:
 	
 	std::string getType() const override { return "ProgressControl"; }
 private:
-	std::atomic<double> m_progress_val = 0.0;
+	std::atomic<double> m_progress_val{0.0};
 	Timer m_timer;
 	LICE_CachedFont m_font;
 };

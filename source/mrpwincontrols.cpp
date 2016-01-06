@@ -93,13 +93,12 @@ bool WinControl::isEnabled()
 
 void WinControl::setEnabled(bool b)
 {
-#ifdef WIN32
+
 	if (m_hwnd == NULL)
 		return;
 	if (b == true)
 		EnableWindow(m_hwnd, TRUE);
 	else EnableWindow(m_hwnd, FALSE);
-#endif
 }
 
 int WinControl::getXPosition() const
