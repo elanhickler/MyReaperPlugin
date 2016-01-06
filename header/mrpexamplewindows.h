@@ -72,7 +72,7 @@ private:
 	std::shared_ptr<WinLabel> m_label1;
 	std::shared_ptr<WinLineEdit> m_edit1;
 	std::shared_ptr<ProgressControl> m_progressbar1;
-	std::future<std::pair<double,double>> m_future1;
+	std::future<void> m_future1;
 };
 
 void show_modal_dialog(HWND parent);

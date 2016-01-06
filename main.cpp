@@ -382,10 +382,12 @@ extern "C"
 						togact->m_togglestate = ToggleOn;
 				}
 			}		
+			start_or_stop_main_thread_executor(false);
 			return 1; // our plugin registered, return success
 		}
 		else {
 			test_pcm_source(1);
+			start_or_stop_main_thread_executor(true);
 			return 0;
 		}
 	}

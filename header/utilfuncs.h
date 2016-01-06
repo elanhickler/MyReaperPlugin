@@ -135,6 +135,9 @@ public:
 
 void set_readbg_decimals(int decims);
 
+void start_or_stop_main_thread_executor(bool stop);
+void execute_in_main_thread(std::function<void(void)> f);
+
 class IValueConverter
 {
 public:

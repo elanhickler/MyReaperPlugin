@@ -43,3 +43,44 @@ create_item_result create_item_with_take_and_source(MediaTrack * track, const ch
 	SetMediaItemTake_Source(result.take, result.src);
 	return result;
 }
+
+UINT_PTR g_main_thread_exec_timer = 0;
+std::mutex g_main_thread_exec_mutex;
+std::vector<std::function<void(void)>> g_main_thread_exec_tasks;
+
+void CALLBACK mtetimerproc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	if (idEvent == g_main_thread_exec_timer)
+	{
+		g_main_thread_exec_mutex.lock();
+		for (auto& e : g_main_thread_exec_tasks)
+			e();
+		g_main_thread_exec_tasks.clear();
+		g_main_thread_exec_mutex.unlock();
+	}
+}
+
+void start_or_stop_main_thread_executor(bool stop)
+{
+	if (stop == false)
+	{
+		g_main_thread_exec_timer = SetTimer(0, 1000, 10, mtetimerproc);
+	}
+	else
+	{
+		if (g_main_thread_exec_timer != 0)
+		{
+			g_main_thread_exec_mutex.lock();
+			g_main_thread_exec_tasks.clear();
+			KillTimer(0,g_main_thread_exec_timer);
+			g_main_thread_exec_mutex.unlock();
+		}
+	}
+}
+
+void execute_in_main_thread(std::function<void(void)> f)
+{
+	g_main_thread_exec_mutex.lock();
+	g_main_thread_exec_tasks.push_back(f);
+	g_main_thread_exec_mutex.unlock();
+}

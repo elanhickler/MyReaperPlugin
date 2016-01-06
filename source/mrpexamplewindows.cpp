@@ -409,12 +409,20 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 			for (int i = 0; i < iterations; ++i)
 			{
 				accum += randdist(randgen);
-				// real code should not do this at this granularity, because setProgressValue deals with
+				//accum += randdist(randgen);
+				// Production code should not do this at this granularity, because setProgressValue deals with
 				// an atomic value. but this is just a demo...
 				m_progressbar1->setProgressValue(1.0 / iterations*i);
 			}
 			double t1 = time_precise();
-			return std::make_pair(accum,t1 - t0);
+			auto finishtask = [=]()
+			{
+				m_edit1->setText(std::to_string(accum) + " elapsed time " + std::to_string(t1-t0));
+				m_progressbar1->setProgressValue(0.0);
+				m_progressbar1->setVisible(false);
+				m_controls[6]->setEnabled(true);
+			};
+			execute_in_main_thread(finishtask);
 		};
 		m_future1 = std::async(std::launch::async, task, rseed);
 		++rseed;
@@ -495,17 +503,7 @@ void TestMRPPWindow::resized()
 
 void TestMRPPWindow::onRefreshTimer()
 {
-	if (m_future1.valid() == true && 
-		m_future1.wait_for(std::chrono::milliseconds(1)) == std::future_status::ready)
-	{
-		auto thepair = m_future1.get();
-		double v = thepair.first;
-		double elapsed = thepair.second;
-		m_edit1->setText(std::to_string(v)+ " elapsed time "+std::to_string(elapsed));
-		m_progressbar1->setProgressValue(0.0);
-		m_progressbar1->setVisible(false);
-		m_controls[6]->setEnabled(true);
-	}
+	
 }
 
 std::string TestMRPModalWindow::getText(int which)
