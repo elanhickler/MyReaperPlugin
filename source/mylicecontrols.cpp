@@ -8,7 +8,7 @@
 
 bool g_popupmenushowing = false;
 
-void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt, int x, int y, int w, int h)
+void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt, int x, int y, int w, int h, int flags=DT_TOP|DT_LEFT)
 {
 	RECT r;
 	r.left = x;
@@ -16,9 +16,9 @@ void MRP_DrawTextHelper(LICE_IBitmap* bm, LICE_CachedFont* font, std::string txt
 	r.top = y;
 	r.bottom = y + h;
 #ifdef WIN32
-	font->DrawTextA(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+	font->DrawTextA(bm, txt.c_str(), -1, &r, flags);
 #else
-	font->DrawText(bm, txt.c_str(), -1, &r, DT_TOP | DT_LEFT);
+	font->DrawText(bm, txt.c_str(), -1, &r, flags);
 #endif
 }
 
@@ -1393,4 +1393,30 @@ ZoomScrollBar::hot_area ZoomScrollBar::get_hot_area(int x, int y)
 		return ha_handle;
 	return ha_none;
 
+}
+
+ProgressControl::ProgressControl(MRPWindow * parent) : LiceControl(parent)
+{
+	m_font.SetFromHFont(CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial"));
+	m_font.SetTextColor(LICE_RGBA(255, 255, 255, 255));
+	m_timer.set_callback([this]() { repaint(); });
+	m_timer.start(100);
+}
+
+void ProgressControl::paint(PaintEvent & ev)
+{
+	LICE_FillRect(ev.bm, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), 0);
+	double prog = m_progress_val.load();
+	int progw = ev.bm->getWidth() * prog;
+	LICE_FillRect(ev.bm, 0, 0, progw, ev.bm->getHeight(), LICE_RGBA(0,200,200,255));
+	char buf[100];
+	sprintf(buf, "%d %%", (int)(prog*100.0));
+	MRP_DrawTextHelper(ev.bm, &m_font, buf, 2, 2, ev.bm->getWidth(), ev.bm->getHeight(), DT_VCENTER |DT_CENTER);
+}
+
+void ProgressControl::setProgressValue(double v)
+{
+	v = bound_value(0.0, v, 1.0);
+	m_progress_val.store(v);
 }

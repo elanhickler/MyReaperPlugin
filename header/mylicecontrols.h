@@ -249,3 +249,18 @@ private:
 	bool m_mouse_down = false;
 };
 
+class ProgressControl : public LiceControl
+{
+public:
+	ProgressControl(MRPWindow* parent);
+	void paint(PaintEvent& ev) override;
+	
+	// Unusually for a GUI object method, this IS thread safe to call
+	void setProgressValue(double v);
+	
+	std::string getType() const override { return "ProgressControl"; }
+private:
+	std::atomic<double> m_progress_val = 0.0;
+	Timer m_timer;
+	LICE_CachedFont m_font;
+};

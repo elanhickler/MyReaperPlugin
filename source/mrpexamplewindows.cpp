@@ -432,10 +432,11 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	m_combo2->setSelectedIndex(0);
 
 	m_slider1 = std::make_shared<ReaSlider>(this, 0.5);
-	m_slider1->setValueConverter(std::make_shared<FFTSizesValueConverter>());
+	//m_slider1->setValueConverter(std::make_shared<FFTSizesValueConverter>());
 	m_slider1->SliderValueCallback = [this](GenericNotifications, double x)
 	{
 		m_label1->setText(std::to_string(x));
+		m_progressbar1->setProgressValue(x);
 	};
 	add_control(m_slider1);
 	m_zoomscroll1 = std::make_shared<ZoomScrollBar>(this);
@@ -444,6 +445,8 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 	{
 		m_envcontrol1->setViewTimeRange(t0, t1);
 	};
+
+	m_progressbar1 = std::make_shared<ProgressControl>(this);
 }
 
 void TestMRPPWindow::resized()
@@ -463,9 +466,9 @@ void TestMRPPWindow::resized()
 	m_envcontrol1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 1, 16, 10));
 	m_zoomscroll1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 1, 10, 16, 11));
 	m_edit1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 11, 16, 12));
-	m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
-	m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));
-
+	//m_combo1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 7, 16));
+	//m_combo2->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 8, 15, 16, 16));
+	m_progressbar1->setBounds(MRP::Rectangle::fromGridPositions(wg, gdivs, 0, 15, 16, 16));
 }
 
 std::string TestMRPModalWindow::getText(int which)

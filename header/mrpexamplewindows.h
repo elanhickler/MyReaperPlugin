@@ -68,6 +68,7 @@ private:
 	std::shared_ptr<ZoomScrollBar> m_zoomscroll1;
 	std::shared_ptr<WinLabel> m_label1;
 	std::shared_ptr<WinLineEdit> m_edit1;
+	std::shared_ptr<ProgressControl> m_progressbar1;
 };
 
 void show_modal_dialog(HWND parent);
