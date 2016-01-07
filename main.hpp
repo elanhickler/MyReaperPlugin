@@ -7,3 +7,4 @@
 #include "utilfuncs.h"
 #include "lice_control.h"
 #include "mrp_pcm_source.h"
+#include "xendynamicsprocessor.h"

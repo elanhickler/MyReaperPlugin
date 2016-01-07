@@ -284,6 +284,12 @@ extern "C"
 			{
 				open_win_controls_window(g_parent);
 			});
+
+			add_action("MRP/Xenakios : Audio Dynamics Processor", "MRP_SHOW_XENDYNAMICSPROC", ToggleOff, [](action_entry&)
+			{
+				show_dynamics_processor_window(g_parent);
+			});
+
 //#ifdef MODALWINDOWSWORKPROPERLY
 			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
 			{

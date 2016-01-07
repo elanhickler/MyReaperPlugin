@@ -105,6 +105,7 @@ protected:
 	MRPWindow* m_parent = nullptr;
 	int m_control_id = 0;
 	std::string m_object_name;
+	bool m_is_enabled = true;
 };
 
 class WinButton : public WinControl

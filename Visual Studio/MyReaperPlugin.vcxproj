@@ -36,6 +36,7 @@
     <ClCompile Include="..\source\reaper_function_helper.cpp" />
     <ClCompile Include="..\source\reascriptgui.cpp" />
     <ClCompile Include="..\source\utilfuncs.cpp" />
+    <ClCompile Include="..\source\xendynamicprocessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\lice_control.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\header\reaper_function_helper.h" />
     <ClInclude Include="..\header\reascriptgui.h" />
     <ClInclude Include="..\header\utilfuncs.h" />
+    <ClInclude Include="..\header\xendynamicsprocessor.h" />
     <ClInclude Include="..\library\reaper_plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper_plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />

@@ -725,6 +725,8 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			envbreakpoint& pt = m_env->get_point(m_segment_to_adjust.second);
 			double newp1 = bound_value(0.0, m_segment_p1_at_mouse_press + xdelta*0.005, 1.0);
 			pt.set_param1(newp1);
+			if (m_notify_on_point_move == true && GenericNotifyCallback)
+				GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			repaint();
 			return;
 		}
