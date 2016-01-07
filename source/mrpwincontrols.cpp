@@ -44,7 +44,7 @@ WinControl::WinControl(MRPWindow* parent)
 	++g_leak_counter;
 	if (g_defaultwincontrolfont == NULL)
 	{
-		g_defaultwincontrolfont = CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		g_defaultwincontrolfont = CreateFont(14, 0, 0, 0, FW_LIGHT, FALSE, FALSE, FALSE,
 			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial");
 	}
 

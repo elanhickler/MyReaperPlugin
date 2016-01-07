@@ -75,6 +75,7 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 				src->GetSamples(&transfer);
 				auto data = analyze_audio_volume(1024, src->GetNumChannels(), buf.data(), numframes);
 				m_analysiscontrol1->setAnalysisData(data);
+				do_dynamics_transform_visualization();
 			}
 		}
 	};
@@ -88,8 +89,8 @@ void DynamicsProcessorWindow::resized()
 	m_analysiscontrol1->setBounds({ 0, 25, w/2-envw/2, h-25 });
 	m_analysiscontrol2->setBounds({ w/2+envw/2, 25, w / 2 - envw / 2, h - 25 });
 	m_envelopecontrol1->setBounds({ w/2-envw/2+5,25,envw-10,envw });
-	m_importbut->setBounds({ 5,2,70,23 });
-	m_renderbut->setBounds({ 80,2,70,23 });
+	m_importbut->setBounds({ 5,2,70,20 });
+	m_renderbut->setBounds({ 80,2,70,20 });
 }
 
 void DynamicsProcessorWindow::do_dynamics_transform_visualization()

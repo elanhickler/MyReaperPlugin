@@ -37,20 +37,24 @@ inline volume_analysis_data analyze_audio_volume(int windowsize,
 	{
 		double maxsample = 0.0;
 		int peakpos = 0;
-		for (int i = 0; i < windowsize*numchannels; ++i)
+		for (int i = 0; i < windowsize; ++i)
 		{
-			int64_t index = (counter*numchannels) + i;
-			if (index >= numframes*numchannels)
-				break;
-			double abs_sample = fabs(buffer[index]);
-			if (abs_sample > maxsample)
+			for (int j = 0; j < numchannels; ++j)
 			{
-				maxsample = abs_sample;
-				peakpos = i / numchannels;
+				int64_t index = (counter*numchannels) + j;
+				if (index >= numframes*numchannels)
+					break;
+				double abs_sample = fabs(buffer[index]);
+				if (abs_sample > maxsample)
+				{
+					maxsample = abs_sample;
+					peakpos = i;
+				}
 			}
+			++counter;
 		}
 		result.m_datapoints.emplace_back(counter, maxsample, peakpos);
-		counter += windowsize;
+		
 	}
 	return result;
 }
