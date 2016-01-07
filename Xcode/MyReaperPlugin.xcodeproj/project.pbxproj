@@ -38,6 +38,8 @@
 		C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C01C28F59900C60DC9 /* lice_control.cpp */; };
 		C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */; };
 		C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C574201C1F87D900A1CE31 /* lice_control.h */; };
+		C4C6FAAB1C3F19C300269A5A /* xendynamicprocessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4C6FAAA1C3F19C300269A5A /* xendynamicprocessor.cpp */; };
+		C4C6FAAD1C3F19D100269A5A /* xendynamicsprocessor.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C6FAAC1C3F19D100269A5A /* xendynamicsprocessor.h */; };
 		C4C79FAD1C2EA84300D83955 /* mrpwincontrols.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */; };
 		C4D434BA1C1A41E3005DFFD3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B81C1A41E3005DFFD3 /* Carbon.framework */; };
 		C4D434BB1C1A41E3005DFFD3 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */; };
@@ -82,6 +84,8 @@
 		C4A793C01C28F59900C60DC9 /* lice_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_control.cpp; path = ../source/lice_control.cpp; sourceTree = "<group>"; };
 		C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mylicecontrols.cpp; path = ../source/mylicecontrols.cpp; sourceTree = "<group>"; };
 		C4C574201C1F87D900A1CE31 /* lice_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lice_control.h; path = ../header/lice_control.h; sourceTree = "<group>"; };
+		C4C6FAAA1C3F19C300269A5A /* xendynamicprocessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xendynamicprocessor.cpp; path = ../source/xendynamicprocessor.cpp; sourceTree = "<group>"; };
+		C4C6FAAC1C3F19D100269A5A /* xendynamicsprocessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xendynamicsprocessor.h; path = ../header/xendynamicsprocessor.h; sourceTree = "<group>"; };
 		C4C79FAC1C2EA84300D83955 /* mrpwincontrols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrpwincontrols.h; path = ../header/mrpwincontrols.h; sourceTree = "<group>"; };
 		C4D434B81C1A41E3005DFFD3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		C4D434B91C1A41E3005DFFD3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -148,6 +152,7 @@
 				C464FFCA1C2E1E910023C734 /* mrp_pcm_source.h */,
 				C42AC6CE1C274B6A00FAE97E /* reascriptgui.h */,
 				E3EAC67F1C1C99E500F619AA /* MyFirstClass.hpp */,
+				C4C6FAAC1C3F19D100269A5A /* xendynamicsprocessor.h */,
 			);
 			name = header;
 			sourceTree = "<group>";
@@ -159,6 +164,7 @@
 				C4DED3BB1C20EB2B00275B4A /* reaper_action_helper.cpp */,
 				C4A793C01C28F59900C60DC9 /* lice_control.cpp */,
 				C464FFCC1C2E1E9F0023C734 /* mrp_pcm_source.cpp */,
+				C4C6FAAA1C3F19C300269A5A /* xendynamicprocessor.cpp */,
 				C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */,
 				C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */,
 				C43CE9AC1C2CDB5500315BC9 /* mrpexamplewindows.cpp */,
@@ -238,6 +244,7 @@
 				C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */,
 				E3EAC6801C1C99E500F619AA /* MyFirstClass.hpp in Headers */,
 				C40699501C39B34300E445F7 /* reaper_plugin_functions.h in Headers */,
+				C4C6FAAD1C3F19D100269A5A /* xendynamicsprocessor.h in Headers */,
 				C43CE9AB1C2CDB4B00315BC9 /* mrpexamplewindows.h in Headers */,
 				C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
@@ -309,6 +316,7 @@
 				C464FFCD1C2E1E9F0023C734 /* mrp_pcm_source.cpp in Sources */,
 				C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
+				C4C6FAAB1C3F19C300269A5A /* xendynamicprocessor.cpp in Sources */,
 				C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */,
 				C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */,
 				C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */,
