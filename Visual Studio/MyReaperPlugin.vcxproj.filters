@@ -100,6 +100,9 @@
     <ClInclude Include="..\header\xendynamicsprocessor.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="..\library\picojson\picojson.h">
+      <Filter>library\picojson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">
@@ -119,6 +122,9 @@
     </Filter>
     <Filter Include="library\WDL\Lice">
       <UniqueIdentifier>{da8ecdf5-15b1-42e5-a37f-e1e9631b023a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\picojson">
+      <UniqueIdentifier>{dd1ccf13-4657-4f82-bb35-fb8c277f45d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

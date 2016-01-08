@@ -1,5 +1,6 @@
 #include "xendynamicsprocessor.h"
 #include "WDL/WDL/db2val.h"
+#include "picojson/picojson.h"
 
 VolumeAnalysisControl::VolumeAnalysisControl(MRPWindow* parent) : LiceControl(parent)
 {

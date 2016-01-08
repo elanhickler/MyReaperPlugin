@@ -51,6 +51,7 @@
     <ClInclude Include="..\header\reascriptgui.h" />
     <ClInclude Include="..\header\utilfuncs.h" />
     <ClInclude Include="..\header\xendynamicsprocessor.h" />
+    <ClInclude Include="..\library\picojson\picojson.h" />
     <ClInclude Include="..\library\reaper_plugin\reaper_plugin.h" />
     <ClInclude Include="..\library\reaper_plugin\reaper_plugin_functions.h" />
     <ClInclude Include="..\main.hpp" />
