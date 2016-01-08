@@ -1,6 +1,7 @@
 #include "xendynamicsprocessor.h"
 #include "WDL/WDL/db2val.h"
 #include "picojson/picojson.h"
+#include <fstream>
 
 VolumeAnalysisControl::VolumeAnalysisControl(MRPWindow* parent) : LiceControl(parent)
 {
@@ -282,207 +283,76 @@ void DynamicsProcessorWindow::import_item()
 	}
 }
 
-using ByteVector = std::vector<unsigned char>;
-
-template<typename T>
-inline void append_primitive_to_bytevector(ByteVector& bv, T x)
+picojson::object to_json(breakpoint_envelope& env)
 {
-	T temp = x;
-	unsigned char* ptr = (unsigned char*)&temp;
-	for (size_t i = 0; i < sizeof(x); ++i)
-		bv.push_back(ptr[i]);
-}
-
-inline ByteVector& operator << (ByteVector& bv, int64_t x)
-{
-	append_primitive_to_bytevector(bv, x);
-	return bv;
-}
-
-inline ByteVector& operator << (ByteVector& bv, int x)
-{
-	append_primitive_to_bytevector(bv, x);
-	return bv;
-}
-
-inline ByteVector& operator << (ByteVector& bv, double x)
-{
-	append_primitive_to_bytevector(bv, x);
-	return bv;
-}
-
-inline ByteVector& operator << (ByteVector& bv, envbreakpoint x)
-{
-	append_primitive_to_bytevector(bv, x.get_x());
-	append_primitive_to_bytevector(bv, x.get_y());
-	append_primitive_to_bytevector(bv, x.get_shape());
-	append_primitive_to_bytevector(bv, x.get_param1());
-	append_primitive_to_bytevector(bv, x.get_param2());
-	append_primitive_to_bytevector(bv, x.get_status());
-	return bv;
-}
-
-template<typename T>
-inline bool extract_primitive_from_bytevector(const ByteVector& bv, int& pos, T& x)
-{
-	if (pos >= bv.size())
-		return false;
-	T* ptr = (T*)&bv[pos];
-	x = *ptr;
-	pos += sizeof(T);
-	return true;
-}
-
-template<typename T>
-inline bool extract_primitives_from_bytevector_helper(const ByteVector& bv, int& pos, T& x)
-{
-	return extract_primitive_from_bytevector(bv, pos, x);
-}
-
-template<typename T, typename... Ts>
-inline bool extract_primitives_from_bytevector_helper(const ByteVector& bv, int& pos, T& x, Ts&... xs)
-{
-	extract_primitive_from_bytevector(bv, pos, x);
-	extract_primitives_from_bytevector_helper(bv, pos, xs...);
-	return true;
-}
-
-template<typename... Ts>
-inline bool extract_primitives_from_bytevector(const ByteVector& bv, int& pos, Ts&... xs)
-{
-	if (pos >= bv.size())
-		return false;
-	extract_primitives_from_bytevector_helper(bv, pos, xs...);
-	return true;
-}
-
-inline bool extract_envelope_point_from_bytevector(const ByteVector& bv, int& pos, envbreakpoint& pt)
-{
-	if (pos >= bv.size())
-		return false;
-	double ptx, pty, p1, p2 = 0.0;
-	int status = 0;
-	envbreakpoint::PointShape shape = envbreakpoint::Linear;
-	extract_primitives_from_bytevector(bv, pos, ptx,pty,shape,p1,p2,status);
-	pt.set_x(ptx);
-	pt.set_y(pty);
-	pt.set_shape(shape);
-	pt.set_param1(p1);
-	pt.set_param2(p2);
-	pt.set_status(status);
-	return true;
-}
-
-static int pc_base64decode(const char *src, unsigned char *dest, int destsize)
-{
-	int accum = 0, nbits = 0, wpos = 0;
-	while (*src && wpos < destsize)
+	picojson::object result;
+	picojson::array ar;
+	for (int i = 0; i<env.get_num_points(); ++i)
 	{
-		int x = 0;
-		char c = *src++;
-		if (c >= 'A' && c <= 'Z') x = c - 'A';
-		else if (c >= 'a' && c <= 'z') x = c - 'a' + 26;
-		else if (c >= '0' && c <= '9') x = c - '0' + 52;
-		else if (c == '+') x = 62;
-		else if (c == '/') x = 63;
-		else break;
+		const envbreakpoint& pt = env.get_point(i);
+		picojson::object nodeob;
+		nodeob["x"] = picojson::value(pt.get_x());
+		nodeob["y"] = picojson::value(pt.get_y());
+		nodeob["sh"] = picojson::value((double)pt.get_shape());
+		nodeob["p1"] = picojson::value(pt.get_param1());
+		nodeob["p2"] = picojson::value(pt.get_param2());
+		ar.push_back(picojson::value(nodeob));
+	}
+	result["nodes"] = picojson::value(ar);
+	return result;
+}
 
-		accum = (accum << 6) | x;
-		nbits += 6;
-
-		while (nbits >= 8 && wpos < destsize)
+void init_from_json(breakpoint_envelope& env, picojson::object& ob)
+{
+	if (ob.size() == 0)
+		return;
+	picojson::array ar = ob["nodes"].get<picojson::array>();
+	if (ar.size()>0)
+	{
+		env.remove_all_points();
+		for (int i = 0; i<ar.size(); i++)
 		{
-			nbits -= 8;
-			dest[wpos++] = (char)((accum >> nbits) & 0xff);
+			picojson::object node_ob = ar[i].get<picojson::object>();
+			double x = node_ob["x"].get<double>();
+			double y = node_ob["y"].get<double>();
+			double p1 = node_ob["p1"].get<double>();
+			double p2 = node_ob["p2"].get<double>();
+			int shape = node_ob["sh"].get<double>();
+			env.add_point({ x,y,(envbreakpoint::PointShape)shape,p1,p2 }, false);
 		}
+		env.sort_points();
 	}
-	return wpos;
+
 }
-
-
-static void pc_base64encode(const unsigned char *in, char *out, int len)
-{
-	char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-	int shift = 0;
-	int accum = 0;
-
-	while (len>0)
-	{
-		len--;
-		accum <<= 8;
-		shift += 8;
-		accum |= *in++;
-		while (shift >= 6)
-		{
-			shift -= 6;
-			*out++ = alphabet[(accum >> shift) & 0x3F];
-		}
-	}
-	if (shift == 4)
-	{
-		*out++ = alphabet[(accum & 0xF) << 2];
-		*out++ = '=';
-	}
-	else if (shift == 2)
-	{
-		*out++ = alphabet[(accum & 0x3) << 4];
-		*out++ = '=';
-		*out++ = '=';
-	}
-
-	*out++ = 0;
-}
-
 
 void DynamicsProcessorWindow::save_state()
 {
-	ByteVector state;
-	int version = 0;
-	state << version;
-	state << m_transformenvelope1->get_num_points();
-	for (int i = 0; i < m_transformenvelope1->get_num_points(); ++i)
-	{
-		const envbreakpoint& pt = m_transformenvelope1->get_point(i);
-		state << pt;
-	}
-	std::vector<char> output(4*(state.size() / 3)+16);
-	pc_base64encode(state.data(), output.data(), state.size());
-	SetExtState("xenakios_dynamics_processor", "state_v0", output.data(), true);
+	picojson::object top_object;
+	top_object["plugin_version"] = picojson::value("1");
+	top_object["dyn_envelope"] = picojson::value(to_json(*m_transformenvelope1));
+	top_object["analysiswindowsize"] = picojson::value(m_window_sizes[m_windowsizecombo1->getSelectedIndex()]);
+	picojson::value top_value(top_object);
+	std::string fn = std::string(GetResourcePath()) + "/xenakios_dynamics_processor.json";
+	std::ofstream file(fn);
+	file << top_value.serialize(true);
+
 }
 
 void DynamicsProcessorWindow::load_state()
 {
-	const char* b64state = GetExtState("xenakios_dynamics_processor", "state_v0");
-	if (b64state != nullptr)
+	std::string fn = std::string(GetResourcePath()) + "/xenakios_dynamics_processor.json";
+	std::ifstream file(fn);
+	if (file.is_open() == false)
 	{
-		int srclen = strlen(b64state);
-		if (srclen > 0)
-		{
-			ByteVector decoded(srclen);
-			pc_base64decode(b64state, decoded.data(), srclen);
-			int streampos = 0;
-			int version = 0;
-			int numpoints = 0;
-			extract_primitives_from_bytevector(decoded, streampos, version, numpoints);
-			readbg() << "extracted version number " << version << "\n";
-			readbg() << "extracted number of env points " << numpoints << "\n";
-			if (numpoints > 0 && numpoints<1000000)
-			{
-				m_transformenvelope1->remove_all_points();
-				for (int i = 0; i < numpoints; ++i)
-				{
-					envbreakpoint pt;
-					extract_envelope_point_from_bytevector(decoded, streampos, pt);
-					m_transformenvelope1->add_point(pt, false);
-				}
-				m_transformenvelope1->sort_points();
-				m_envelopecontrol1->repaint();
-			}
-		}
-		else readbg() << "base64 string zero len\n";
+		readbg() << "could not open settings file\n";
+		return;
 	}
-	else readbg() << "state null\n";
-	
+	picojson::value top_object_value;
+	picojson::parse(top_object_value, file);
+	picojson::object top_object = top_object_value.get<picojson::object>();
+	readbg() << "parsed window size " << top_object["analysiswindowsize"].get<double>() << "\n";
+	init_from_json(*m_transformenvelope1, top_object["dyn_envelope"].get<picojson::object>());
+	m_envelopecontrol1->repaint();
 }
 
 DynamicsProcessorWindow* g_dynprocwindow = nullptr;
