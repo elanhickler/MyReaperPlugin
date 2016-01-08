@@ -725,6 +725,7 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			envbreakpoint& pt = m_env->get_point(m_segment_to_adjust.second);
 			double newp1 = bound_value(0.0, m_segment_p1_at_mouse_press + xdelta*0.005, 1.0);
 			pt.set_param1(newp1);
+			m_point_was_moved = true;
 			if (m_notify_on_point_move == true && GenericNotifyCallback)
 				GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			repaint();
@@ -751,7 +752,6 @@ void EnvelopeControl::mouseMoved(const MouseEvent& ev)
 			if (m_notify_on_point_move == true && GenericNotifyCallback) 
 				GenericNotifyCallback(GenericNotifications::ObjectMoved);
 			m_point_was_moved = true;
-			//m_node_that_was_dragged = m_node_to_drag;
 			repaint();
 			return;
 
@@ -781,7 +781,8 @@ void EnvelopeControl::mouseReleased(const MouseEvent& ev)
 	if (m_point_was_moved == true)
 	{
 		m_point_was_moved = false;
-		if (GenericNotifyCallback) GenericNotifyCallback(GenericNotifications::AfterManipulation);
+		if (GenericNotifyCallback) 
+			GenericNotifyCallback(GenericNotifications::AfterManipulation);
 	}
 }
 

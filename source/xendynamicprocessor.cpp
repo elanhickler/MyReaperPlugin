@@ -49,9 +49,11 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	m_transformenvelope1->add_point({ 1.0,1.0, envbreakpoint::Power }, true);
 	m_envelopecontrol1 = std::make_shared<EnvelopeControl>(this);
 	m_envelopecontrol1->add_envelope(m_transformenvelope1);
-	m_envelopecontrol1->GenericNotifyCallback = [this](GenericNotifications)
+	m_envelopecontrol1->GenericNotifyCallback = [this](GenericNotifications reason)
 	{
 		do_dynamics_transform_visualization();
+		if (reason != GenericNotifications::ObjectMoved)
+			save_state();
 	};
 	add_control(m_envelopecontrol1);
 	m_importbut->GenericNotifyCallback = [this](GenericNotifications)
@@ -79,6 +81,7 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 			}
 		}
 	};
+	load_state();
 }
 
 void DynamicsProcessorWindow::resized()
@@ -249,6 +252,194 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 			//readbg() << "render finished\n";
 		}
 	}
+}
+
+using ByteVector = std::vector<unsigned char>;
+
+template<typename T>
+inline void append_primitive_to_bytevector(ByteVector& bv, T x)
+{
+	T temp = x;
+	unsigned char* ptr = (unsigned char*)&temp;
+	for (size_t i = 0; i < sizeof(x); ++i)
+		bv.push_back(ptr[i]);
+}
+
+inline ByteVector& operator << (ByteVector& bv, int64_t x)
+{
+	append_primitive_to_bytevector(bv, x);
+	return bv;
+}
+
+inline ByteVector& operator << (ByteVector& bv, int x)
+{
+	append_primitive_to_bytevector(bv, x);
+	return bv;
+}
+
+inline ByteVector& operator << (ByteVector& bv, double x)
+{
+	append_primitive_to_bytevector(bv, x);
+	return bv;
+}
+
+inline ByteVector& operator << (ByteVector& bv, envbreakpoint x)
+{
+	append_primitive_to_bytevector(bv, x.get_x());
+	append_primitive_to_bytevector(bv, x.get_y());
+	append_primitive_to_bytevector(bv, x.get_shape());
+	append_primitive_to_bytevector(bv, x.get_param1());
+	append_primitive_to_bytevector(bv, x.get_param2());
+	append_primitive_to_bytevector(bv, x.get_status());
+	return bv;
+}
+
+template<typename T>
+inline bool extract_primitive_from_bytevector(const ByteVector& bv, int& pos, T& x)
+{
+	if (pos >= bv.size())
+		return false;
+	T* ptr = (T*)&bv[pos];
+	x = *ptr;
+	pos += sizeof(T);
+	return true;
+}
+
+inline bool extract_envelope_point_from_bytevector(const ByteVector& bv, int& pos, envbreakpoint& pt)
+{
+	if (pos >= bv.size())
+		return false;
+	double ptx = 0.0;
+	extract_primitive_from_bytevector(bv, pos, ptx);
+	double pty = 0.0;
+	extract_primitive_from_bytevector(bv, pos, pty);
+	envbreakpoint::PointShape shape = envbreakpoint::Linear;
+	extract_primitive_from_bytevector(bv, pos, shape);
+	double p1 = 0.0;
+	extract_primitive_from_bytevector(bv, pos, p1);
+	double p2 = 0.0;
+	extract_primitive_from_bytevector(bv, pos, p2);
+	int status = 0;
+	extract_primitive_from_bytevector(bv, pos, status);
+	pt.set_x(ptx);
+	pt.set_y(pty);
+	pt.set_shape(shape);
+	pt.set_param1(p1);
+	pt.set_param1(p2);
+	pt.set_status(status);
+}
+
+static int pc_base64decode(const char *src, unsigned char *dest, int destsize)
+{
+	int accum = 0, nbits = 0, wpos = 0;
+	while (*src && wpos < destsize)
+	{
+		int x = 0;
+		char c = *src++;
+		if (c >= 'A' && c <= 'Z') x = c - 'A';
+		else if (c >= 'a' && c <= 'z') x = c - 'a' + 26;
+		else if (c >= '0' && c <= '9') x = c - '0' + 52;
+		else if (c == '+') x = 62;
+		else if (c == '/') x = 63;
+		else break;
+
+		accum = (accum << 6) | x;
+		nbits += 6;
+
+		while (nbits >= 8 && wpos < destsize)
+		{
+			nbits -= 8;
+			dest[wpos++] = (char)((accum >> nbits) & 0xff);
+		}
+	}
+	return wpos;
+}
+
+
+static void pc_base64encode(const unsigned char *in, char *out, int len)
+{
+	char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	int shift = 0;
+	int accum = 0;
+
+	while (len>0)
+	{
+		len--;
+		accum <<= 8;
+		shift += 8;
+		accum |= *in++;
+		while (shift >= 6)
+		{
+			shift -= 6;
+			*out++ = alphabet[(accum >> shift) & 0x3F];
+		}
+	}
+	if (shift == 4)
+	{
+		*out++ = alphabet[(accum & 0xF) << 2];
+		*out++ = '=';
+	}
+	else if (shift == 2)
+	{
+		*out++ = alphabet[(accum & 0x3) << 4];
+		*out++ = '=';
+		*out++ = '=';
+	}
+
+	*out++ = 0;
+}
+
+
+void DynamicsProcessorWindow::save_state()
+{
+	ByteVector state;
+	int version = 0;
+	state << version;
+	state << m_transformenvelope1->get_num_points();
+	for (int i = 0; i < m_transformenvelope1->get_num_points(); ++i)
+	{
+		const envbreakpoint& pt = m_transformenvelope1->get_point(i);
+		state << pt;
+	}
+	std::vector<char> output(4*(state.size() / 3)+16);
+	pc_base64encode(state.data(), output.data(), state.size());
+	SetExtState("xenakios_dynamics_processor", "state_v0", output.data(), true);
+}
+
+void DynamicsProcessorWindow::load_state()
+{
+	const char* b64state = GetExtState("xenakios_dynamics_processor", "state_v0");
+	if (b64state != nullptr)
+	{
+		int srclen = strlen(b64state);
+		if (srclen > 0)
+		{
+			ByteVector decoded(srclen);
+			pc_base64decode(b64state, decoded.data(), srclen);
+			int streampos = 0;
+			int version = 0;
+			extract_primitive_from_bytevector(decoded, streampos, version);
+			int numpoints = 0;
+			extract_primitive_from_bytevector(decoded, streampos, numpoints);
+			readbg() << "extracted version number " << version << "\n";
+			readbg() << "extracted number of env points " << numpoints << "\n";
+			if (numpoints > 0 && numpoints<1000000)
+			{
+				m_transformenvelope1->remove_all_points();
+				for (int i = 0; i < numpoints; ++i)
+				{
+					envbreakpoint pt;
+					extract_envelope_point_from_bytevector(decoded, streampos, pt);
+					m_transformenvelope1->add_point(pt, false);
+				}
+				m_transformenvelope1->sort_points();
+				m_envelopecontrol1->repaint();
+			}
+		}
+		else readbg() << "base64 string zero len\n";
+	}
+	else readbg() << "state null\n";
+	
 }
 
 DynamicsProcessorWindow* g_dynprocwindow = nullptr;

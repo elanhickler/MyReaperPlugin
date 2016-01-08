@@ -24,6 +24,7 @@ public:
 	int64_t m_numframes = 0;
 	int m_sr = 0;
 	int m_windowsize = 0;
+	double m_total_max_peak = 0.0;
 };
 
 inline volume_analysis_data analyze_audio_volume(int windowsize,
@@ -33,6 +34,7 @@ inline volume_analysis_data analyze_audio_volume(int windowsize,
 	result.m_windowsize = windowsize;
 	result.m_numch = numchannels;
 	int64_t counter = 0;
+	double total_max_peak = 0.0;
 	while (counter < numframes)
 	{
 		double maxsample = 0.0;
@@ -50,12 +52,14 @@ inline volume_analysis_data analyze_audio_volume(int windowsize,
 					maxsample = abs_sample;
 					peakpos = i;
 				}
+				total_max_peak = std::max(total_max_peak, abs_sample);
 			}
 			++counter;
 		}
 		result.m_datapoints.emplace_back(counter, maxsample, peakpos);
 		
 	}
+	result.m_total_max_peak = total_max_peak;
 	return result;
 }
 
@@ -86,6 +90,8 @@ private:
 	void do_dynamics_transform_visualization();
 	void render_dynamics_transform();
 	bool m_envelope_is_db = false;
+	void save_state();
+	void load_state();
 };
 
 void show_dynamics_processor_window(HWND parent);
