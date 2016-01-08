@@ -1,4 +1,5 @@
 #include "mrp_pcm_source.h"
+#include "utilfuncs.h"
 
 PCM_source * MRP_PCMSource::Duplicate()
 {
@@ -39,11 +40,6 @@ double MRP_PCMSource::GetLength()
 int MRP_PCMSource::PropertiesWindow(HWND hwndParent)
 {
 	return 0;
-}
-
-static inline bool fuzzy_compare(double p1, double p2)
-{
-	return (fabs(p1 - p2) * 1000000000000. <= std::min(fabs(p1), fabs(p2)));
 }
 
 void MRP_PCMSource::GetSamples(PCM_source_transfer_t * block)

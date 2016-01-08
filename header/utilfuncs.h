@@ -265,6 +265,11 @@ private:
 	ReaProject* m_proj = nullptr;
 };
 
+inline bool fuzzy_compare(double p1, double p2)
+{
+	return (fabs(p1 - p2) * 1000000000000. <= std::min(fabs(p1), fabs(p2)));
+}
+
 namespace MRP
 {
 	enum class Anchor

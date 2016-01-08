@@ -76,6 +76,7 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 		if (index >= 0)
 		{
 			import_item();
+			save_state();
 		}
 	};
 	add_control(m_windowsizecombo1);
@@ -350,7 +351,15 @@ void DynamicsProcessorWindow::load_state()
 	picojson::value top_object_value;
 	picojson::parse(top_object_value, file);
 	picojson::object top_object = top_object_value.get<picojson::object>();
-	readbg() << "parsed window size " << top_object["analysiswindowsize"].get<double>() << "\n";
+	double wsize = top_object["analysiswindowsize"].get<double>();
+	for (int i = 0; i < m_window_sizes.size(); ++i)
+	{
+		if (fabs(wsize-m_window_sizes[i])<0.001)
+		{
+			m_windowsizecombo1->setSelectedIndex(i);
+			break;
+		}
+	}
 	init_from_json(*m_transformenvelope1, top_object["dyn_envelope"].get<picojson::object>());
 	m_envelopecontrol1->repaint();
 }
