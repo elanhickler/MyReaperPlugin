@@ -87,8 +87,12 @@ private:
 	std::shared_ptr<WinButton> m_importbut;
 	std::shared_ptr<WinButton> m_renderbut;
 	std::shared_ptr<breakpoint_envelope> m_transformenvelope1;
+	std::shared_ptr<WinLabel> m_windowsizelabel1;
+	std::shared_ptr<WinComboBox> m_windowsizecombo1;
+	std::vector<double> m_window_sizes;
 	void do_dynamics_transform_visualization();
 	void render_dynamics_transform();
+	void import_item();
 	bool m_envelope_is_db = false;
 	void save_state();
 	void load_state();

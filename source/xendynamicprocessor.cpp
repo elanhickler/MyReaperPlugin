@@ -58,29 +58,27 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	add_control(m_envelopecontrol1);
 	m_importbut->GenericNotifyCallback = [this](GenericNotifications)
 	{
-		if (CountSelectedMediaItems(nullptr) == 0)
-			return;
-		MediaItem* item = GetSelectedMediaItem(nullptr, 0);
-		MediaItem_Take* take = GetActiveTake(item);
-		if (take != nullptr)
+		import_item();
+	};
+	m_window_sizes = { 1.0,2.0,5.0,10.0,20.0,50.0,100.0,200.0, 500.0 };
+	m_windowsizecombo1 = std::make_shared<WinComboBox>(this);
+	for (int i = 0; i < m_window_sizes.size();++i)
+	{
+		char buf[20];
+		sprintf(buf, "%.1f ms",m_window_sizes[i]);
+		m_windowsizecombo1->addItem(buf, i);
+	}
+	m_windowsizecombo1->setSelectedIndex(5);
+	m_windowsizecombo1->SelectedChangedCallback = [this](int index)
+	{
+		if (index >= 0)
 		{
-			PCM_source* src = GetMediaItemTake_Source(take);
-			if (src != nullptr)
-			{
-				int64_t numframes = src->GetLength()*src->GetSampleRate();
-				std::vector<double> buf(numframes*src->GetNumChannels());
-				PCM_source_transfer_t transfer = { 0 };
-				transfer.length = numframes;
-				transfer.nch = src->GetNumChannels();
-				transfer.samplerate = src->GetSampleRate();
-				transfer.samples = buf.data();
-				src->GetSamples(&transfer);
-				auto data = analyze_audio_volume(1024, src->GetNumChannels(), buf.data(), numframes);
-				m_analysiscontrol1->setAnalysisData(data);
-				do_dynamics_transform_visualization();
-			}
+			import_item();
 		}
 	};
+	add_control(m_windowsizecombo1);
+	m_windowsizelabel1 = std::make_shared<WinLabel>(this, "Window size");
+	add_control(m_windowsizelabel1);
 	load_state();
 }
 
@@ -94,6 +92,8 @@ void DynamicsProcessorWindow::resized()
 	m_envelopecontrol1->setBounds({ w/2-envw/2+5,25,envw-10,envw });
 	m_importbut->setBounds({ 5,2,70,20 });
 	m_renderbut->setBounds({ 80,2,70,20 });
+	m_windowsizelabel1->setBounds({ 155,5,100,20 });
+	m_windowsizecombo1->setBounds({ 260,2,100,20 });
 }
 
 void DynamicsProcessorWindow::do_dynamics_transform_visualization()
@@ -254,6 +254,33 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 	}
 }
 
+void DynamicsProcessorWindow::import_item()
+{
+	if (CountSelectedMediaItems(nullptr) == 0)
+		return;
+	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
+	MediaItem_Take* take = GetActiveTake(item);
+	if (take != nullptr)
+	{
+		PCM_source* src = GetMediaItemTake_Source(take);
+		if (src != nullptr)
+		{
+			int64_t numframes = src->GetLength()*src->GetSampleRate();
+			std::vector<double> buf(numframes*src->GetNumChannels());
+			PCM_source_transfer_t transfer = { 0 };
+			transfer.length = numframes;
+			transfer.nch = src->GetNumChannels();
+			transfer.samplerate = src->GetSampleRate();
+			transfer.samples = buf.data();
+			src->GetSamples(&transfer);
+			double windowlen = m_window_sizes[m_windowsizecombo1->getSelectedIndex()]/1000.0;
+			auto data = analyze_audio_volume(windowlen*src->GetSampleRate(), src->GetNumChannels(), buf.data(), numframes);
+			m_analysiscontrol1->setAnalysisData(data);
+			do_dynamics_transform_visualization();
+		}
+	}
+}
+
 using ByteVector = std::vector<unsigned char>;
 
 template<typename T>
@@ -305,28 +332,44 @@ inline bool extract_primitive_from_bytevector(const ByteVector& bv, int& pos, T&
 	return true;
 }
 
+template<typename T>
+inline bool extract_primitives_from_bytevector_helper(const ByteVector& bv, int& pos, T& x)
+{
+	return extract_primitive_from_bytevector(bv, pos, x);
+}
+
+template<typename T, typename... Ts>
+inline bool extract_primitives_from_bytevector_helper(const ByteVector& bv, int& pos, T& x, Ts&... xs)
+{
+	extract_primitive_from_bytevector(bv, pos, x);
+	extract_primitives_from_bytevector_helper(bv, pos, xs...);
+	return true;
+}
+
+template<typename... Ts>
+inline bool extract_primitives_from_bytevector(const ByteVector& bv, int& pos, Ts&... xs)
+{
+	if (pos >= bv.size())
+		return false;
+	extract_primitives_from_bytevector_helper(bv, pos, xs...);
+	return true;
+}
+
 inline bool extract_envelope_point_from_bytevector(const ByteVector& bv, int& pos, envbreakpoint& pt)
 {
 	if (pos >= bv.size())
 		return false;
-	double ptx = 0.0;
-	extract_primitive_from_bytevector(bv, pos, ptx);
-	double pty = 0.0;
-	extract_primitive_from_bytevector(bv, pos, pty);
-	envbreakpoint::PointShape shape = envbreakpoint::Linear;
-	extract_primitive_from_bytevector(bv, pos, shape);
-	double p1 = 0.0;
-	extract_primitive_from_bytevector(bv, pos, p1);
-	double p2 = 0.0;
-	extract_primitive_from_bytevector(bv, pos, p2);
+	double ptx, pty, p1, p2 = 0.0;
 	int status = 0;
-	extract_primitive_from_bytevector(bv, pos, status);
+	envbreakpoint::PointShape shape = envbreakpoint::Linear;
+	extract_primitives_from_bytevector(bv, pos, ptx,pty,shape,p1,p2,status);
 	pt.set_x(ptx);
 	pt.set_y(pty);
 	pt.set_shape(shape);
 	pt.set_param1(p1);
-	pt.set_param1(p2);
+	pt.set_param2(p2);
 	pt.set_status(status);
+	return true;
 }
 
 static int pc_base64decode(const char *src, unsigned char *dest, int destsize)
@@ -418,9 +461,8 @@ void DynamicsProcessorWindow::load_state()
 			pc_base64decode(b64state, decoded.data(), srclen);
 			int streampos = 0;
 			int version = 0;
-			extract_primitive_from_bytevector(decoded, streampos, version);
 			int numpoints = 0;
-			extract_primitive_from_bytevector(decoded, streampos, numpoints);
+			extract_primitives_from_bytevector(decoded, streampos, version, numpoints);
 			readbg() << "extracted version number " << version << "\n";
 			readbg() << "extracted number of env points " << numpoints << "\n";
 			if (numpoints > 0 && numpoints<1000000)
