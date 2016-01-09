@@ -290,6 +290,11 @@ extern "C"
 				show_dynamics_processor_window(g_parent);
 			});
 
+			add_action("MRP/Xenakios : Test MRPAudioAccessor", "MRP_XEN_TESTMRPAUDIOACC", ToggleOff, [](action_entry&)
+			{
+				test_mrp_audio_accessor();
+			});
+
 //#ifdef MODALWINDOWSWORKPROPERLY
 			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
 			{

@@ -103,6 +103,9 @@
     <ClInclude Include="..\library\picojson\picojson.h">
       <Filter>library\picojson</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\mrp_audioaccessor.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="library">

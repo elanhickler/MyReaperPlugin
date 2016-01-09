@@ -8,3 +8,4 @@
 #include "lice_control.h"
 #include "mrp_pcm_source.h"
 #include "xendynamicsprocessor.h"
+#include "mrp_audioaccessor.h"

@@ -43,6 +43,7 @@
     <ClInclude Include="..\header\mrpexamplewindows.h" />
     <ClInclude Include="..\header\mrpwincontrols.h" />
     <ClInclude Include="..\header\mrpwindows.h" />
+    <ClInclude Include="..\header\mrp_audioaccessor.h" />
     <ClInclude Include="..\header\mrp_pcm_source.h" />
     <ClInclude Include="..\header\MyFirstClass.hpp" />
     <ClInclude Include="..\header\mylicecontrols.h" />

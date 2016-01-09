@@ -110,6 +110,11 @@ public:
 		m_buf.append(std::to_string(x));
 		return *this;
 	}
+	readbg& operator << (int64_t x)
+	{
+		m_buf.append(std::to_string(x));
+		return *this;
+	}
 	readbg& operator << (double x)
 	{
 		char buf[64];
