@@ -412,6 +412,17 @@ private:
 	int64_t m_cur_len = 0;
 };
 
+inline std::string generate_unique_wavfilename()
+{
+	GUID guid;
+	genGuid(&guid);
+	char buf[64];
+	guidToString(&guid,buf);
+	char ppbuf[2048];
+	GetProjectPath(ppbuf,2048);
+	return std::string(ppbuf)+"/"+buf+".wav";
+}
+
 void test_mrp_audio_accessor()
 {
 	if (CountSelectedMediaItems(nullptr) == 0)
@@ -423,14 +434,13 @@ void test_mrp_audio_accessor()
 		if (acc.isLoaded() == true)
 		{
 			readbg() << acc.numberOfChannels() << " " << acc.numberOfFrames() << " " << acc.sampleRate() << "\n";
-			static int counter = 0;
-			std::string fn = std::string("C:/MusicAudio/batchtesti/irptestout_") + std::to_string(counter) + ".wav";
+			std::string fn = generate_unique_wavfilename();
 			auto range = acc.getRange(0, acc.numberOfFrames());
 			
 			//auto reversereverserange = reverse_range(reverserange);
-			auto chansrange = channels_range(range, { 7,0,3 });
+			auto chansrange = channels_range(range, { -1,-1,0,0,-1,-1 });
 			readbg() << "chans range numchans " << chansrange.numberOfChannels() << "\n";
-			//auto reverserange = reverse_range(chansrange);
+			auto reverserange = reverse_range(chansrange);
 			//readbg() << "reverse range numchans " << reverserange.numberOfChannels() << "\n";
 			ConcatenatedAudioRange conc;
 			conc.addRange(acc.getRange(0, 44100));
@@ -439,10 +449,10 @@ void test_mrp_audio_accessor()
 			//auto outputrange = slice_range(reverse_range(channels_range(range, { -1 , 7 , 0 , 3 , -1 })), 1.0,3.0);
 			auto outputrange = channels_range(conc, { -1,-1,0,0 });
 			double bench_t0 = time_precise();
-			save_range_to_file(outputrange, fn);
+			save_range_to_file(reverserange, fn);
 			double bench_t1 = time_precise();
 			double bench_ms = (bench_t1 - bench_t0)*1000.0;
-			++counter;
+			
 			readbg() << "render done in " << bench_ms << " milliseconds\n";
 		}
 		else readbg() << "MRPAudioAccessor failed to load audio to memory\n";

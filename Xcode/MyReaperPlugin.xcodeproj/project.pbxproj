@@ -37,6 +37,7 @@
 		C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */ = {isa = PBXBuildFile; fileRef = C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */; };
 		C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C01C28F59900C60DC9 /* lice_control.cpp */; };
 		C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */; };
+		C4A980F01C41D9E300532AF5 /* mrp_audioaccessor.h in Headers */ = {isa = PBXBuildFile; fileRef = C4A980EF1C41D9E300532AF5 /* mrp_audioaccessor.h */; };
 		C4C574211C1F87D900A1CE31 /* lice_control.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C574201C1F87D900A1CE31 /* lice_control.h */; };
 		C4C6FAAB1C3F19C300269A5A /* xendynamicprocessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4C6FAAA1C3F19C300269A5A /* xendynamicprocessor.cpp */; };
 		C4C6FAAD1C3F19D100269A5A /* xendynamicsprocessor.h in Headers */ = {isa = PBXBuildFile; fileRef = C4C6FAAC1C3F19D100269A5A /* xendynamicsprocessor.h */; };
@@ -83,6 +84,7 @@
 		C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mylicecontrols.h; path = ../header/mylicecontrols.h; sourceTree = "<group>"; };
 		C4A793C01C28F59900C60DC9 /* lice_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lice_control.cpp; path = ../source/lice_control.cpp; sourceTree = "<group>"; };
 		C4A793C21C28F5DE00C60DC9 /* mylicecontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mylicecontrols.cpp; path = ../source/mylicecontrols.cpp; sourceTree = "<group>"; };
+		C4A980EF1C41D9E300532AF5 /* mrp_audioaccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mrp_audioaccessor.h; path = ../header/mrp_audioaccessor.h; sourceTree = "<group>"; };
 		C4C574201C1F87D900A1CE31 /* lice_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lice_control.h; path = ../header/lice_control.h; sourceTree = "<group>"; };
 		C4C6FAAA1C3F19C300269A5A /* xendynamicprocessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xendynamicprocessor.cpp; path = ../source/xendynamicprocessor.cpp; sourceTree = "<group>"; };
 		C4C6FAAC1C3F19D100269A5A /* xendynamicsprocessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xendynamicsprocessor.h; path = ../header/xendynamicsprocessor.h; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 		E3EAC6761C1C989600F619AA /* header */ = {
 			isa = PBXGroup;
 			children = (
+				C4A980EF1C41D9E300532AF5 /* mrp_audioaccessor.h */,
 				C442007F1C2139C100CFE1B2 /* reaper_function_helper.h */,
 				C4DED3BA1C20EA9000275B4A /* reaper_action_helper.h */,
 				C4C574201C1F87D900A1CE31 /* lice_control.h */,
@@ -247,6 +250,7 @@
 				C4C6FAAD1C3F19D100269A5A /* xendynamicsprocessor.h in Headers */,
 				C43CE9AB1C2CDB4B00315BC9 /* mrpexamplewindows.h in Headers */,
 				C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */,
+				C4A980F01C41D9E300532AF5 /* mrp_audioaccessor.h in Headers */,
 				E3E1DB111C18C67100D648F5 /* main.hpp in Headers */,
 				C477BA3E1C2AC74500113894 /* mrpwindows.h in Headers */,
 				C44200801C2139C100CFE1B2 /* reaper_function_helper.h in Headers */,
