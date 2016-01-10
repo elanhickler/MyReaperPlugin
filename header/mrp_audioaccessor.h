@@ -115,12 +115,12 @@ public:
 			int64_t lenframes = m_orig_sr * len;
 			m_audio_buffer.resize(lenframes*m_orig_nch);
 			if (GetAudioAccessorSamples(m_audio_accessor,
-				m_orig_sr, m_orig_nch, 0.0, lenframes, m_audio_buffer.data()) == 1)
+				m_orig_sr, m_orig_nch, t0, lenframes, m_audio_buffer.data()) == 1)
 			{
 				m_num_frames_avail = lenframes;
 				m_audio_loaded = true;
 			}
-		} 
+		}
 		else if (m_sourcetype == ST_PCMSource && m_source != nullptr)
 		{
 			int64_t lenframes = m_source->GetSampleRate() * m_source->GetLength();
@@ -194,7 +194,18 @@ private:
 	}
 	void init_from_track(MediaTrack* track)
 	{
-		
+		if (track==nullptr)
+			return;
+		m_orig_sr = 44100.0; // should recall how to get the project samplerate...
+		m_orig_nch = 2; // hack too for now...
+		m_track = track;
+		AudioAccessor* acc = CreateTrackAudioAccessor(track);
+		if (acc != nullptr)
+		{
+			m_audio_accessor = acc;
+			m_valid = true;
+			m_sourcetype = ST_Track;
+		}
 	}
 	void init_from_pcm_source(PCM_source* source, bool clonesource)
 	{
@@ -425,9 +436,10 @@ inline std::string generate_unique_wavfilename()
 
 void test_mrp_audio_accessor()
 {
-	if (CountSelectedMediaItems(nullptr) == 0)
-		return;
-	MRPAudioAccessor acc(GetSelectedMediaItem(nullptr, 0));
+	//if (CountSelectedMediaItems(nullptr) == 0)
+	//	return;
+	//MRPAudioAccessor acc(GetSelectedMediaItem(nullptr, 0));
+	MRPAudioAccessor acc(GetTrack(nullptr, 0));
 	if (acc.isValid() == true)
 	{
 		acc.loadAudioToMemory();
@@ -449,7 +461,7 @@ void test_mrp_audio_accessor()
 			//auto outputrange = slice_range(reverse_range(channels_range(range, { -1 , 7 , 0 , 3 , -1 })), 1.0,3.0);
 			auto outputrange = channels_range(conc, { -1,-1,0,0 });
 			double bench_t0 = time_precise();
-			save_range_to_file(reverserange, fn);
+			save_range_to_file(reverse_range(range), fn);
 			double bench_t1 = time_precise();
 			double bench_ms = (bench_t1 - bench_t0)*1000.0;
 			
