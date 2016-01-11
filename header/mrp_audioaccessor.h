@@ -7,40 +7,36 @@
 #include <vector>
 
 template<typename T>
-class pointer_range
+class audiobuffer_view
 {
 public:
-	pointer_range() {}
-	pointer_range(T* data, int64_t datalen, int datachans,
-		double datasr, int64_t start, int64_t rangelen) : m_data(data)
+	audiobuffer_view() {}
+	audiobuffer_view(T* data, int64_t datalen, int datachans,
+		double datasr) : m_data(data)
 	{
 		m_datalen = datalen;
-		m_start = start;
-		m_len = rangelen;
 		m_nch = datachans;
 		m_sr = datasr;
 	}
 	const T& getSample(int chan, int64_t index) const noexcept
 	{
-		return m_data[(m_start + index)*m_nch + chan];
+		return m_data[index*m_nch + chan];
 	}
 	const T& getSampleSafe(int chan, int64_t index) const noexcept
 	{
-		int64_t temp = (m_start + index)*m_nch + chan;
-		if (temp >= m_start && temp < m_start + m_len)
+		int64_t temp = index*m_nch + chan;
+		if (temp >= 0 && temp < m_datalen)
 			return m_data[temp];
 		return m_dummysample;
 	}
 	int numberOfChannels() const noexcept { return m_nch; }
 	double sampleRate() const noexcept { return m_sr;  }
-	int64_t size() const noexcept { return m_len; }
-	int64_t numberOfFrames() const noexcept { return m_len; }
+	int64_t size() const noexcept { return m_datalen; }
+	int64_t numberOfFrames() const noexcept { return m_datalen; }
 	T* getData() { return m_data; }
 private:
 	T* m_data = nullptr;
 	int m_nch = 0;
-	int64_t m_start = 0;
-	int64_t m_len = 0;
 	int64_t m_datalen = 0;
 	double m_sr = 0.0;
 	double m_dummysample;
@@ -158,9 +154,10 @@ public:
 			return m_audio_buffer[index*m_orig_nch + channel];
 		return m_dummysample;
 	}
-	pointer_range<double> getRange(int64_t start, int64_t len)
+	audiobuffer_view<double> getRange()
 	{
-		return pointer_range<double>(m_audio_buffer.data(), m_num_frames_avail, m_orig_nch, m_orig_sr, start, len);
+		return audiobuffer_view<double>(m_audio_buffer.data(),
+										m_num_frames_avail, m_orig_nch, m_orig_sr);
 	}
 private:
 	std::vector<double> m_audio_buffer;
@@ -447,19 +444,19 @@ void test_mrp_audio_accessor()
 		{
 			readbg() << acc.numberOfChannels() << " " << acc.numberOfFrames() << " " << acc.sampleRate() << "\n";
 			std::string fn = generate_unique_wavfilename();
-			auto range = acc.getRange(0, acc.numberOfFrames());
+			auto range = acc.getRange();
 			
 			//auto reversereverserange = reverse_range(reverserange);
 			auto chansrange = channels_range(range, { -1,-1,0,0,-1,-1 });
 			readbg() << "chans range numchans " << chansrange.numberOfChannels() << "\n";
 			auto reverserange = reverse_range(chansrange);
 			//readbg() << "reverse range numchans " << reverserange.numberOfChannels() << "\n";
-			ConcatenatedAudioRange conc;
-			conc.addRange(acc.getRange(0, 44100));
-			conc.addRange(reverse_range(acc.getRange(0*44100, 1*44100)));
-			conc.addRange(acc.getRange(0 * 44100, 8 * 44100));
+			//ConcatenatedAudioRange conc;
+			//conc.addRange(acc.getRange(0, 44100));
+			//conc.addRange(reverse_range(acc.getRange(0*44100, 1*44100)));
+			//conc.addRange(acc.getRange(0 * 44100, 8 * 44100));
 			//auto outputrange = slice_range(reverse_range(channels_range(range, { -1 , 7 , 0 , 3 , -1 })), 1.0,3.0);
-			auto outputrange = channels_range(conc, { -1,-1,0,0 });
+			//auto outputrange = channels_range(conc, { -1,-1,0,0 });
 			double bench_t0 = time_precise();
 			save_range_to_file(reverse_range(range), fn);
 			double bench_t1 = time_precise();
