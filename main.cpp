@@ -292,7 +292,7 @@ extern "C"
 
 			add_action("MRP/Xenakios : Test MRPAudioAccessor", "MRP_XEN_TESTMRPAUDIOACC", ToggleOff, [](action_entry&)
 			{
-				test_mrp_audio_accessor();
+				mrp::experimental::test_mrp_audio_accessor();
 			});
 
 //#ifdef MODALWINDOWSWORKPROPERLY

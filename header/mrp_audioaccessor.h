@@ -6,6 +6,11 @@
 #include <memory>
 #include <vector>
 
+namespace mrp
+{
+namespace experimental
+{
+
 template<typename T>
 class audiobuffer_view
 {
@@ -326,6 +331,34 @@ MonoAudioView<T> mono_view(T src, int chan)
 	return MonoAudioView<T>(src,chan);
 }
 
+template<typename T,typename U>
+class CovertSampleTypeAudioView
+{
+public:
+	CovertSampleTypeAudioView() {}
+	explicit CovertSampleTypeAudioView(T range)
+	: m_sourcerange(range)
+	{
+
+	}
+	U getSample(int chan, int64_t index) const noexcept
+	{
+		return m_sourcerange.getSample(chan, index);
+	}
+	int numberOfChannels() const noexcept { return 1; }
+	double sampleRate() const noexcept { return m_sourcerange.sampleRate(); }
+	int64_t numberOfFrames() const noexcept { return m_sourcerange.numberOfFrames(); }
+private:
+	T m_sourcerange;
+	
+};
+
+template<typename T,typename U>
+CovertSampleTypeAudioView<U,T> sampletype_view(U src)
+{
+	return CovertSampleTypeAudioView<U,T>(src);
+}
+
 template<typename T>
 class ExtractChannelsAudioView
 {
@@ -445,6 +478,7 @@ void test_mrp_audio_accessor()
 			readbg() << acc.numberOfChannels() << " " << acc.numberOfFrames() << " " << acc.sampleRate() << "\n";
 			std::string fn = generate_unique_wavfilename();
 			auto range = acc.getRange();
+			auto converted_to_float=sampletype_view<float>(range);
 			
 			//auto reversereverserange = reverse_range(reverserange);
 			auto chansrange = channels_range(range, { -1,-1,0,0,-1,-1 });
@@ -469,3 +503,9 @@ void test_mrp_audio_accessor()
 	else readbg() << "MRPAudioAccessor not valid\n";
 	
 }
+	
+}
+}
+
+
+
