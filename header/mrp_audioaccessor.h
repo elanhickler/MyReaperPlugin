@@ -243,11 +243,11 @@ inline void save_range_to_file(const RangeType& acc, std::string fn)
 }
 
 template<typename T>
-class ReverseAudioRange
+class ReverseAudioView
 {
 public:
-	ReverseAudioRange() {}
-	explicit ReverseAudioRange(T range) : m_sourcerange(range) 
+	ReverseAudioView() {}
+	explicit ReverseAudioView(T range) : m_sourcerange(range)
 	{
 	}
 	const double& getSample(int chan, int64_t index) const noexcept
@@ -263,17 +263,17 @@ private:
 };
 
 template<typename T>
-ReverseAudioRange<T> reverse_range(T src)
+ReverseAudioView<T> reverse_view(T src)
 {
-	return ReverseAudioRange<T>(src);
+	return ReverseAudioView<T>(src);
 }
 
 template<typename T>
-class SlicedAudioRange
+class SlicedAudioView
 {
 public:
-	SlicedAudioRange() {}
-	explicit SlicedAudioRange(T range, double startseconds, double lenseconds) 
+	SlicedAudioView() {}
+	explicit SlicedAudioView(T range, double startseconds, double lenseconds)
 		: m_sourcerange(range), m_startseconds(startseconds), m_lenseconds(lenseconds)
 	{
 	}
@@ -292,18 +292,18 @@ private:
 };
 
 template<typename T>
-SlicedAudioRange<T> slice_range(T src, double start, double len)
+SlicedAudioView<T> slice_view(T src, double start, double len)
 {
-	return SlicedAudioRange<T>(src,start,len);
+	return SlicedAudioView<T>(src,start,len);
 }
 
 
 template<typename T>
-class MonoAudioRange
+class MonoAudioView
 {
 public:
-	MonoAudioRange() {}
-	explicit MonoAudioRange(T range, int whichchannel) 
+	MonoAudioView() {}
+	explicit MonoAudioView(T range, int whichchannel)
 		: m_sourcerange(range)
 	{
 		m_whichchannel = bound_value(0, whichchannel, m_sourcerange.numberOfChannels() - 1);
@@ -321,17 +321,17 @@ private:
 };
 
 template<typename T>
-MonoAudioRange<T> mono_range(T src, int chan)
+MonoAudioView<T> mono_view(T src, int chan)
 {
-	return MonoAudioRange<T>(src,chan);
+	return MonoAudioView<T>(src,chan);
 }
 
 template<typename T>
-class ExtractChannelsAudioRange
+class ExtractChannelsAudioView
 {
 public:
-	ExtractChannelsAudioRange() {}
-	explicit ExtractChannelsAudioRange(T range, std::initializer_list<int> whichchans)
+	ExtractChannelsAudioView() {}
+	explicit ExtractChannelsAudioView(T range, std::initializer_list<int> whichchans)
 		: m_sourcerange(range)
 	{
 		m_which_channels = whichchans;
@@ -353,9 +353,9 @@ private:
 };
 
 template<typename T>
-ExtractChannelsAudioRange<T> channels_range(T src, std::initializer_list<int> chans)
+ExtractChannelsAudioView<T> channels_range(T src, std::initializer_list<int> chans)
 {
-	return ExtractChannelsAudioRange<T>(src, chans);
+	return ExtractChannelsAudioView<T>(src, chans);
 }
 
 class ConcatenatedAudioRange
@@ -449,7 +449,7 @@ void test_mrp_audio_accessor()
 			//auto reversereverserange = reverse_range(reverserange);
 			auto chansrange = channels_range(range, { -1,-1,0,0,-1,-1 });
 			readbg() << "chans range numchans " << chansrange.numberOfChannels() << "\n";
-			auto reverserange = reverse_range(chansrange);
+			auto reverserange = reverse_view(chansrange);
 			//readbg() << "reverse range numchans " << reverserange.numberOfChannels() << "\n";
 			//ConcatenatedAudioRange conc;
 			//conc.addRange(acc.getRange(0, 44100));
@@ -458,7 +458,7 @@ void test_mrp_audio_accessor()
 			//auto outputrange = slice_range(reverse_range(channels_range(range, { -1 , 7 , 0 , 3 , -1 })), 1.0,3.0);
 			//auto outputrange = channels_range(conc, { -1,-1,0,0 });
 			double bench_t0 = time_precise();
-			save_range_to_file(reverse_range(range), fn);
+			save_range_to_file(slice_view(range,0,range.numberOfFrames()), fn);
 			double bench_t1 = time_precise();
 			double bench_ms = (bench_t1 - bench_t0)*1000.0;
 			
