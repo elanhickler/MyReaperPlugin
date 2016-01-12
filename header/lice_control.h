@@ -211,16 +211,19 @@ private:
 class PopupMenu
 {
 public:
+	enum CheckState { NotCheckable, Unchecked, Checked };
 	PopupMenu(HWND parent);
 	~PopupMenu();
-	void add_menu_item(std::string txt, std::function<void(void)> action);
+	void add_menu_item(std::string txt, std::function<void(CheckState)> action);
+	void add_menu_item(std::string txt, CheckState cs, std::function<void(CheckState)> action);
 	void set_none_chosen_handler(std::function<void(void)> action);
 	void execute(int x, int y, bool use_screen_coordinates = false);
 private:
 	struct menu_entry_t
 	{
 		std::string m_text;
-		std::function<void(void)> m_f;
+		std::function<void(CheckState)> m_f;
+		CheckState m_checkstate = NotCheckable;
 	};
 	HWND m_hwnd = NULL;
 	HMENU m_menu = NULL;

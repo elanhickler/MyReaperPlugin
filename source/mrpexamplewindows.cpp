@@ -427,6 +427,21 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		m_future1 = std::async(std::launch::async, task, rseed);
 		++rseed;
 	};
+	// Button 1 shows popup menu
+	m_controls[1]->GenericNotifyCallback = [this, env](GenericNotifications)
+	{
+		PopupMenu popmenu(getWindowHandle());
+		popmenu.add_menu_item("Menu entry 1", [](PopupMenu::CheckState) {});
+		popmenu.add_menu_item("Menu entry 2", m_menuitem2state, [this](PopupMenu::CheckState cs)
+		{
+			m_menuitem2state = cs;
+		});
+		popmenu.add_menu_item("Menu entry 3", m_menuitem3state, [this](PopupMenu::CheckState cs) 
+		{
+			m_menuitem3state = cs;
+		});
+		popmenu.execute(m_controls[1]->getXPosition(), m_controls[1]->getYPosition());
+	};
 	// Button 4 removes envelope points with value over 0.5
 	m_controls[4]->GenericNotifyCallback = [this, env](GenericNotifications)
 	{

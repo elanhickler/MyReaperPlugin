@@ -135,18 +135,18 @@ void TestControl::mousePressed(const MouseEvent& ev)
 	if (ev.m_mb == MouseEvent::MBRight)
 	{
 		PopupMenu menu(getWindowHandle());
-		menu.add_menu_item("First action", []() { readbg() << "first action chosen\n"; });
+		menu.add_menu_item("First action", [](PopupMenu::CheckState) { readbg() << "first action chosen\n"; });
 		if (m_hot_point >= 0)
 		{
-			menu.add_menu_item("Control last touched parameter with X position", [this]()
+			menu.add_menu_item("Control last touched parameter with X position", [this](PopupMenu::CheckState)
 			{
 				update_touched_fx(m_points[m_hot_point].m_x_target);
 			});
-			menu.add_menu_item("Control last touched parameter with Y position", [this]()
+			menu.add_menu_item("Control last touched parameter with Y position", [this](PopupMenu::CheckState)
 			{
 				update_touched_fx(m_points[m_hot_point].m_y_target);
 			});
-			menu.add_menu_item("Remove point", [this]()
+			menu.add_menu_item("Remove point", [this](PopupMenu::CheckState)
 			{
 				m_points.erase(m_points.begin() + m_hot_point);
 				m_hot_point = -1;
@@ -156,7 +156,7 @@ void TestControl::mousePressed(const MouseEvent& ev)
 		}
 		for (int i = 0; i < 10; ++i)
 		{
-			menu.add_menu_item(std::to_string(i + 1), [i]()
+			menu.add_menu_item(std::to_string(i + 1), [i](PopupMenu::CheckState)
 			{
 				readbg() << "You chose number " << i + 1 << "\n";
 			});
@@ -1113,14 +1113,14 @@ void PitchBenderEnvelopeControl::mousePressed(const MouseEvent & ev)
 	if (ev.m_mb == MouseEvent::MBRight)
 	{
 		PopupMenu popmenu(getWindowHandle());
-		popmenu.add_menu_item("Project default", [this]() { m_resampler_mode = -1; });
+		popmenu.add_menu_item("Project default", [this](PopupMenu::CheckState) { m_resampler_mode = -1; });
 		int i = 0;
 		while (true)
 		{
 			const char* modetext = Resample_EnumModes(i);
 			if (modetext == nullptr)
 				break;
-			popmenu.add_menu_item(modetext, [i, this]() { m_resampler_mode = i; });
+			popmenu.add_menu_item(modetext, [i, this](PopupMenu::CheckState) { m_resampler_mode = i; });
 			++i;
 		}
 		popmenu.execute(ev.m_x, ev.m_y);

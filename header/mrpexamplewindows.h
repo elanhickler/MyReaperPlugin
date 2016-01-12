@@ -72,7 +72,10 @@ private:
 	std::shared_ptr<WinLabel> m_label1;
 	std::shared_ptr<WinLineEdit> m_edit1;
 	std::shared_ptr<ProgressControl> m_progressbar1;
+	std::shared_ptr<WinButton> m_button1;
 	std::future<void> m_future1;
+	PopupMenu::CheckState m_menuitem2state = PopupMenu::Unchecked;
+	PopupMenu::CheckState m_menuitem3state = PopupMenu::Checked;
 };
 
 void show_modal_dialog(HWND parent);

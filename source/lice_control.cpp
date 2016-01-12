@@ -335,15 +335,18 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	return DefWindowProc(hwnd, Message, wParam, lParam);
 }
 
-void add_menu_item_(HMENU menu, std::string text, int id)
+void add_menu_item_(HMENU menu, std::string text, PopupMenu::CheckState cs, int id)
 {
 	MENUITEMINFO info = { 0 };
 	info.cbSize = sizeof(MENUITEMINFO);
 #ifdef WIN32
-	info.fMask = MIIM_STRING | MIIM_ID;
+	info.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE;
 #else
-	info.fMask = MIIM_DATA | MIIM_ID;
+	info.fMask = MIIM_DATA | MIIM_ID | MIIM_STATE;
 #endif
+	info.fState = MFS_UNCHECKED;
+	if (cs == PopupMenu::Checked)
+		info.fState = MFS_CHECKED;
 	info.wID = id;
 	info.dwTypeData = (LPSTR)text.c_str();
 	InsertMenuItem(menu, id - 1, TRUE, &info);
@@ -359,11 +362,20 @@ PopupMenu::~PopupMenu()
 		DestroyMenu(m_menu);
 }
 
-void PopupMenu::add_menu_item(std::string txt, std::function<void(void)> action)
+void PopupMenu::add_menu_item(std::string txt, std::function<void(CheckState)> action)
 {
 	menu_entry_t entry;
 	entry.m_text = txt;
 	entry.m_f = action;
+	m_entries.push_back(entry);
+}
+
+void PopupMenu::add_menu_item(std::string txt, CheckState cs, std::function<void(CheckState)> action)
+{
+	menu_entry_t entry;
+	entry.m_text = txt;
+	entry.m_f = action;
+	entry.m_checkstate = cs;
 	m_entries.push_back(entry);
 }
 
@@ -375,7 +387,7 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 		DestroyMenu(m_menu);
 	m_menu = CreatePopupMenu();
 	for (int i = 0; i < m_entries.size(); ++i)
-		add_menu_item_(m_menu, m_entries[i].m_text, i + 1);
+		add_menu_item_(m_menu, m_entries[i].m_text, m_entries[i].m_checkstate, i + 1);
 	POINT pt;
 	pt.x = x;
 	pt.y = y;
@@ -384,7 +396,15 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 	BOOL result = TrackPopupMenu(m_menu, TPM_LEFTALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hwnd, NULL);
 	if (result > 0)
 	{
-		m_entries[result - 1].m_f();
+		const menu_entry_t& me = m_entries[result - 1];
+		CheckState newstate = NotCheckable;
+		if (me.m_checkstate != NotCheckable)
+		{
+			if (me.m_checkstate == Checked)
+				newstate = Unchecked;
+			else newstate = Checked;
+		}
+		m_entries[result - 1].m_f(newstate);
 	}
 	else
 	{
