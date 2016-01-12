@@ -335,19 +335,35 @@ LRESULT LiceControl::wndproc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPar
 	return DefWindowProc(hwnd, Message, wParam, lParam);
 }
 
-void add_menu_item_(HMENU menu, std::string text, PopupMenu::CheckState cs, int id)
+void add_menu_item_(HMENU menu, std::string text, PopupMenu::CheckState cs, 
+	std::function<void(PopupMenu::CheckState)> actionfunc, PopupMenu* submenu, int& id,
+	std::unordered_map<int, std::pair<std::function<void(PopupMenu::CheckState)>, PopupMenu::CheckState>>& actionmap)
 {
 	MENUITEMINFO info = { 0 };
 	info.cbSize = sizeof(MENUITEMINFO);
 #ifdef WIN32
-	info.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE;
+	info.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE | MIIM_SUBMENU;
 #else
-	info.fMask = MIIM_DATA | MIIM_ID | MIIM_STATE;
+	info.fMask = MIIM_DATA | MIIM_ID | MIIM_STATE | MIIM_SUBMENU;
 #endif
-	info.fState = MFS_UNCHECKED;
+	info.fState = MFS_ENABLED;
 	if (cs == PopupMenu::Checked)
 		info.fState = MFS_CHECKED;
+	if (submenu != nullptr)
+	{
+		HMENU submenuh = CreatePopupMenu();
+		submenu->m_menu = submenuh;
+		for (int i = 0; i < submenu->m_entries.size(); ++i)
+			add_menu_item_(submenuh, submenu->m_entries[i].m_text,
+				submenu->m_entries[i].m_checkstate, 
+				submenu->m_entries[i].m_f,
+				submenu->m_entries[i].m_submenu.get(), id,actionmap);
+		info.hSubMenu = submenuh;
+	}
 	info.wID = id;
+	actionmap[id].first = actionfunc;
+	actionmap[id].second = cs;
+	++id;
 	info.dwTypeData = (LPSTR)text.c_str();
 	InsertMenuItem(menu, id - 1, TRUE, &info);
 }
@@ -379,6 +395,16 @@ void PopupMenu::add_menu_item(std::string txt, CheckState cs, std::function<void
 	m_entries.push_back(entry);
 }
 
+void PopupMenu::add_submenu(std::string txt, PopupMenu & menu)
+{
+	menu_entry_t entry;
+	entry.m_text = txt;
+	entry.m_f = [](CheckState) {};
+	entry.m_checkstate = NotCheckable;
+	entry.m_submenu = std::shared_ptr<PopupMenu>(new PopupMenu(menu));
+	m_entries.push_back(entry);
+}
+
 void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 {
 	if (m_entries.size() == 0)
@@ -386,8 +412,11 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 	if (m_menu != NULL)
 		DestroyMenu(m_menu);
 	m_menu = CreatePopupMenu();
+	int menu_item_id = 1;
+	std::unordered_map<int, std::pair<std::function<void(CheckState)>,CheckState>> actionmap;
 	for (int i = 0; i < m_entries.size(); ++i)
-		add_menu_item_(m_menu, m_entries[i].m_text, m_entries[i].m_checkstate, i + 1);
+		add_menu_item_(m_menu, m_entries[i].m_text, 
+			m_entries[i].m_checkstate,m_entries[i].m_f, m_entries[i].m_submenu.get(), menu_item_id,actionmap);
 	POINT pt;
 	pt.x = x;
 	pt.y = y;
@@ -396,15 +425,18 @@ void PopupMenu::execute(int x, int y, bool use_screen_coordinates)
 	BOOL result = TrackPopupMenu(m_menu, TPM_LEFTALIGN | TPM_RETURNCMD, pt.x, pt.y, 0, m_hwnd, NULL);
 	if (result > 0)
 	{
-		const menu_entry_t& me = m_entries[result - 1];
-		CheckState newstate = NotCheckable;
-		if (me.m_checkstate != NotCheckable)
+		if (actionmap.count(result) > 0)
 		{
-			if (me.m_checkstate == Checked)
-				newstate = Unchecked;
-			else newstate = Checked;
+			auto& temp = actionmap[result];
+			if (temp.first)
+			{
+				CheckState stateforcall = NotCheckable;
+				if (temp.second == Checked)
+					stateforcall = Unchecked;
+				else stateforcall = Checked;
+				temp.first(stateforcall);
+			}
 		}
-		m_entries[result - 1].m_f(newstate);
 	}
 	else
 	{

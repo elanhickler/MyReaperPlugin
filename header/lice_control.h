@@ -212,23 +212,31 @@ class PopupMenu
 {
 public:
 	enum CheckState { NotCheckable, Unchecked, Checked };
-	PopupMenu(HWND parent);
-	~PopupMenu();
-	void add_menu_item(std::string txt, std::function<void(CheckState)> action);
-	void add_menu_item(std::string txt, CheckState cs, std::function<void(CheckState)> action);
-	void set_none_chosen_handler(std::function<void(void)> action);
-	void execute(int x, int y, bool use_screen_coordinates = false);
-private:
 	struct menu_entry_t
 	{
 		std::string m_text;
 		std::function<void(CheckState)> m_f;
 		CheckState m_checkstate = NotCheckable;
+		std::shared_ptr<PopupMenu> m_submenu;
+		int m_id = 0;
 	};
 	HWND m_hwnd = NULL;
 	HMENU m_menu = NULL;
 	std::vector<menu_entry_t> m_entries;
 	std::function<void(void)> m_none_chosen_f;
+	
+	PopupMenu(HWND parent);
+	~PopupMenu();
+	void add_menu_item(std::string txt, std::function<void(CheckState)> action);
+	void add_menu_item(std::string txt, CheckState cs, std::function<void(CheckState)> action);
+	void add_submenu(std::string txt, PopupMenu& menu);
+	void set_none_chosen_handler(std::function<void(void)> action);
+	void execute(int x, int y, bool use_screen_coordinates = false);
+	HMENU getMenuHandle() const { return m_menu; }
+	void setMenuHandle(HMENU mh) { m_menu = mh; }
+private:
+	
+	
 };
 // Wrapper for Windows timer. This isn't tied to a window and the
 // WM_TIMER messages, so you can create these wherever a timer can work,

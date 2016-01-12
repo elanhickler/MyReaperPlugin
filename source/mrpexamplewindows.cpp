@@ -440,6 +440,19 @@ TestMRPPWindow::TestMRPPWindow(HWND parent, std::string title) : MRPWindow(paren
 		{
 			m_menuitem3state = cs;
 		});
+		PopupMenu submenu(getWindowHandle());
+		submenu.add_menu_item("Submenu entry 1", [](PopupMenu::CheckState) { readbg() << "submenu entry 1\n"; });
+		submenu.add_menu_item("Submenu entry 2", [](PopupMenu::CheckState) { readbg() << "submenu entry 2\n"; });
+		PopupMenu subsubmenu(getWindowHandle());
+		for (int i = 0; i < 8; ++i)
+		{
+			subsubmenu.add_menu_item(std::string("Subsubmenu entry ") + std::to_string(i + 1), [i](PopupMenu::CheckState) 
+			{
+				readbg() << "subsubmenu entry " << i + 1 << "\n";
+			});
+		}
+		submenu.add_submenu("Going still deeper", subsubmenu);
+		popmenu.add_submenu("More stuff", submenu);
 		popmenu.execute(m_controls[1]->getXPosition(), m_controls[1]->getYPosition());
 	};
 	// Button 4 removes envelope points with value over 0.5
