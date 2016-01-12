@@ -104,19 +104,23 @@ void WinControl::setEnabled(bool b)
 int WinControl::getXPosition() const
 {
 	RECT r;
-	RECT rparent;
 	GetWindowRect(m_hwnd, &r);
-	GetWindowRect(GetParent(m_hwnd), &rparent);
-	return r.left-rparent.left;
+	POINT pt;
+	pt.x=r.left;
+	pt.y=r.top;
+	ScreenToClient(m_hwnd, &pt);
+	return pt.x;
 }
 
 int WinControl::getYPosition() const
 {
 	RECT r;
-	RECT rparent;
 	GetWindowRect(m_hwnd, &r);
-	GetWindowRect(GetParent(m_hwnd), &rparent);
-	return r.top-rparent.top;
+	POINT pt;
+	pt.x=r.left;
+	pt.y=r.top;
+	ScreenToClient(m_hwnd, &pt);
+	return pt.y;
 }
 
 int WinControl::getWidth() const
