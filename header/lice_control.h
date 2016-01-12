@@ -226,6 +226,9 @@ public:
 	std::function<void(void)> m_none_chosen_f;
 	
 	PopupMenu(HWND parent);
+	PopupMenu(const PopupMenu&) = delete;
+	PopupMenu& operator=(const PopupMenu&) = delete;
+	PopupMenu(PopupMenu&& other);
 	~PopupMenu();
 	void add_menu_item(std::string txt, std::function<void(CheckState)> action);
 	void add_menu_item(std::string txt, CheckState cs, std::function<void(CheckState)> action);
