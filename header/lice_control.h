@@ -237,6 +237,7 @@ public:
 	void execute(int x, int y, bool use_screen_coordinates = false);
 	HMENU getMenuHandle() const { return m_menu; }
 	void setMenuHandle(HMENU mh) { m_menu = mh; }
+	bool m_is_submenu = false;
 private:
 	
 	

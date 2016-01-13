@@ -377,12 +377,13 @@ PopupMenu::PopupMenu(PopupMenu && other)
 	std::swap(other.m_entries, m_entries);
 	std::swap(other.m_hwnd, m_hwnd);
 	std::swap(other.m_menu, m_menu);
+	std::swap(other.m_is_submenu,m_is_submenu);
 	std::swap(other.m_none_chosen_f, m_none_chosen_f);
 }
 
 PopupMenu::~PopupMenu()
 {
-	if (m_menu != NULL)
+	if (m_menu != NULL && m_is_submenu==false)
 		DestroyMenu(m_menu);
 }
 
@@ -409,6 +410,7 @@ void PopupMenu::add_submenu(std::string txt, PopupMenu & menu)
 	entry.m_text = txt;
 	entry.m_f = [](CheckState) {};
 	entry.m_checkstate = NotCheckable;
+	menu.m_is_submenu = true;
 	entry.m_submenu = std::shared_ptr<PopupMenu>(new PopupMenu(std::move(menu)));
 	m_entries.push_back(entry);
 }
