@@ -1,4 +1,4 @@
-﻿thewindow=nil
+thewindow=nil
 function tick()
   if reaper.MRP_WindowIsClosed(thewindow) then
     reaper.MRP_DestroyWindow(thewindow)
