@@ -144,116 +144,111 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 		return;
 	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
 	MediaItem_Take* take = GetActiveTake(item);
-	if (take != nullptr)
+	mrp::experimental::MRPAudioAccessor acc(take);
+	acc.loadAudioToMemory();
+	if (acc.isLoaded()==true)
 	{
-		PCM_source* src = GetMediaItemTake_Source(take);
-		if (src != nullptr)
+		auto av = acc.getRange();
+		volume_analysis_data* srcdata = m_analysiscontrol1->getAnalysisData();
+		int numdatapoints = srcdata->m_datapoints.size();
+		int64_t audiocounter = 0;
+		int numchans = av.numberOfChannels();
+		int64_t numframes = av.numberOfFrames();
+		int windowsize = srcdata->m_windowsize;
+		double prevwindowgain = 0.0;
+		for (int i = 0; i < numdatapoints; ++i)
 		{
-			int64_t numframes = src->GetLength()*src->GetSampleRate();
-			std::vector<double> buf(numframes*src->GetNumChannels());
-			PCM_source_transfer_t transfer = { 0 };
-			transfer.length = numframes;
-			transfer.nch = src->GetNumChannels();
-			transfer.samplerate = src->GetSampleRate();
-			transfer.samples = buf.data();
-			src->GetSamples(&transfer);
-			volume_analysis_data* srcdata = m_analysiscontrol1->getAnalysisData();
-			int numdatapoints = srcdata->m_datapoints.size();
-			int64_t audiocounter = 0;
-			int numchans = src->GetNumChannels();
-			int windowsize = srcdata->m_windowsize;
-			double prevwindowgain = 0.0;
-			for (int i = 0; i < numdatapoints; ++i)
+			const double srcval0 = srcdata->m_datapoints[i].m_abs_peak;
+			if (m_envelope_is_db == true)
 			{
-				const double srcval0 = srcdata->m_datapoints[i].m_abs_peak;
-				if (m_envelope_is_db == true)
+				double srcvaldb0 = VAL2DB(srcval0);
+				double srcvaldbnorm0 = map_value(srcvaldb0, -96.0, 0.0, 0.0, 1.0);
+				double envnormval0 = m_transformenvelope1->interpolate(srcvaldbnorm0);
+				double envdbvalue0 = -96.0 + 96.0*envnormval0;
+				double envgainval0 = exp((envdbvalue0)*0.11512925464970228420089957273422);
+				double diff0 = envgainval0 - srcval0;
+				double dbdiff0 = envdbvalue0 - srcvaldb0;
+				const double gainfactor0 = exp((dbdiff0)*0.11512925464970228420089957273422);
+				for (int j = 0; j < windowsize; ++j)
 				{
-					double srcvaldb0 = VAL2DB(srcval0);
-					double srcvaldbnorm0 = map_value(srcvaldb0, -96.0, 0.0, 0.0, 1.0);
-					double envnormval0 = m_transformenvelope1->interpolate(srcvaldbnorm0);
-					double envdbvalue0 = -96.0 + 96.0*envnormval0;
-					double envgainval0 = exp((envdbvalue0)*0.11512925464970228420089957273422);
-					double diff0 = envgainval0 - srcval0;
-					double dbdiff0 = envdbvalue0 - srcvaldb0;
-					const double gainfactor0 = exp((dbdiff0)*0.11512925464970228420089957273422);
-					for (int j = 0; j < windowsize; ++j)
+					double ramped = 1.0;
+					if (j < windowsize / 2)
+						ramped = 1.0 / (windowsize / 2)*j;
+					else ramped = 1.0; // 1.0 - (1.0 / (windowsize / 2)*(j - windowsize / 2));
+					double gain0 = prevwindowgain;
+					double gain1 = gainfactor0;
+					double gaindiff = gain1 - gain0;
+					double interpolated = gain0 + gaindiff*ramped;
+					int64_t index = audiocounter;
+					if (index >= numframes)
+						break;
+					for (int k = 0; k < numchans; ++k)
 					{
-						double ramped = 1.0;
-						if (j < windowsize / 2)
-							ramped = 1.0 / (windowsize / 2)*j;
-						else ramped = 1.0; // 1.0 - (1.0 / (windowsize / 2)*(j - windowsize / 2));
-						double gain0 = prevwindowgain;
-						double gain1 = gainfactor0;
-						double gaindiff = gain1 - gain0;
-						double interpolated = gain0 + gaindiff*ramped;
-						int64_t index = audiocounter;
-						if (index >= numframes)
-							break;
-						for (int k = 0; k < numchans; ++k)
-						{
-							buf[index*numchans + k] *= interpolated;
-						}
-						++audiocounter;
+						av.getSample(k, index) *= interpolated;
+						//buf[index*numchans + k] *= interpolated;
 					}
-				}
-				else
-				{
-					double envnormval = m_transformenvelope1->interpolate(srcval0);
-					double diff = envnormval - srcval0;
-					double gainfactor = 0.0;
-					if (srcval0>0.0001)
-						gainfactor = envnormval / srcval0;
-					for (int j = 0; j < windowsize; ++j)
-					{
-						double ramped = 1.0;
-						if (j <= windowsize / 2)
-							ramped = 1.0 / (windowsize / 2)*j;
-						else ramped = 1.0; // 1.0 - ((1.0 / (windowsize / 2))*(j - windowsize / 2));
-						double gain0 = prevwindowgain;
-						double gain1 = gainfactor;
-						double gaindiff = gain1 - gain0;
-						double interpolated = gain0 + gaindiff*ramped;
-						int64_t index = audiocounter;
-						if (index >= numframes)
-							break;
-						for (int k = 0; k < numchans; ++k)
-						{
-							buf[index*numchans + k] *= interpolated;
-						}
-						++audiocounter;
-					}
-					prevwindowgain = gainfactor;
+					++audiocounter;
 				}
 			}
-			char cfg[] = { 'e','v','a','w', 32, 0 };
-			char ppbuf[2048];
-			GetProjectPath(ppbuf, 2048);
-			GUID theguid;
-			genGuid(&theguid);
-			char guidtxt[64];
-			guidToString(&theguid, guidtxt);
-			std::string outfn = std::string(ppbuf) + "/" + guidtxt + ".wav";
-			PCM_sink* sink = PCM_Sink_Create(outfn.c_str(), 
-				cfg, sizeof(cfg), numchans, src->GetSampleRate(), false);
-			if (sink != nullptr)
+			else
 			{
-				std::vector<double> sinkbuf(numchans*numframes);
-				std::vector<double*> sinkbufptrs(numchans);
-				for (int i = 0; i < numchans; ++i)
-					sinkbufptrs[i] = &sinkbuf[i*numframes];
-				for (int i = 0; i < numframes; ++i)
+				double envnormval = m_transformenvelope1->interpolate(srcval0);
+				double diff = envnormval - srcval0;
+				double gainfactor = 0.0;
+				if (srcval0>0.0001)
+					gainfactor = envnormval / srcval0;
+				for (int j = 0; j < windowsize; ++j)
 				{
-					for (int j = 0; j < numchans; ++j)
+					double ramped = 1.0;
+					if (j <= windowsize / 2)
+						ramped = 1.0 / (windowsize / 2)*j;
+					else ramped = 1.0; // 1.0 - ((1.0 / (windowsize / 2))*(j - windowsize / 2));
+					double gain0 = prevwindowgain;
+					double gain1 = gainfactor;
+					double gaindiff = gain1 - gain0;
+					double interpolated = gain0 + gaindiff*ramped;
+					int64_t index = audiocounter;
+					if (index >= numframes)
+						break;
+					for (int k = 0; k < numchans; ++k)
 					{
-						sinkbufptrs[j][i] = buf[i*numchans + j];
+						av.getSample(k, index) *= interpolated;
+						//buf[index*numchans + k] *= interpolated;
 					}
+					++audiocounter;
 				}
-				sink->WriteDoubles(sinkbufptrs.data(), numframes, numchans, 0, 1);
-				delete sink;
-				InsertMedia(outfn.c_str(), 3);
+				prevwindowgain = gainfactor;
 			}
-			//readbg() << "render finished\n";
 		}
+		char cfg[] = { 'e','v','a','w', 32, 0 };
+		char ppbuf[2048];
+		GetProjectPath(ppbuf, 2048);
+		GUID theguid;
+		genGuid(&theguid);
+		char guidtxt[64];
+		guidToString(&theguid, guidtxt);
+		std::string outfn = std::string(ppbuf) + "/" + guidtxt + ".wav";
+		PCM_sink* sink = PCM_Sink_Create(outfn.c_str(), 
+			cfg, sizeof(cfg), numchans, av.sampleRate(), false);
+		if (sink != nullptr)
+		{
+			std::vector<double> sinkbuf(numchans*numframes);
+			std::vector<double*> sinkbufptrs(numchans);
+			for (int i = 0; i < numchans; ++i)
+				sinkbufptrs[i] = &sinkbuf[i*numframes];
+			for (int i = 0; i < numframes; ++i)
+			{
+				for (int j = 0; j < numchans; ++j)
+				{
+					sinkbufptrs[j][i] = av.getSample(j, i);
+				}
+			}
+			sink->WriteDoubles(sinkbufptrs.data(), numframes, numchans, 0, 1);
+			delete sink;
+			InsertMedia(outfn.c_str(), 3);
+		}
+			//readbg() << "render finished\n";
+		
 	}
 }
 

@@ -27,6 +27,10 @@ public:
 	{
 		return m_data[index*m_nch + chan];
 	}
+	T& getSample(int chan, int64_t index) noexcept
+	{
+		return m_data[index*m_nch + chan];
+	}
 	const T& getSampleSafe(int chan, int64_t index) const noexcept
 	{
 		int64_t temp = index*m_nch + chan;
