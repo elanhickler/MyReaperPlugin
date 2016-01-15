@@ -48,7 +48,7 @@ private:
 	int m_nch = 0;
 	int64_t m_datalen = 0;
 	double m_sr = 0.0;
-	double m_dummysample;
+	T m_dummysample{ T() };
 };
 
 class MRPAudioAccessor
