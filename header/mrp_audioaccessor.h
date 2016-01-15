@@ -38,6 +38,15 @@ public:
 			return m_data[temp];
 		return m_dummysample;
 	}
+	T& getSampleRefSafe(int chan, int64_t index) noexcept
+	{
+		int64_t temp = index*m_nch + chan;
+		if (temp >= 0 && temp < m_datalen)
+			return m_data[temp];
+		// The code calling this previously may have tried altering the out of bounds sample, so zero the safe sample here
+		m_dummysample = T();
+		return m_dummysample;
+	}
 	int numberOfChannels() const noexcept { return m_nch; }
 	double sampleRate() const noexcept { return m_sr;  }
 	int64_t size() const noexcept { return m_datalen; }

@@ -4,6 +4,7 @@
 #include <fstream>
 
 VolumeAnalysisControl::VolumeAnalysisControl(MRPWindow* parent) : LiceControl(parent)
+	
 {
 
 }
@@ -16,9 +17,15 @@ void VolumeAnalysisControl::setAnalysisData(volume_analysis_data data)
 
 void VolumeAnalysisControl::paint(PaintEvent& ev)
 {
-	LICE_FillRect(ev.bm, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), LICE_RGBA(0, 0, 0, 255));
+	if (m_audio_view_painter.paint(ev.bm, -1.0, -1.0, 0, 0, getWidth(), getHeight()) == false)
+	{
+		LICE_FillRect(ev.bm, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), LICE_RGBA(0, 0, 0, 255));	
+	}
+	
+	
 	if (m_data.m_datapoints.size() < 2)
 		return;
+	
 	for (int i = 0; i < m_data.m_datapoints.size()-1; ++i)
 	{
 		double xcor0 = (double)getWidth() / m_data.m_datapoints.size()*i;
@@ -55,7 +62,10 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	{
 		do_dynamics_transform_visualization();
 		if (reason != GenericNotifications::ObjectMoved)
+		{
+			render_dynamics_transform();
 			save_state();
+		}
 	};
 	add_control(m_envelopecontrol1);
 	m_importbut->GenericNotifyCallback = [this](GenericNotifications)
@@ -142,13 +152,11 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 {
 	if (CountSelectedMediaItems(nullptr) == 0)
 		return;
-	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
-	MediaItem_Take* take = GetActiveTake(item);
-	mrp::experimental::MRPAudioAccessor acc(take);
-	acc.loadAudioToMemory();
-	if (acc.isLoaded()==true)
+	if (m_acc == nullptr)
+		return;
+	if (m_acc->isLoaded()==true)
 	{
-		auto av = acc.getRange();
+		auto av = m_acc->getRange();
 		volume_analysis_data* srcdata = m_analysiscontrol1->getAnalysisData();
 		int numdatapoints = srcdata->m_datapoints.size();
 		int64_t audiocounter = 0;
@@ -156,6 +164,7 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 		int64_t numframes = av.numberOfFrames();
 		int windowsize = srcdata->m_windowsize;
 		double prevwindowgain = 0.0;
+		m_transformed_audio.resize(numchans*numdatapoints*windowsize);
 		for (int i = 0; i < numdatapoints; ++i)
 		{
 			const double srcval0 = srcdata->m_datapoints[i].m_abs_peak;
@@ -212,7 +221,7 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 						break;
 					for (int k = 0; k < numchans; ++k)
 					{
-						av.getSampleRef(k, index) *= interpolated;
+						m_transformed_audio[index*numchans+k]=av.getSample(k, index) * interpolated;
 						//buf[index*numchans + k] *= interpolated;
 					}
 					++audiocounter;
@@ -220,6 +229,11 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 				prevwindowgain = gainfactor;
 			}
 		}
+		audiobuffer_view<double> taview(m_transformed_audio.data(), m_acc->numberOfFrames(),
+			m_acc->numberOfChannels(), m_acc->sampleRate());
+		m_analysiscontrol2->setAudioView(taview);
+#ifdef FOOFOOFOOZ
+
 		char cfg[] = { 'e','v','a','w', 32, 0 };
 		char ppbuf[2048];
 		GetProjectPath(ppbuf, 2048);
@@ -248,8 +262,13 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 			InsertMedia(outfn.c_str(), 3);
 		}
 			//readbg() << "render finished\n";
-		
+#endif		
 	}
+
+}
+
+void DynamicsProcessorWindow::write_transformed_to_file()
+{
 }
 
 void DynamicsProcessorWindow::import_item()
@@ -258,14 +277,15 @@ void DynamicsProcessorWindow::import_item()
 		return;
 	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
 	MediaItem_Take* take = GetActiveTake(item);
-	mrp::experimental::MRPAudioAccessor acc(take);
-	acc.loadAudioToMemory();
-	if (acc.isLoaded() == true)
+	m_acc = std::make_shared<MRPAudioAccessor>(take);
+	m_acc->loadAudioToMemory();
+	if (m_acc->isLoaded() == true)
 	{
 		double windowlen = m_window_sizes[m_windowsizecombo1->getSelectedIndex()] / 1000.0;
-		auto av = acc.getRange();
-		auto data = analyze_audio_volume(windowlen*acc.sampleRate(), av);
+		auto av = m_acc->getRange();
+		auto data = analyze_audio_volume(windowlen*m_acc->sampleRate(), av);
 		m_analysiscontrol1->setAnalysisData(data);
+		m_analysiscontrol1->setAudioView(m_acc->getRange());
 		do_dynamics_transform_visualization();
 	}
 }

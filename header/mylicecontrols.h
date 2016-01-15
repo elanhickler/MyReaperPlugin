@@ -97,6 +97,65 @@ private:
 	PCM_source_peaktransfer_t m_peaks_transfer = { 0 };
 };
 
+template<typename AudioViewType>
+class AudioViewPainter
+{
+public:
+	AudioViewPainter() {}
+	AudioViewPainter(AudioViewType view, int initialnumpeaks = 500)
+		: m_source_view(view)
+	{
+		m_minpeaks.resize(initialnumpeaks);
+		m_maxpeaks.resize(initialnumpeaks);
+	}
+	bool paint(LICE_IBitmap* bm, double starttime, double endtime, int x, int y, int w, int h)
+	{
+		if (m_source_view.numberOfFrames() < 1)
+			return false;
+		if (w * m_source_view.numberOfChannels() > m_minpeaks.size())
+		{
+			m_minpeaks.resize(w*m_source_view.numberOfChannels());
+			m_maxpeaks.resize(w*m_source_view.numberOfChannels());
+		}
+		if (starttime < 0.0 && endtime < 0.0)
+		{
+			starttime = 0.0;
+			endtime = (double)m_source_view.numberOfFrames()/m_source_view.sampleRate();
+		}
+		PCM_source_transfer_t block = { 0 };
+		block.absolute_time_s = starttime;
+		block.time_s = starttime;
+		block.length = (endtime - starttime)*m_source_view.sampleRate();
+		block.samples = m_source_view.getData();
+		block.nch = m_source_view.numberOfChannels();
+		block.samplerate = m_source_view.sampleRate();
+		block.samples_out = block.length;
+		PCM_source_peaktransfer_t peaksblock = { 0 };
+		peaksblock.nchpeaks = m_source_view.numberOfChannels();
+		peaksblock.samplerate = m_source_view.sampleRate();
+		peaksblock.peaks = m_maxpeaks.data();
+		peaksblock.peaks_minvals = m_minpeaks.data();
+		peaksblock.peaks_minvals_used = 1;
+		peaksblock.peakrate = (double)w / (endtime - starttime);
+		peaksblock.numpeak_points = w;
+		int result = CalculatePeaks(&block, &peaksblock);
+		//readbg() << "calculatepeaks returned " << result << "\n";
+		if (peaksblock.peaks_out<w)
+		{
+			return false;
+		}
+		GetPeaksBitmap(&peaksblock, 1.0, w, h, bm);
+		return true;
+	}
+	AudioViewType m_source_view;
+private:
+	
+	std::vector<double> m_minpeaks;
+	std::vector<double> m_maxpeaks;
+	PCM_source_peaktransfer_t m_peaks_transfer = { 0 };
+	
+};
+
 class WaveformControl : public LiceControl
 {
 public:

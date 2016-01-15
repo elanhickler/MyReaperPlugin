@@ -68,16 +68,24 @@ inline volume_analysis_data analyze_audio_volume(int windowsize,
 	return result;
 }
 
+using namespace mrp::experimental;
+
 class VolumeAnalysisControl : public LiceControl
 {
 public:
 	VolumeAnalysisControl(MRPWindow* parent);
 	void setAnalysisData(volume_analysis_data data);
+	void setAudioView(audiobuffer_view<double> v)
+	{
+		m_audio_view_painter = AudioViewPainter<audiobuffer_view<double>>(v);
+		repaint();
+	}
 	void paint(PaintEvent& ev) override;
 	volume_analysis_data* getAnalysisData() { return &m_data; }
 	std::string getType() const override { return "VolumeAnalysisControl"; }
 private:
 	volume_analysis_data m_data;
+	AudioViewPainter<audiobuffer_view<double>> m_audio_view_painter;
 };
 
 class DynamicsProcessorWindow : public MRPWindow
@@ -97,10 +105,13 @@ private:
 	std::vector<double> m_window_sizes;
 	void do_dynamics_transform_visualization();
 	void render_dynamics_transform();
+	void write_transformed_to_file();
 	void import_item();
 	bool m_envelope_is_db = false;
 	void save_state();
 	void load_state();
+	std::shared_ptr<MRPAudioAccessor> m_acc;
+	std::vector<double> m_transformed_audio;
 };
 
 void show_dynamics_processor_window(HWND parent);
