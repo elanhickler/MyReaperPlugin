@@ -56,6 +56,13 @@ inline bool is_alphaspacenumeric(char c)
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ';
 }
 
+template<typename F, typename... Ts>
+inline F for_each_arg(F f, Ts&&... a)
+{
+	return std::initializer_list<int>{(std::ref(f)(std::forward<Ts>(a)), 0)...}, f;
+}
+
+
 template<typename T>
 inline void hash_combine(std::size_t& seed, const T& v)
 {

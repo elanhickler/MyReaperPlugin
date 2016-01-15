@@ -263,6 +263,18 @@ void DynamicsProcessorWindow::import_item()
 		return;
 	MediaItem* item = GetSelectedMediaItem(nullptr, 0);
 	MediaItem_Take* take = GetActiveTake(item);
+	mrp::experimental::MRPAudioAccessor acc(take);
+	acc.loadAudioToMemory();
+	if (acc.isLoaded() == true)
+	{
+		double windowlen = m_window_sizes[m_windowsizecombo1->getSelectedIndex()] / 1000.0;
+		auto av = acc.getRange();
+		auto data = analyze_audio_volume(windowlen*acc.sampleRate(), av);
+		m_analysiscontrol1->setAnalysisData(data);
+		do_dynamics_transform_visualization();
+	}
+	
+#ifdef NOMRPACCESSOR
 	if (take != nullptr)
 	{
 		PCM_source* src = GetMediaItemTake_Source(take);
@@ -282,6 +294,7 @@ void DynamicsProcessorWindow::import_item()
 			do_dynamics_transform_visualization();
 		}
 	}
+#endif
 }
 
 picojson::object to_json(breakpoint_envelope& env)

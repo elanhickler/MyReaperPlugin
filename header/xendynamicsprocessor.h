@@ -4,6 +4,7 @@
 #include "mrpwindows.h"
 #include <vector>
 #include <memory>
+#include "mrp_audioaccessor.h"
 
 class volume_analysis_data_point
 {
@@ -27,26 +28,30 @@ public:
 	double m_total_max_peak = 0.0;
 };
 
+template<typename AudioView>
 inline volume_analysis_data analyze_audio_volume(int windowsize,
-	int numchannels, double* buffer, int64_t numframes)
+	AudioView av)
 {
+	int viewnch = av.numberOfChannels();
 	volume_analysis_data result;
 	result.m_windowsize = windowsize;
-	result.m_numch = numchannels;
+	result.m_numch = viewnch;
 	int64_t counter = 0;
 	double total_max_peak = 0.0;
-	while (counter < numframes)
+	int64_t viewframes = av.numberOfFrames();
+	while (counter < viewframes)
 	{
 		double maxsample = 0.0;
 		int peakpos = 0;
 		for (int i = 0; i < windowsize; ++i)
 		{
-			for (int j = 0; j < numchannels; ++j)
+			for (int j = 0; j < viewnch; ++j)
 			{
-				int64_t index = (counter*numchannels) + j;
-				if (index >= numframes*numchannels)
+				int64_t index = counter + j;
+				
+				if (index >= viewframes)
 					break;
-				double abs_sample = fabs(buffer[index]);
+				double abs_sample = fabs(av.getSample(j,index));
 				if (abs_sample > maxsample)
 				{
 					maxsample = abs_sample;

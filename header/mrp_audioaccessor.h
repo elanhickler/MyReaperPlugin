@@ -464,7 +464,7 @@ inline std::string generate_unique_wavfilename()
 	return std::string(ppbuf)+"/"+buf+".wav";
 }
 
-void test_mrp_audio_accessor()
+inline void test_mrp_audio_accessor()
 {
 	//if (CountSelectedMediaItems(nullptr) == 0)
 	//	return;
