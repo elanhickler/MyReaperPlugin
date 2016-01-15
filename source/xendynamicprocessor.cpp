@@ -21,11 +21,10 @@ void VolumeAnalysisControl::paint(PaintEvent& ev)
 	{
 		LICE_FillRect(ev.bm, 0, 0, ev.bm->getWidth(), ev.bm->getHeight(), LICE_RGBA(0, 0, 0, 255));	
 	}
-	
-	
 	if (m_data.m_datapoints.size() < 2)
 		return;
-	
+	if (m_show_analysis_curve == false)
+		return;
 	for (int i = 0; i < m_data.m_datapoints.size()-1; ++i)
 	{
 		double xcor0 = (double)getWidth() / m_data.m_datapoints.size()*i;
@@ -40,7 +39,7 @@ void VolumeAnalysisControl::paint(PaintEvent& ev)
 
 DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent, "Dynamics processor")
 {
-	m_importbut = std::make_shared<WinButton>(this,"Import item");
+	m_importbut = std::make_shared<WinButton>(this, "Import item");
 	add_control(m_importbut);
 	m_renderbut = std::make_shared<WinButton>(this, "Render");
 	add_control(m_renderbut);
@@ -53,18 +52,23 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	m_analysiscontrol2 = std::make_shared<VolumeAnalysisControl>(this);
 	add_control(m_analysiscontrol2);
 	m_transformenvelope1 = std::make_shared<breakpoint_envelope>("Dynamics curve", LICE_RGBA(0, 255, 0, 255));
-	m_transformenvelope1->add_point({ 0.0,0.0, envbreakpoint::Power },true);
-	m_transformenvelope1->add_point({ 0.5,0.5, envbreakpoint::Power },true);
+	m_transformenvelope1->add_point({ 0.0,0.0, envbreakpoint::Power }, true);
+	m_transformenvelope1->add_point({ 0.5,0.5, envbreakpoint::Power }, true);
 	m_transformenvelope1->add_point({ 1.0,1.0, envbreakpoint::Power }, true);
 	m_envelopecontrol1 = std::make_shared<EnvelopeControl>(this);
 	m_envelopecontrol1->add_envelope(m_transformenvelope1);
 	m_envelopecontrol1->GenericNotifyCallback = [this](GenericNotifications reason)
 	{
-		do_dynamics_transform_visualization();
 		if (reason != GenericNotifications::ObjectMoved)
 		{
+			m_analysiscontrol2->setShowAnalysisCurve(false);
 			render_dynamics_transform();
 			save_state();
+		}
+		else
+		{
+			m_analysiscontrol2->setShowAnalysisCurve(true);
+			do_dynamics_transform_visualization();
 		}
 	};
 	add_control(m_envelopecontrol1);
@@ -74,10 +78,10 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	};
 	m_window_sizes = { 1.0,2.0,5.0,10.0,20.0,50.0,100.0,200.0, 500.0 };
 	m_windowsizecombo1 = std::make_shared<WinComboBox>(this);
-	for (int i = 0; i < m_window_sizes.size();++i)
+	for (int i = 0; i < m_window_sizes.size(); ++i)
 	{
 		char buf[20];
-		sprintf(buf, "%.1f ms",m_window_sizes[i]);
+		sprintf(buf, "%.1f ms", m_window_sizes[i]);
 		m_windowsizecombo1->addItem(buf, i);
 	}
 	m_windowsizecombo1->setSelectedIndex(5);
@@ -92,6 +96,17 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	add_control(m_windowsizecombo1);
 	m_windowsizelabel1 = std::make_shared<WinLabel>(this, "Window size");
 	add_control(m_windowsizelabel1);
+
+	m_slider1 = std::make_shared<ReaSlider>(this);
+	m_slider1->SliderValueCallback = [this](GenericNotifications reason, double v)
+	{
+		if (reason == GenericNotifications::AfterManipulation)
+		{
+			render_dynamics_transform();
+			save_state();
+		}
+	};
+    add_control(m_slider1);
 	load_state();
 }
 
@@ -107,6 +122,7 @@ void DynamicsProcessorWindow::resized()
 	m_renderbut->setBounds({ 80,2,70,20 });
 	m_windowsizelabel1->setBounds({ 155,5,100,20 });
 	m_windowsizecombo1->setBounds({ 260,2,100,20 });
+	m_slider1->setBounds({ 365,5,200,20 });
 }
 
 void DynamicsProcessorWindow::do_dynamics_transform_visualization()
@@ -165,9 +181,12 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 		int windowsize = srcdata->m_windowsize;
 		double prevwindowgain = 0.0;
 		m_transformed_audio.resize(numchans*numdatapoints*windowsize);
+		breakpoint_envelope env("Volume changes");
+		
 		for (int i = 0; i < numdatapoints; ++i)
 		{
 			const double srcval0 = srcdata->m_datapoints[i].m_abs_peak;
+			int peakpos = srcdata->m_datapoints[i].m_max_peak_pos;
 			if (m_envelope_is_db == true)
 			{
 				double srcvaldb0 = VAL2DB(srcval0);
@@ -206,6 +225,9 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 				double gainfactor = 0.0;
 				if (srcval0>0.0001)
 					gainfactor = envnormval / srcval0;
+				double p1 = m_slider1->getValue();
+				env.add_point({ (double)(i*windowsize+peakpos)/av.sampleRate(),gainfactor, envbreakpoint::Power,p1 },false);
+				continue;
 				for (int j = 0; j < windowsize; ++j)
 				{
 					double ramped = 1.0;
@@ -229,6 +251,27 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 				prevwindowgain = gainfactor;
 			}
 		}
+		env.sort_points();
+		int overcounter = 0;
+		double max_sample = 0.0;
+		for (int64_t i = 0; i < numframes; ++i)
+		{
+			double gain = env.interpolate((double)i / av.sampleRate());
+			for (int j = 0; j < numchans; ++j)
+			{
+				double s = av.getSample(j, i)*gain;
+				m_transformed_audio[i*numchans + j] = bound_value(-1.0,s,1.0);
+				double abs_sample = fabs(s);
+				if (abs_sample > 1.0)
+				{
+					++overcounter;
+					if (abs_sample > max_sample)
+						max_sample = abs_sample;
+				}
+			}
+		}
+		if (overcounter > 0)
+			readbg() << overcounter << " samples went over! " << max_sample << "\n";
 		audiobuffer_view<double> taview(m_transformed_audio.data(), m_acc->numberOfFrames(),
 			m_acc->numberOfChannels(), m_acc->sampleRate());
 		m_analysiscontrol2->setAudioView(taview);

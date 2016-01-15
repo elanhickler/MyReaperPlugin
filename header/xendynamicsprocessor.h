@@ -82,8 +82,11 @@ public:
 	}
 	void paint(PaintEvent& ev) override;
 	volume_analysis_data* getAnalysisData() { return &m_data; }
+	void setShowAnalysisCurve(bool b) { m_show_analysis_curve = b; repaint(); }
+	bool getShowAnalysisCurve() const { return m_show_analysis_curve; }
 	std::string getType() const override { return "VolumeAnalysisControl"; }
 private:
+	bool m_show_analysis_curve = true;
 	volume_analysis_data m_data;
 	AudioViewPainter<audiobuffer_view<double>> m_audio_view_painter;
 };
@@ -102,6 +105,7 @@ private:
 	std::shared_ptr<breakpoint_envelope> m_transformenvelope1;
 	std::shared_ptr<WinLabel> m_windowsizelabel1;
 	std::shared_ptr<WinComboBox> m_windowsizecombo1;
+	std::shared_ptr<ReaSlider> m_slider1;
 	std::vector<double> m_window_sizes;
 	void do_dynamics_transform_visualization();
 	void render_dynamics_transform();
