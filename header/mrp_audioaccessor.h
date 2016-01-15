@@ -27,7 +27,7 @@ public:
 	{
 		return m_data[index*m_nch + chan];
 	}
-	T& getSample(int chan, int64_t index) noexcept
+	T& getSampleRef(int chan, int64_t index) noexcept
 	{
 		return m_data[index*m_nch + chan];
 	}

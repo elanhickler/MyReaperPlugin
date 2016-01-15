@@ -184,7 +184,7 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 						break;
 					for (int k = 0; k < numchans; ++k)
 					{
-						av.getSample(k, index) *= interpolated;
+						av.getSampleRef(k, index) *= interpolated;
 						//buf[index*numchans + k] *= interpolated;
 					}
 					++audiocounter;
@@ -212,7 +212,7 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 						break;
 					for (int k = 0; k < numchans; ++k)
 					{
-						av.getSample(k, index) *= interpolated;
+						av.getSampleRef(k, index) *= interpolated;
 						//buf[index*numchans + k] *= interpolated;
 					}
 					++audiocounter;
