@@ -273,28 +273,6 @@ void DynamicsProcessorWindow::import_item()
 		m_analysiscontrol1->setAnalysisData(data);
 		do_dynamics_transform_visualization();
 	}
-	
-#ifdef NOMRPACCESSOR
-	if (take != nullptr)
-	{
-		PCM_source* src = GetMediaItemTake_Source(take);
-		if (src != nullptr)
-		{
-			int64_t numframes = src->GetLength()*src->GetSampleRate();
-			std::vector<double> buf(numframes*src->GetNumChannels());
-			PCM_source_transfer_t transfer = { 0 };
-			transfer.length = numframes;
-			transfer.nch = src->GetNumChannels();
-			transfer.samplerate = src->GetSampleRate();
-			transfer.samples = buf.data();
-			src->GetSamples(&transfer);
-			double windowlen = m_window_sizes[m_windowsizecombo1->getSelectedIndex()]/1000.0;
-			auto data = analyze_audio_volume(windowlen*src->GetSampleRate(), src->GetNumChannels(), buf.data(), numframes);
-			m_analysiscontrol1->setAnalysisData(data);
-			do_dynamics_transform_visualization();
-		}
-	}
-#endif
 }
 
 picojson::object to_json(breakpoint_envelope& env)
