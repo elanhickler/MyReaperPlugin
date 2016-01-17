@@ -192,7 +192,7 @@ WinButton::WinButton(MRPWindow* parent, std::string text) :
 	ShowWindow(m_hwnd, SW_SHOW);
 	GenericNotifyCallback = [this](GenericNotifications)
 	{
-		readbg() << "button " << getText() << " clicked. No custom click callback set yet!\n";
+		//readbg() << "button " << getText() << " clicked. No custom click callback set yet!\n";
 	};
 }
 

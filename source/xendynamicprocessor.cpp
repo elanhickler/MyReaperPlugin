@@ -46,6 +46,7 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 	m_renderbut->GenericNotifyCallback = [this](GenericNotifications)
 	{
 		render_dynamics_transform();
+		write_transformed_to_file();
 	};
 	m_analysiscontrol1 = std::make_shared<VolumeAnalysisControl>(this);
 	add_control(m_analysiscontrol1);
@@ -90,6 +91,8 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 		if (index >= 0)
 		{
 			import_item();
+			m_analysiscontrol2->setShowAnalysisCurve(false);
+			render_dynamics_transform();
 			save_state();
 		}
 	};
@@ -275,43 +278,51 @@ void DynamicsProcessorWindow::render_dynamics_transform()
 		audiobuffer_view<double> taview(m_transformed_audio.data(), m_acc->numberOfFrames(),
 			m_acc->numberOfChannels(), m_acc->sampleRate());
 		m_analysiscontrol2->setAudioView(taview);
-#ifdef FOOFOOFOOZ
-
-		char cfg[] = { 'e','v','a','w', 32, 0 };
-		char ppbuf[2048];
-		GetProjectPath(ppbuf, 2048);
-		GUID theguid;
-		genGuid(&theguid);
-		char guidtxt[64];
-		guidToString(&theguid, guidtxt);
-		std::string outfn = std::string(ppbuf) + "/" + guidtxt + ".wav";
-		PCM_sink* sink = PCM_Sink_Create(outfn.c_str(), 
-			cfg, sizeof(cfg), numchans, av.sampleRate(), false);
-		if (sink != nullptr)
-		{
-			std::vector<double> sinkbuf(numchans*numframes);
-			std::vector<double*> sinkbufptrs(numchans);
-			for (int i = 0; i < numchans; ++i)
-				sinkbufptrs[i] = &sinkbuf[i*numframes];
-			for (int i = 0; i < numframes; ++i)
-			{
-				for (int j = 0; j < numchans; ++j)
-				{
-					sinkbufptrs[j][i] = av.getSample(j, i);
-				}
-			}
-			sink->WriteDoubles(sinkbufptrs.data(), numframes, numchans, 0, 1);
-			delete sink;
-			InsertMedia(outfn.c_str(), 3);
-		}
-			//readbg() << "render finished\n";
-#endif		
 	}
-
 }
 
 void DynamicsProcessorWindow::write_transformed_to_file()
 {
+	if (m_acc == nullptr)
+		return;
+	audiobuffer_view<double> taview(m_transformed_audio.data(), m_acc->numberOfFrames(),
+		m_acc->numberOfChannels(), m_acc->sampleRate());
+	char cfg[] = { 'e','v','a','w', 32, 0 };
+	char ppbuf[2048];
+	GetProjectPath(ppbuf, 2048);
+	GUID theguid;
+	genGuid(&theguid);
+	char guidtxt[64];
+	guidToString(&theguid, guidtxt);
+	std::string outfn = std::string(ppbuf) + "/" + guidtxt + ".wav";
+	int numchans = taview.numberOfChannels();
+	int64_t numframes = taview.numberOfFrames();
+	PCM_sink* sink = PCM_Sink_Create(outfn.c_str(),
+		cfg, sizeof(cfg), numchans, taview.sampleRate(), false);
+	if (sink != nullptr)
+	{
+		const int diskbufsize = 65536;
+		std::vector<double> sinkbuf(numchans*diskbufsize);
+		std::vector<double*> sinkbufptrs(taview.numberOfChannels());
+		for (int i = 0; i < numchans; ++i)
+			sinkbufptrs[i] = &sinkbuf[i*diskbufsize];
+		int64_t diskoutcounter = 0;
+		while (diskoutcounter < numframes)
+		{
+			int framestowrite = diskbufsize;
+			for (int i = 0; i < framestowrite; ++i)
+			{
+				for (int j = 0; j < numchans; ++j)
+				{
+					sinkbufptrs[j][i] = taview.getSample(j, diskoutcounter+i);
+				}
+			}
+			sink->WriteDoubles(sinkbufptrs.data(), framestowrite, numchans, 0, 1);
+			diskoutcounter += diskbufsize;
+		}
+		delete sink;
+		InsertMedia(outfn.c_str(), 3);
+	}
 }
 
 void DynamicsProcessorWindow::import_item()

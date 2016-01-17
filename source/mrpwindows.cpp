@@ -180,11 +180,11 @@ void MRPWindow::finishModal(ModalResult result)
 
 void MRPWindow::closeRequested()
 {
-	readbg() << "close requested...\n";
+	//readbg() << "close requested...\n";
 	m_is_closed = true;
 	if (m_hwnd != NULL && m_destroy_on_close == false)
 	{
-		readbg() << "only hiding this window...\n";
+		//readbg() << "only hiding this window...\n";
 		ShowWindow(m_hwnd, SW_HIDE);
 		
 		return;
@@ -193,7 +193,7 @@ void MRPWindow::closeRequested()
 	if (m_destroy_on_close == true)
 	{
 		delete this;
-		readbg() << "window map has " << g_mrpwindowsmap.size() << " entries\n";
+		//readbg() << "window map has " << g_mrpwindowsmap.size() << " entries\n";
 	}
 }
 
