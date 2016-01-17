@@ -94,7 +94,7 @@ DynamicsProcessorWindow::DynamicsProcessorWindow(HWND parent) : MRPWindow(parent
 		}
 	};
 	add_control(m_windowsizecombo1);
-	m_windowsizelabel1 = std::make_shared<WinLabel>(this, "Window size");
+	m_windowsizelabel1 = std::make_shared<WinLabel>(this, "Window size",true);
 	add_control(m_windowsizelabel1);
 
 	m_slider1 = std::make_shared<ReaSlider>(this);

@@ -121,7 +121,7 @@ public:
 class WinLabel : public WinControl
 {
 public:
-	WinLabel(MRPWindow* parent, std::string text);
+	WinLabel(MRPWindow* parent, std::string text, bool alignright=false);
 	void setText(std::string text);
 	std::string getText();
 	

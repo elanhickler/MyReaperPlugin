@@ -225,10 +225,13 @@ bool WinButton::handleMessage(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return false;
 }
 
-WinLabel::WinLabel(MRPWindow* parent, std::string text) : WinControl(parent)
+WinLabel::WinLabel(MRPWindow* parent, std::string text, bool alignright) : WinControl(parent)
 {
+	DWORD styleflags = WS_CHILD | WS_TABSTOP;
+	if (alignright)
+		styleflags = WS_CHILD | WS_TABSTOP | SS_RIGHT;
 #ifdef WIN32
-	m_hwnd = CreateWindow("STATIC", "label", WS_CHILD | WS_TABSTOP, 0, 0, 10, 10, parent->getWindowHandle(),
+	m_hwnd = CreateWindow("STATIC", "label", styleflags, 0, 0, 10, 10, parent->getWindowHandle(),
 		(HMENU)g_control_counter, g_hInst, 0);
 #else
 	m_hwnd = SWELL_MakeLabel(-1, text.c_str(), g_control_counter, 0, 0, 20, 20, 0);
