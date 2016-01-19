@@ -32,6 +32,11 @@
 		C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C484E6991C1BAE94005C6CCC /* lice.cpp */; };
 		C486064D1C1A3C4000186D68 /* resource.h in Headers */ = {isa = PBXBuildFile; fileRef = C486064C1C1A3C4000186D68 /* resource.h */; };
 		C486A0C41C238CFC00FF41C8 /* reascript.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C486A0C31C238CFC00FF41C8 /* reascript.hpp */; };
+		C49593F11C4EFCA0007C6C9B /* httpget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49593F01C4EFCA0007C6C9B /* httpget.cpp */; };
+		C49593F31C4EFCB7007C6C9B /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49593F21C4EFCB7007C6C9B /* connection.cpp */; };
+		C49593F51C4EFCD1007C6C9B /* asyncdns.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49593F41C4EFCD1007C6C9B /* asyncdns.cpp */; };
+		C49593F71C4EFCFD007C6C9B /* listen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49593F61C4EFCFD007C6C9B /* listen.cpp */; };
+		C49593F91C4EFD1A007C6C9B /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C49593F81C4EFD1A007C6C9B /* util.cpp */; };
 		C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */; };
 		C4A03C011C2A4A58009E1DC3 /* mrpwindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */; };
 		C4A793BF1C28F59000C60DC9 /* mylicecontrols.h in Headers */ = {isa = PBXBuildFile; fileRef = C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */; };
@@ -79,6 +84,11 @@
 		C484E69F1C1BB435005C6CCC /* utilfuncs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utilfuncs.h; path = ../header/utilfuncs.h; sourceTree = "<group>"; };
 		C486064C1C1A3C4000186D68 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = "../Visual Studio/resource.h"; sourceTree = "<group>"; };
 		C486A0C31C238CFC00FF41C8 /* reascript.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = reascript.hpp; path = ../reascript.hpp; sourceTree = "<group>"; };
+		C49593F01C4EFCA0007C6C9B /* httpget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = httpget.cpp; path = ../../WDL/WDL/jnetlib/httpget.cpp; sourceTree = "<group>"; };
+		C49593F21C4EFCB7007C6C9B /* connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = connection.cpp; path = ../../WDL/WDL/jnetlib/connection.cpp; sourceTree = "<group>"; };
+		C49593F41C4EFCD1007C6C9B /* asyncdns.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = asyncdns.cpp; path = ../../WDL/WDL/jnetlib/asyncdns.cpp; sourceTree = "<group>"; };
+		C49593F61C4EFCFD007C6C9B /* listen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = listen.cpp; path = ../../WDL/WDL/jnetlib/listen.cpp; sourceTree = "<group>"; };
+		C49593F81C4EFD1A007C6C9B /* util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = util.cpp; path = ../../WDL/WDL/jnetlib/util.cpp; sourceTree = "<group>"; };
 		C4A03BFE1C2A2A6A009E1DC3 /* mrpwincontrols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpwincontrols.cpp; path = ../source/mrpwincontrols.cpp; sourceTree = "<group>"; };
 		C4A03C001C2A4A58009E1DC3 /* mrpwindows.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mrpwindows.cpp; path = ../source/mrpwindows.cpp; sourceTree = "<group>"; };
 		C4A793BE1C28F59000C60DC9 /* mylicecontrols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mylicecontrols.h; path = ../header/mylicecontrols.h; sourceTree = "<group>"; };
@@ -190,6 +200,11 @@
 		E3EAC67A1C1C98D200F619AA /* WDL */ = {
 			isa = PBXGroup;
 			children = (
+				C49593F01C4EFCA0007C6C9B /* httpget.cpp */,
+				C49593F41C4EFCD1007C6C9B /* asyncdns.cpp */,
+				C49593F21C4EFCB7007C6C9B /* connection.cpp */,
+				C49593F81C4EFD1A007C6C9B /* util.cpp */,
+				C49593F61C4EFCFD007C6C9B /* listen.cpp */,
 				E3EAC67C1C1C990100F619AA /* Lice */,
 				E3EAC67B1C1C98D700F619AA /* swell */,
 			);
@@ -313,21 +328,26 @@
 				C442007E1C2139AD00CFE1B2 /* reaper_function_helper.cpp in Sources */,
 				C484E6941C1BAD49005C6CCC /* swell.cpp in Sources */,
 				C42AC6D11C274B7500FAE97E /* reascriptgui.cpp in Sources */,
+				C49593F31C4EFCB7007C6C9B /* connection.cpp in Sources */,
 				C4DED3BC1C20EB2B00275B4A /* reaper_action_helper.cpp in Sources */,
 				C484E68E1C1BAD49005C6CCC /* swell-gdi.mm in Sources */,
 				C43CE9AD1C2CDB5500315BC9 /* mrpexamplewindows.cpp in Sources */,
 				E3EAC67E1C1C99D800F619AA /* MyFirstClass.cpp in Sources */,
+				C49593F71C4EFCFD007C6C9B /* listen.cpp in Sources */,
 				C464FFCD1C2E1E9F0023C734 /* mrp_pcm_source.cpp in Sources */,
 				C4A03BFF1C2A2A6A009E1DC3 /* mrpwincontrols.cpp in Sources */,
 				C484E69A1C1BAE94005C6CCC /* lice_arc.cpp in Sources */,
 				C4C6FAAB1C3F19C300269A5A /* xendynamicprocessor.cpp in Sources */,
 				C4A793C31C28F5DE00C60DC9 /* mylicecontrols.cpp in Sources */,
 				C4A793C11C28F59900C60DC9 /* lice_control.cpp in Sources */,
+				C49593F51C4EFCD1007C6C9B /* asyncdns.cpp in Sources */,
 				C484E68D1C1BAD49005C6CCC /* swell-dlg.mm in Sources */,
 				C484E6901C1BAD49005C6CCC /* swell-menu.mm in Sources */,
 				C42AC6D31C27AB1D00FAE97E /* lice_textnew.cpp in Sources */,
 				C484E68F1C1BAD49005C6CCC /* swell-kb.mm in Sources */,
 				C4A03C011C2A4A58009E1DC3 /* mrpwindows.cpp in Sources */,
+				C49593F91C4EFD1A007C6C9B /* util.cpp in Sources */,
+				C49593F11C4EFCA0007C6C9B /* httpget.cpp in Sources */,
 				C484E6911C1BAD49005C6CCC /* swell-misc.mm in Sources */,
 				C484E69C1C1BAE94005C6CCC /* lice.cpp in Sources */,
 				C484E69B1C1BAE94005C6CCC /* lice_line.cpp in Sources */,

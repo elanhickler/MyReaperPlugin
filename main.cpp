@@ -221,6 +221,40 @@ void test_irp_render(bool multithreaded)
 	readbg() << "all done in " << t1 - t0 << " seconds\n";
 }
 
+void test_netlib()
+{
+	JNL_HTTPGet netget;
+	std::vector<char> pagedata;
+	std::vector<char> tempdata(65536);
+	netget.connect("http://www.landoleet.org/whatsnew5.txt");
+	while (true)
+	{
+		int r = netget.run();
+		if (r==-1)
+		{
+			readbg() << "net error\n";
+			break;
+		}
+		if (r==1)
+		{
+			readbg() << "connection has closed\n";
+			break;
+		}
+		int avail = netget.bytes_available();
+		if (avail>0)
+		{
+			if (tempdata.size()<avail)
+				tempdata.resize(avail);
+			netget.get_bytes(tempdata.data(), avail);
+			for (int i=0;i<avail;++i)
+				pagedata.push_back(tempdata[i]);
+		}
+		Sleep(50);
+	}
+	if (pagedata.size()>0)
+		readbg() << pagedata.data();
+}
+
 extern "C"
 {
 	// this is the only function that needs to be exported by a Reaper extension plugin dll
@@ -295,6 +329,11 @@ extern "C"
 				mrp::experimental::test_mrp_audio_accessor();
 			});
 
+			add_action("MRP/Xenakios : Test netlib", "MRP_XEN_TESTNETLIB", ToggleOff, [](action_entry&)
+			{
+				test_netlib();
+			});
+			
 //#ifdef MODALWINDOWSWORKPROPERLY
 			add_action("MRP : Show modal dialog...", "MRP_SHOW_WINMODAL", ToggleOff, [](action_entry&)
 			{
