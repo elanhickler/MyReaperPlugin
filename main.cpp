@@ -138,7 +138,7 @@ public:
 		delete m_sink;
 		delete m_shifter;
 		delete m_src;
-		readbg() << "irp task dtor " << m_id << "\n";
+		//readbg() << "irp task dtor " << m_id << "\n";
 	}
 	// Multithreading compatible code put in this method
 	// Stuff like ShowConsoleMsg, Main_OnCommand, Reaper object creation functions etc can't be used here
