@@ -226,7 +226,7 @@ void test_netlib()
 	JNL_HTTPGet netget;
 	std::vector<char> pagedata;
 	std::vector<char> tempdata(65536);
-	netget.connect("http://www.landoleet.org/whatsnew5.txt");
+	netget.connect("http://www.landoleet.org/reaper512rc2-install.exe");
 	while (true)
 	{
 		int r = netget.run();
@@ -249,10 +249,15 @@ void test_netlib()
 			for (int i=0;i<avail;++i)
 				pagedata.push_back(tempdata[i]);
 		}
+		//readbg() << "... ";
 		Sleep(50);
 	}
+	//readbg() << "\n";
 	if (pagedata.size()>0)
-		readbg() << pagedata.data();
+	{
+		readbg() << pagedata.size() << " bytes downloaded\n";
+		//readbg() << pagedata.data();
+	}
 }
 
 extern "C"
