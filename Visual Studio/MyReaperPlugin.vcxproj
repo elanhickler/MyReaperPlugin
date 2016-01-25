@@ -19,6 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\asyncdns.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\connection.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\httpget.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\listen.cpp" />
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\util.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_arc.cpp" />
     <ClCompile Include="..\library\WDL\WDL\lice\lice_line.cpp" />

@@ -53,6 +53,21 @@
     <ClCompile Include="..\source\xendynamicprocessor.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\listen.cpp">
+      <Filter>library\WDL\jnetlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\util.cpp">
+      <Filter>library\WDL\jnetlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\asyncdns.cpp">
+      <Filter>library\WDL\jnetlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\connection.cpp">
+      <Filter>library\WDL\jnetlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\library\WDL\WDL\jnetlib\httpget.cpp">
+      <Filter>library\WDL\jnetlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main.hpp" />
@@ -128,6 +143,9 @@
     </Filter>
     <Filter Include="library\picojson">
       <UniqueIdentifier>{dd1ccf13-4657-4f82-bb35-fb8c277f45d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\WDL\jnetlib">
+      <UniqueIdentifier>{2d90b9b0-c546-4115-a7e7-5a40725b0a8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
